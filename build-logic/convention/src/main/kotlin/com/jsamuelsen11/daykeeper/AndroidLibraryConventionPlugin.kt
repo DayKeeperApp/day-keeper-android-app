@@ -7,23 +7,21 @@ import org.gradle.api.Project
 import org.gradle.kotlin.dsl.configure
 
 class AndroidLibraryConventionPlugin : Plugin<Project> {
-    override fun apply(target: Project) {
-        with(target) {
-            pluginManager.apply("com.android.library")
+  override fun apply(target: Project) {
+    with(target) {
+      pluginManager.apply("com.android.library")
 
-            extensions.configure<LibraryExtension> {
-                configureAndroidCommon(this)
+      extensions.configure<LibraryExtension> {
+        configureAndroidCommon(this)
 
-                val javaTarget = libs.intVersion("java-target")
-                compileOptions {
-                    sourceCompatibility = JavaVersion.toVersion(javaTarget)
-                    targetCompatibility = JavaVersion.toVersion(javaTarget)
-                }
-
-                defaultConfig.apply {
-                    consumerProguardFiles("consumer-rules.pro")
-                }
-            }
+        val javaTarget = libs.intVersion("java-target")
+        compileOptions {
+          sourceCompatibility = JavaVersion.toVersion(javaTarget)
+          targetCompatibility = JavaVersion.toVersion(javaTarget)
         }
+
+        defaultConfig.apply { consumerProguardFiles("consumer-rules.pro") }
+      }
     }
+  }
 }

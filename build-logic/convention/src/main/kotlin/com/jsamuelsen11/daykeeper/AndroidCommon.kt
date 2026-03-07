@@ -7,23 +7,24 @@ import org.gradle.api.artifacts.VersionCatalogsExtension
 import org.gradle.kotlin.dsl.getByType
 
 internal val Project.libs: VersionCatalog
-    get() = extensions.getByType<VersionCatalogsExtension>().named("libs")
+  get() = extensions.getByType<VersionCatalogsExtension>().named("libs")
 
 internal fun VersionCatalog.intVersion(alias: String): Int =
-    findVersion(alias).get().toString().toInt()
+  findVersion(alias).get().toString().toInt()
 
 internal fun Project.configureAndroidCommon(extension: CommonExtension) {
-    val catalog = libs
-    extension.apply {
-        compileSdk {
-            version = release(catalog.intVersion("compile-sdk")) {
-                minorApiLevel = catalog.intVersion("compile-sdk-minor")
-            }
-        }
-
-        defaultConfig.apply {
-            minSdk = catalog.intVersion("min-sdk")
-            testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+  val catalog = libs
+  extension.apply {
+    compileSdk {
+      version =
+        release(catalog.intVersion("compile-sdk")) {
+          minorApiLevel = catalog.intVersion("compile-sdk-minor")
         }
     }
+
+    defaultConfig.apply {
+      minSdk = catalog.intVersion("min-sdk")
+      testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+    }
+  }
 }
