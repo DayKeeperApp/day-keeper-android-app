@@ -1,0 +1,8 @@
+{
+  "database": "dolt",
+  "backend": "dolt",
+  "dolt_mode": "server",
+  "dolt_database": "beads_DKA",
+  "project_id": "bc0a57c1-1555-4c8d-af8b-b757bb8eb6c5",
+  "last_bd_version": "0.56.1"
+}
