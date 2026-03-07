@@ -31,6 +31,13 @@ class AndroidApplicationConventionPlugin : Plugin<Project> {
             )
           }
         }
+
+        lint {
+          warningsAsErrors = true
+          abortOnError = true
+          checkDependencies = true
+          baseline = project.file("lint-baseline.xml")
+        }
       }
     }
   }

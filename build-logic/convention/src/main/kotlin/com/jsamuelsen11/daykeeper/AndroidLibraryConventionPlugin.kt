@@ -21,6 +21,13 @@ class AndroidLibraryConventionPlugin : Plugin<Project> {
         }
 
         defaultConfig.apply { consumerProguardFiles("consumer-rules.pro") }
+
+        lint {
+          warningsAsErrors = true
+          abortOnError = true
+          checkDependencies = true
+          baseline = project.file("lint-baseline.xml")
+        }
       }
     }
   }
