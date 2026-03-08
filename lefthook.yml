@@ -1,0 +1,104 @@
+# lefthook.yml — Git hook pipeline
+# https://github.com/evilmartians/lefthook
+#
+# Pipeline: format (auto-fix) → lint (check) → security (scan)
+# Install: lefthook install
+
+pre-commit:
+  jobs:
+    # === Job 1: Format ===
+    # Auto-fix formatting issues before linting sees the code
+    - name: format
+      group:
+        parallel: true
+        jobs:
+          - name: spotless
+            glob: '*.{kt,kts,xml,json}'
+            run: ./gradlew spotlessApply --daemon
+            stage_fixed: true
+
+          - name: taplo
+            glob: '*.toml'
+            exclude: "^(\\.beads/|\\.beads-hooks/|\\.claude/).*$"
+            run: uvx taplo fmt {staged_files}
+            stage_fixed: true
+
+          - name: prettier
+            glob: '*.{yaml,yml,md}'
+            exclude: "^(\\.beads/|\\.beads-hooks/|\\.claude/).*$"
+            run: npx --yes prettier --list-different --write {staged_files}
+            stage_fixed: true
+
+          - name: shfmt
+            glob: '*.{sh,bash}'
+            exclude: "^(\\.beads/|\\.beads-hooks/|\\.claude/).*$"
+            run: uvx --from shfmt-py shfmt -w {staged_files}
+            stage_fixed: true
+
+    # === Job 2: Lint ===
+    # Check formatted code for issues
+    - name: lint
+      group:
+        parallel: true
+        jobs:
+          - name: detekt
+            glob: '*.{kt,kts}'
+            run: ./gradlew detekt --daemon
+            fail_text: 'detekt found issues — fix them before committing'
+
+          - name: yamllint
+            glob: '*.{yml,yaml}'
+            exclude: "^(\\.beads/|\\.beads-hooks/|\\.claude/).*$"
+            run: uvx yamllint -c .yamllint.yaml {staged_files}
+
+          - name: markdownlint
+            glob: '*.md'
+            exclude: "^(\\.beads/|\\.beads-hooks/|\\.claude/).*$"
+            run: npx --yes markdownlint-cli {staged_files}
+
+          - name: shellcheck
+            glob: '*.{sh,bash}'
+            exclude: "^(\\.beads/|\\.beads-hooks/|\\.claude/).*$"
+            run: npx --yes shellcheck {staged_files}
+
+          - name: actionlint
+            glob: '.github/workflows/*.{yaml,yml}'
+            run: uvx --from actionlint-py actionlint {staged_files}
+
+          - name: taplo-lint
+            glob: '*.toml'
+            exclude: "^(\\.beads/|\\.beads-hooks/|\\.claude/).*$"
+            run: uvx taplo lint {staged_files}
+
+    # === Job 3: Security ===
+    # Scan for secrets and credentials
+    - name: security
+      group:
+        parallel: true
+        jobs:
+          - name: gitleaks
+            run: gitleaks protect --staged --no-banner
+
+pre-push:
+  parallel: true
+  commands:
+    unit-tests:
+      run: ./gradlew testDebugUnitTest --daemon
+    lint:
+      run: ./gradlew lintDebug --daemon
+
+commit-msg:
+  commands:
+    conventional-commit:
+      run: |
+        message=$(head -1 {1})
+        types='feat|fix|docs|style|refactor'
+        types="$types|perf|test|build|ci|chore|revert"
+        pattern="^($types)(\(.+\))?!?: .+"
+        if ! echo "$message" | grep -qE "$pattern"; then
+          echo "ERROR: Commit message must follow Conventional Commits"
+          echo "Format: <type>(<scope>): <description>"
+          echo "Types: $types"
+          echo "Got: $message"
+          exit 1
+        fi

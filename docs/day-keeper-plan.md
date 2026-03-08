@@ -1,9 +1,10 @@
 # Day Keeper App — Architecture & Data Model Plan (v1)
 
-**Status:** Draft Baseline
-**Audience:** Personal project (single operator, multi-user capable)
-**Goal:** Scalable, offline-first, self-hosted life management
-platform with Android client
+|              |                                                                                   |
+| ------------ | --------------------------------------------------------------------------------- |
+| **Status**   | Draft Baseline                                                                    |
+| **Audience** | Personal project (single operator, multi-user capable)                            |
+| **Goal**     | Scalable, offline-first, self-hosted life management platform with Android client |
 
 ---
 
@@ -51,17 +52,15 @@ platform with Android client
 
 ## 2. High-Level Architecture
 
-Android App (Kotlin, Compose)
-│
-│ GraphQL (normal operations)
-│ REST (sync)
-▼
-Kong Gateway
-▼
-Backend Service (C# / ASP.NET Core)
-├── Quartz/Hangfire Scheduler
-├── Attachment File Store (PVC)
-└── PostgreSQL
+```mermaid
+graph TD
+    A[Android App<br/>Kotlin, Compose] -->|GraphQL<br/>normal operations| B[Kong Gateway]
+    A -->|REST<br/>sync| B
+    B --> C[Backend Service<br/>C# / ASP.NET Core]
+    C --> D[Quartz/Hangfire Scheduler]
+    C --> E[Attachment File Store<br/>PVC]
+    C --> F[PostgreSQL]
+```
 
 ## Deployment Environment
 
