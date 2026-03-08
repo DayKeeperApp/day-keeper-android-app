@@ -3,6 +3,7 @@ plugins {
   alias(libs.plugins.android.library) apply false
   alias(libs.plugins.kotlin.compose) apply false
   alias(libs.plugins.detekt)
+  alias(libs.plugins.dokka)
   alias(libs.plugins.spotless)
 }
 
@@ -14,6 +15,7 @@ detekt {
 }
 
 subprojects {
+  apply(plugin = "org.jetbrains.dokka")
   apply(plugin = "io.gitlab.arturbosch.detekt")
 
   detekt {

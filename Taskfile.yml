@@ -1,0 +1,253 @@
+version: '3'
+
+tasks:
+  default:
+    desc: List available tasks
+    silent: true
+    cmds:
+      - |
+        B="\033[1m"
+        D="\033[2m"
+        R="\033[0m"
+        C="\033[36m"
+        HR="───────────────────────────────────────────────────────────────────"
+        echo ""
+        echo -e "  ${D}╭${HR}╮${R}"
+        echo -e "  ${D}│${R}  ${B}📱 DayKeeper Android Tasks${R}$(printf '%39s')${D}│${R}"
+        echo -e "  ${D}╰${HR}╯${R}"
+        echo ""
+        echo -e "  ${B}${C}🔨 Build${R}"
+        echo -e "  ${D}${HR}${R}"
+        echo -e "    ${B}build${R}                Build debug APK"
+        echo -e "    ${B}build:release${R}        Build release APK"
+        echo -e "    ${B}clean${R}                Clean build outputs"
+        echo ""
+        echo -e "  ${B}${C}🧪 Test${R}"
+        echo -e "  ${D}${HR}${R}"
+        echo -e "    ${B}test${R}                 Run unit tests"
+        echo -e "    ${B}check${R}                Run all Gradle checks"
+        echo ""
+        echo -e "  ${B}${C}✨ Code Quality${R}"
+        echo -e "  ${D}${HR}${R}"
+        echo -e "    ${B}format${R}               Auto-format all code"
+        echo -e "    ${B}format:check${R}         Check formatting (CI mode)"
+        echo -e "    ${B}lint${R}                 Run all linters (detekt + Android Lint)"
+        echo -e "    ${B}actionlint${R}           Lint GitHub Actions workflows"
+        echo ""
+        echo -e "  ${B}${C}🔍 Inspect${R}"
+        echo -e "  ${D}${HR}${R}"
+        echo -e "    ${B}deps${R}                 Show dependency tree"
+        echo -e "    ${B}scan${R}                 Generate Gradle build scan"
+        echo -e "    ${B}docs${R}                 Generate API documentation (Dokka)"
+        echo ""
+        echo -e "  ${B}${C}⚙️  Workflow${R}"
+        echo -e "  ${D}${HR}${R}"
+        echo -e "    ${B}ci${R}                   Full CI pipeline locally"
+        echo -e "    ${B}release${R}              Bump version, tag, and push"
+        echo -e "    ${B}setup${R}                Set up local development environment"
+        echo ""
+
+  # ── Build ────────────────────────────────────────────
+
+  build:
+    desc: Build debug APK
+    cmds:
+      - ./gradlew assembleDebug
+
+  build:release:
+    desc: Build release APK
+    cmds:
+      - ./gradlew assembleRelease
+
+  clean:
+    desc: Clean build outputs
+    cmds:
+      - ./gradlew clean
+
+  # ── Test ─────────────────────────────────────────────
+
+  test:
+    desc: Run unit tests
+    cmds:
+      - ./gradlew testDebugUnitTest
+
+  check:
+    desc: Run all Gradle checks
+    cmds:
+      - ./gradlew check
+
+  # ── Code Quality ────────────────────────────────────
+
+  format:
+    desc: Auto-format all code
+    cmds:
+      - ./gradlew spotlessApply
+
+  format:check:
+    desc: Check formatting (CI mode)
+    cmds:
+      - ./gradlew spotlessCheck
+
+  lint:
+    desc: Run all linters (detekt + Android Lint)
+    cmds:
+      - ./gradlew detekt lintDebug
+
+  actionlint:
+    desc: Lint GitHub Actions workflows
+    cmds:
+      - uvx --from actionlint-py actionlint .github/workflows/*.yml
+
+  # ── Inspect ─────────────────────────────────────────
+
+  deps:
+    desc: Show dependency tree
+    cmds:
+      - ./gradlew dependencies
+
+  scan:
+    desc: Generate Gradle build scan
+    cmds:
+      - ./gradlew build --scan
+
+  docs:
+    desc: Generate API documentation (Dokka)
+    cmds:
+      - ./gradlew dokkaGenerate
+
+  # ── Workflow ────────────────────────────────────────
+
+  ci:
+    desc: Full CI pipeline locally
+    cmds:
+      - task: format:check
+      - task: lint
+      - task: test
+      - task: build
+
+  setup:
+    desc: Set up local development environment
+    silent: true
+    cmds:
+      - |
+        B="\033[1m"
+        G="\033[32m"
+        R="\033[0m"
+        Y="\033[33m"
+        RED="\033[31m"
+        OK="${G}✓${R}"
+        FAIL="${RED}✗${R}"
+        WARN="${Y}!${R}"
+        ERRORS=0
+
+        echo ""
+        echo -e "  ${B}Checking required tools...${R}"
+        echo ""
+
+        for tool in java kotlin task lefthook uvx; do
+          if command -v "$tool" &>/dev/null; then
+            echo -e "    ${OK} ${tool}"
+          else
+            echo -e "    ${FAIL} ${tool} — not found"
+            ERRORS=$((ERRORS + 1))
+          fi
+        done
+
+        echo ""
+
+        if [ -n "${ANDROID_HOME:-}" ] && [ -d "$ANDROID_HOME" ]; then
+          echo -e "    ${OK} ANDROID_HOME ($ANDROID_HOME)"
+        elif [ -d "$HOME/Android/Sdk" ]; then
+          echo -e "    ${WARN} ANDROID_HOME not set, but ~/Android/Sdk exists"
+        else
+          echo -e "    ${FAIL} ANDROID_HOME — not set and ~/Android/Sdk not found"
+          ERRORS=$((ERRORS + 1))
+        fi
+
+        echo ""
+
+        if [ "$ERRORS" -gt 0 ]; then
+          echo -e "  ${RED}${B}$ERRORS tool(s) missing. Fix them before continuing.${R}"
+          echo ""
+          exit 1
+        fi
+
+        echo -e "  ${B}Installing git hooks...${R}"
+        lefthook install
+        echo ""
+
+        echo -e "  ${B}Verifying Gradle wrapper...${R}"
+        ./gradlew --version
+        echo ""
+
+        echo -e "  ${G}${B}All good! Run 'task build' to get started.${R}"
+        echo ""
+
+  release:
+    desc: Bump version, tag, and push
+    interactive: true
+    silent: true
+    cmds:
+      - |
+        set -euo pipefail
+
+        B="\033[1m"
+        R="\033[0m"
+        G="\033[32m"
+        RED="\033[31m"
+        BUILD_FILE="app/build.gradle.kts"
+
+        # Read current version
+        CURRENT_VERSION=$(grep 'versionName' "$BUILD_FILE" | sed 's/.*"\(.*\)".*/\1/')
+        CURRENT_CODE=$(grep 'versionCode' "$BUILD_FILE" | sed 's/[^0-9]//g')
+
+        echo ""
+        echo -e "  ${B}Current version:${R} v${CURRENT_VERSION} (code: ${CURRENT_CODE})"
+        echo ""
+        echo -e "  Select bump type:"
+        echo -e "    1) patch  (x.y.Z)"
+        echo -e "    2) minor  (x.Y.0)"
+        echo -e "    3) major  (X.0.0)"
+        echo ""
+        read -rp "  Choice [1/2/3]: " CHOICE
+
+        IFS='.' read -r MAJOR MINOR PATCH <<< "$CURRENT_VERSION"
+
+        case "$CHOICE" in
+          1) PATCH=$((PATCH + 1)) ;;
+          2) MINOR=$((MINOR + 1)); PATCH=0 ;;
+          3) MAJOR=$((MAJOR + 1)); MINOR=0; PATCH=0 ;;
+          *) echo -e "  ${RED}Invalid choice${R}"; exit 1 ;;
+        esac
+
+        NEW_VERSION="${MAJOR}.${MINOR}.${PATCH}"
+        NEW_CODE=$((CURRENT_CODE + 1))
+
+        echo ""
+        echo -e "  ${B}Bumping:${R} v${CURRENT_VERSION} → v${NEW_VERSION} (code: ${NEW_CODE})"
+        echo ""
+
+        # Update build file
+        sed -i \
+          "s/versionCode = ${CURRENT_CODE}/versionCode = ${NEW_CODE}/" \
+          "$BUILD_FILE"
+        sed -i \
+          "s/versionName = \"${CURRENT_VERSION}\"/versionName = \"${NEW_VERSION}\"/" \
+          "$BUILD_FILE"
+
+        # Run CI validation
+        echo -e "  ${B}Running CI validation...${R}"
+        task ci
+
+        # Commit and tag
+        git add "$BUILD_FILE"
+        git commit -m "chore(release): v${NEW_VERSION}"
+        git tag "v${NEW_VERSION}"
+
+        # Push
+        git push
+        git push --tags
+
+        echo ""
+        echo -e "  ${G}${B}Released v${NEW_VERSION}${R}"
+        echo ""
