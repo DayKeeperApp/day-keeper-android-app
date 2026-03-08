@@ -1,0 +1,71 @@
+root = true
+
+# ── Defaults ──────────────────────────────────────────────────
+[*]
+charset = utf-8
+end_of_line = lf
+indent_style = space
+indent_size = 4
+insert_final_newline = true
+trim_trailing_whitespace = true
+max_line_length = 100
+
+# ── Kotlin (matches ktfmt Google style) ───────────────────────
+[*.{kt,kts}]
+indent_size = 2
+ij_kotlin_imports_layout = *,java.**,javax.**,kotlin.**,kotlinx.**
+ij_kotlin_allow_trailing_comma = true
+ij_kotlin_allow_trailing_comma_on_call_site = true
+ij_kotlin_name_count_to_use_star_import = 999
+ij_kotlin_name_count_to_use_star_import_for_members = 999
+
+# ── XML (Android layouts, resources, manifests) ───────────────
+[*.xml]
+indent_size = 4
+
+# ── Gradle build scripts (Kotlin DSL) ────────────────────────
+[*.gradle.kts]
+indent_size = 2
+
+# ── Gradle properties ────────────────────────────────────────
+[*.properties]
+charset = latin1
+
+# ── YAML (GitHub Actions, CI/CD) ──────────────────────────────
+[*.{yml,yaml}]
+indent_size = 2
+
+# ── TOML (Gradle version catalogs) ───────────────────────────
+[*.toml]
+indent_size = 2
+
+# ── JSON ──────────────────────────────────────────────────────
+[*.json]
+indent_size = 2
+
+# ── Markdown ──────────────────────────────────────────────────
+[*.md]
+trim_trailing_whitespace = false
+max_line_length = off
+
+# ── Shell scripts ─────────────────────────────────────────────
+[*.sh]
+indent_size = 2
+
+# ── Batch (gradlew.bat) ──────────────────────────────────────
+[*.bat]
+end_of_line = crlf
+indent_size = 2
+
+# ── ProGuard / R8 rules ──────────────────────────────────────
+[*.pro]
+indent_size = 2
+
+# ── Makefiles ─────────────────────────────────────────────────
+[Makefile]
+indent_style = tab
+
+# ── Generated (do not reformat) ───────────────────────────────
+[gradlew]
+end_of_line = lf
+insert_final_newline = true
