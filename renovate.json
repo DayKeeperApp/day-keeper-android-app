@@ -1,0 +1,57 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "assignees": [
+    "jsamuelsen11"
+  ],
+  "extends": [
+    "config:recommended"
+  ],
+  "labels": [
+    "dependencies",
+    "automated"
+  ],
+  "packageRules": [
+    {
+      "excludePackagePrefixes": [
+        "androidx.compose"
+      ],
+      "groupName": "androidx",
+      "matchPackagePrefixes": [
+        "androidx."
+      ]
+    },
+    {
+      "groupName": "compose",
+      "matchPackagePrefixes": [
+        "androidx.compose"
+      ]
+    },
+    {
+      "groupName": "kotlin",
+      "matchPackagePrefixes": [
+        "org.jetbrains.kotlin",
+        "org.jetbrains.kotlinx"
+      ]
+    },
+    {
+      "groupName": "testing",
+      "matchPackagePrefixes": [
+        "io.mockk",
+        "io.kotest",
+        "app.cash.turbine",
+        "org.robolectric",
+        "org.junit"
+      ]
+    },
+    {
+      "automerge": true,
+      "matchUpdateTypes": [
+        "patch"
+      ]
+    }
+  ],
+  "prConcurrentLimit": 5,
+  "schedule": [
+    "every weekend"
+  ]
+}
