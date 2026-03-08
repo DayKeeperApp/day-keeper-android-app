@@ -25,6 +25,9 @@ koin-bom = "4.1.1"
 # Networking (Ktor)
 ktor = "3.4.1"
 
+# Coroutines
+kotlinx-coroutines = "1.10.2"
+
 # Testing
 junit5 = "6.0.3"
 android-junit5-plugin = "2.0.1"
@@ -110,11 +113,13 @@ turbine = { group = "app.cash.turbine", name = "turbine", version.ref = "turbine
 robolectric = { group = "org.robolectric", name = "robolectric", version.ref = "robolectric" }
 androidx-test-ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "androidx-test-ext" }
 androidx-test-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "androidx-test-espresso" }
+kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "kotlinx-coroutines" }
 
 # Build-logic classpath dependencies
 android-gradle-plugin = { group = "com.android.tools.build", name = "gradle", version.ref = "agp" }
 kotlin-gradle-plugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
 compose-gradle-plugin = { group = "org.jetbrains.kotlin", name = "compose-compiler-gradle-plugin", version.ref = "kotlin" }
+android-junit5-gradle-plugin = { group = "de.mannodermaus.gradle.plugins", name = "android-junit5", version.ref = "android-junit5-plugin" }
 
 [bundles]
 compose = [
@@ -136,6 +141,14 @@ testing-unit = [
   "kotest-runner-junit5",
   "kotest-assertions-core",
   "turbine",
+  "kotlinx-coroutines-test",
+]
+testing-android = [
+  "mockk-android",
+  "robolectric",
+  "androidx-test-ext-junit",
+  "androidx-test-espresso-core",
+  "androidx-compose-ui-test-junit4",
 ]
 
 [plugins]

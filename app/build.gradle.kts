@@ -13,8 +13,6 @@ android {
   }
 
   buildFeatures { compose = true }
-
-  testOptions { unitTests.all { it.useJUnitPlatform() } }
 }
 
 dependencies {
@@ -24,14 +22,6 @@ dependencies {
   implementation(libs.bundles.compose)
   implementation(libs.bundles.lifecycle)
 
-  testImplementation(libs.junit5.api)
-  testImplementation(libs.junit5.params)
-  testRuntimeOnly(libs.junit5.engine)
-  testRuntimeOnly(libs.junit.platform.launcher)
-
-  androidTestImplementation(libs.androidx.test.ext.junit)
-  androidTestImplementation(libs.androidx.test.espresso.core)
   androidTestImplementation(platform(libs.androidx.compose.bom))
-  androidTestImplementation(libs.androidx.compose.ui.test.junit4)
   debugImplementation(libs.bundles.compose.debug)
 }

@@ -4,6 +4,7 @@ dependencies {
   compileOnly(libs.android.gradle.plugin)
   compileOnly(libs.kotlin.gradle.plugin)
   compileOnly(libs.compose.gradle.plugin)
+  implementation(libs.android.junit5.gradle.plugin)
 }
 
 gradlePlugin {
@@ -23,6 +24,10 @@ gradlePlugin {
     register("kotlinLibrary") {
       id = "daykeeper.kotlin.library"
       implementationClass = "com.jsamuelsen11.daykeeper.KotlinLibraryConventionPlugin"
+    }
+    register("androidTest") {
+      id = "daykeeper.android.test"
+      implementationClass = "com.jsamuelsen11.daykeeper.AndroidTestConventionPlugin"
     }
   }
 }
