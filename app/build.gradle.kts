@@ -8,8 +8,8 @@ android {
 
   defaultConfig {
     applicationId = "com.jsamuelsen11.daykeeper.app"
-    versionCode = 1
-    versionName = "1.0"
+    versionCode = 3
+    versionName = "1.0.2"
   }
 
   buildFeatures { compose = true }
