@@ -30,6 +30,10 @@ class AndroidTestConventionPlugin : Plugin<Project> {
         add("testImplementation", catalog.findBundle("testing-unit").get())
         add("testRuntimeOnly", catalog.findLibrary("junit5-engine").get())
         add("testRuntimeOnly", catalog.findLibrary("junit-platform-launcher").get())
+        add(
+          "androidTestImplementation",
+          platform(catalog.findLibrary("androidx-compose-bom").get()),
+        )
         add("androidTestImplementation", catalog.findBundle("testing-android").get())
       }
     }

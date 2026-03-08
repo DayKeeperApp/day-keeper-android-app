@@ -38,3 +38,9 @@ develocity {
 rootProject.name = "Day Keeper"
 
 include(":app")
+
+include(":core:model")
+
+include(":core:common")
+
+include(":core:ui")
