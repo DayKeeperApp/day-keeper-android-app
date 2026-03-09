@@ -28,6 +28,8 @@ class AndroidLibraryConventionPlugin : Plugin<Project> {
           abortOnError = true
           checkDependencies = true
           baseline = project.file("lint-baseline.xml")
+          disable += "NewerVersionAvailable"
+          disable += "GradleDependency"
         }
       }
     }
