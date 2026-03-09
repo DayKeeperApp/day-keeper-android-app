@@ -168,3 +168,4 @@ daykeeper-android-application = { id = "daykeeper.android.application" }
 daykeeper-android-library = { id = "daykeeper.android.library" }
 daykeeper-android-feature = { id = "daykeeper.android.feature" }
 daykeeper-kotlin-library = { id = "daykeeper.kotlin.library" }
+daykeeper-android-test = { id = "daykeeper.android.test" }
