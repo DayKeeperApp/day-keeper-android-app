@@ -11,7 +11,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.jsamuelsen11.daykeeper.app.ui.theme.DayKeeperTheme
+import com.jsamuelsen11.daykeeper.core.ui.theme.DayKeeperTheme
 
 class MainActivity : ComponentActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
