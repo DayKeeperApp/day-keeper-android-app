@@ -24,7 +24,7 @@ pre-commit:
             stage_fixed: true
 
           - name: prettier
-            glob: '*.{yaml,yml,md}'
+            glob: '*.{yaml,yml,md,html}'
             exclude: "^(\\.beads/|\\.beads-hooks/|\\.claude/).*$"
             run: npx --yes prettier --list-different --write {staged_files}
             stage_fixed: true
@@ -55,6 +55,11 @@ pre-commit:
             glob: '*.md'
             exclude: "^(\\.beads/|\\.beads-hooks/|\\.claude/).*$"
             run: npx --yes markdownlint-cli {staged_files}
+
+          - name: htmlhint
+            glob: '*.html'
+            exclude: "^(\\.beads/|\\.beads-hooks/|\\.claude/).*$"
+            run: npx --yes htmlhint {staged_files}
 
           - name: shellcheck
             glob: '*.{sh,bash}'

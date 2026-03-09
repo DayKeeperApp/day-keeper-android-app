@@ -246,8 +246,28 @@ Permissions enforced at space level (v1).
 
 - Multi-user support
 - Device registration
-- Timezone preferences
-- Week start preference
+- Timezone preferences (synced, stored in accounts table)
+- Week start preference (synced, stored in accounts table)
+
+## User Preferences (Device-Local)
+
+Stored in Android Preferences DataStore (not synced across devices).
+
+### Display & UX
+
+- Theme: system / light / dark (default: system)
+- Default calendar view: month / week / day (default: month)
+- Date format: system default / MM-DD-YYYY / DD-MM-YYYY (default: system)
+- Time format: 12-hour / 24-hour / system default (default: system)
+- List sort order: manual / alphabetical / date added (default: manual)
+- Compact mode: on / off (default: off)
+
+### Notifications
+
+- Do not disturb window: start time / end time (default: 22:00–07:00, disabled)
+- Default reminder lead time: none / 5min / 15min / 30min / 1hr / 1day (default: 15min)
+- Notification sound: default / silent / custom (default: default)
+- Per-category toggles: events (on) / tasks (on) / lists (on) / people (off)
 
 ## Calendar
 
@@ -342,7 +362,282 @@ All major entities include:
 
 ## 11. Database Schema (Detailed)
 
-(See earlier planning discussion for full field-level detail.)
+### Type Conventions
+
+- **Primary keys**: UUID stored as `TEXT` (36 chars)
+- **Timestamps**: `INTEGER` (epoch milliseconds, UTC) — `created_at`, `updated_at` on all entities
+- **Tombstone**: `deleted_at INTEGER` (nullable) on all syncable entities
+- **Foreign keys**: `TEXT` referencing parent PK
+- **Booleans**: `INTEGER` (0 = false, 1 = true)
+
+### accounts
+
+| Column       | Type    | Notes                                      |
+| ------------ | ------- | ------------------------------------------ |
+| tenant_id    | TEXT PK | UUID                                       |
+| display_name | TEXT    |                                            |
+| email        | TEXT    |                                            |
+| timezone     | TEXT    | IANA timezone ID (e.g. "America/New_York") |
+| week_start   | TEXT    | Enum: SUNDAY, MONDAY, SATURDAY             |
+| created_at   | INTEGER | epoch millis                               |
+| updated_at   | INTEGER | epoch millis                               |
+| deleted_at   | INTEGER | nullable, tombstone                        |
+
+### devices
+
+| Column           | Type               | Notes                       |
+| ---------------- | ------------------ | --------------------------- |
+| device_id        | TEXT PK            | UUID                        |
+| tenant_id        | TEXT FK → accounts |                             |
+| device_name      | TEXT               |                             |
+| fcm_token        | TEXT               | nullable until registered   |
+| last_sync_cursor | INTEGER            | monotonic cursor, default 0 |
+| created_at       | INTEGER            |                             |
+| updated_at       | INTEGER            |                             |
+
+### spaces
+
+| Column          | Type               | Notes                            |
+| --------------- | ------------------ | -------------------------------- |
+| space_id        | TEXT PK            | UUID                             |
+| tenant_id       | TEXT FK → accounts |                                  |
+| name            | TEXT               |                                  |
+| normalized_name | TEXT               | lowercase trimmed for uniqueness |
+| type            | TEXT               | Enum: PERSONAL, SHARED, SYSTEM   |
+| created_at      | INTEGER            |                                  |
+| updated_at      | INTEGER            |                                  |
+| deleted_at      | INTEGER            | nullable                         |
+
+### space_members
+
+| Column     | Type    | Notes                       |
+| ---------- | ------- | --------------------------- |
+| space_id   | TEXT    | composite PK with tenant_id |
+| tenant_id  | TEXT    | composite PK with space_id  |
+| role       | TEXT    | Enum: OWNER, EDITOR, VIEWER |
+| created_at | INTEGER |                             |
+| updated_at | INTEGER |                             |
+| deleted_at | INTEGER | nullable                    |
+
+### calendars
+
+| Column          | Type               | Notes                      |
+| --------------- | ------------------ | -------------------------- |
+| calendar_id     | TEXT PK            | UUID                       |
+| space_id        | TEXT FK → spaces   |                            |
+| tenant_id       | TEXT FK → accounts |                            |
+| name            | TEXT               |                            |
+| normalized_name | TEXT               |                            |
+| color           | TEXT               | hex color string "#RRGGBB" |
+| is_default      | INTEGER            | boolean (0/1)              |
+| created_at      | INTEGER            |                            |
+| updated_at      | INTEGER            |                            |
+| deleted_at      | INTEGER            | nullable                   |
+
+### event_types
+
+| Column          | Type    | Notes                                    |
+| --------------- | ------- | ---------------------------------------- |
+| event_type_id   | TEXT PK | UUID                                     |
+| name            | TEXT    | e.g. "Meeting", "Appointment", "Holiday" |
+| normalized_name | TEXT    |                                          |
+| is_system       | INTEGER | boolean — system types can't be deleted  |
+| color           | TEXT    | nullable, optional hex color override    |
+| created_at      | INTEGER |                                          |
+| updated_at      | INTEGER |                                          |
+
+### events
+
+| Column          | Type                  | Notes                                                |
+| --------------- | --------------------- | ---------------------------------------------------- |
+| event_id        | TEXT PK               | UUID                                                 |
+| calendar_id     | TEXT FK → calendars   |                                                      |
+| space_id        | TEXT FK → spaces      |                                                      |
+| tenant_id       | TEXT FK → accounts    |                                                      |
+| title           | TEXT                  |                                                      |
+| description     | TEXT                  | nullable                                             |
+| start_at        | INTEGER               | nullable, epoch millis — null if all-day             |
+| end_at          | INTEGER               | nullable, epoch millis — null if all-day             |
+| start_date      | TEXT                  | nullable, ISO date "2026-03-08" — for all-day events |
+| end_date        | TEXT                  | nullable, ISO date — for all-day events              |
+| is_all_day      | INTEGER               | boolean                                              |
+| timezone        | TEXT                  | IANA timezone ID                                     |
+| event_type_id   | TEXT FK → event_types | nullable                                             |
+| location        | TEXT                  | nullable, freeform text                              |
+| recurrence_rule | TEXT                  | nullable, RFC 5545 RRULE string                      |
+| parent_event_id | TEXT FK → events      | nullable, for recurrence exceptions                  |
+| created_at      | INTEGER               |                                                      |
+| updated_at      | INTEGER               |                                                      |
+| deleted_at      | INTEGER               | nullable                                             |
+
+### event_reminders
+
+| Column         | Type             | Notes                     |
+| -------------- | ---------------- | ------------------------- |
+| reminder_id    | TEXT PK          | UUID                      |
+| event_id       | TEXT FK → events |                           |
+| minutes_before | INTEGER          | e.g. 15, 60, 1440 (1 day) |
+| created_at     | INTEGER          |                           |
+| updated_at     | INTEGER          |                           |
+| deleted_at     | INTEGER          | nullable                  |
+
+### persons
+
+| Column     | Type               | Notes    |
+| ---------- | ------------------ | -------- |
+| person_id  | TEXT PK            | UUID     |
+| space_id   | TEXT FK → spaces   |          |
+| tenant_id  | TEXT FK → accounts |          |
+| first_name | TEXT               |          |
+| last_name  | TEXT               |          |
+| nickname   | TEXT               | nullable |
+| notes      | TEXT               | nullable |
+| created_at | INTEGER            |          |
+| updated_at | INTEGER            |          |
+| deleted_at | INTEGER            | nullable |
+
+### contact_methods
+
+| Column            | Type              | Notes                             |
+| ----------------- | ----------------- | --------------------------------- |
+| contact_method_id | TEXT PK           | UUID                              |
+| person_id         | TEXT FK → persons |                                   |
+| type              | TEXT              | Enum: PHONE, EMAIL                |
+| value             | TEXT              | phone number or email address     |
+| label             | TEXT              | "Home", "Work", "Mobile", "Other" |
+| is_primary        | INTEGER           | boolean                           |
+| created_at        | INTEGER           |                                   |
+| updated_at        | INTEGER           |                                   |
+| deleted_at        | INTEGER           | nullable                          |
+
+### addresses
+
+| Column      | Type              | Notes                   |
+| ----------- | ----------------- | ----------------------- |
+| address_id  | TEXT PK           | UUID                    |
+| person_id   | TEXT FK → persons |                         |
+| label       | TEXT              | "Home", "Work", "Other" |
+| street      | TEXT              | nullable                |
+| city        | TEXT              | nullable                |
+| state       | TEXT              | nullable                |
+| postal_code | TEXT              | nullable                |
+| country     | TEXT              | nullable                |
+| created_at  | INTEGER           |                         |
+| updated_at  | INTEGER           |                         |
+| deleted_at  | INTEGER           | nullable                |
+
+### important_dates
+
+| Column            | Type              | Notes                                |
+| ----------------- | ----------------- | ------------------------------------ |
+| important_date_id | TEXT PK           | UUID                                 |
+| person_id         | TEXT FK → persons |                                      |
+| label             | TEXT              | "Birthday", "Anniversary", or custom |
+| date              | TEXT              | ISO date "2026-03-08"                |
+| created_at        | INTEGER           |                                      |
+| updated_at        | INTEGER           |                                      |
+| deleted_at        | INTEGER           | nullable                             |
+
+### projects
+
+| Column          | Type               | Notes                  |
+| --------------- | ------------------ | ---------------------- |
+| project_id      | TEXT PK            | UUID                   |
+| space_id        | TEXT FK → spaces   |                        |
+| tenant_id       | TEXT FK → accounts |                        |
+| name            | TEXT               |                        |
+| normalized_name | TEXT               |                        |
+| description     | TEXT               | nullable               |
+| status          | TEXT               | Enum: ACTIVE, ARCHIVED |
+| created_at      | INTEGER            |                        |
+| updated_at      | INTEGER            |                        |
+| deleted_at      | INTEGER            | nullable               |
+
+### task_categories
+
+| Column          | Type    | Notes               |
+| --------------- | ------- | ------------------- |
+| category_id     | TEXT PK | UUID                |
+| name            | TEXT    |                     |
+| normalized_name | TEXT    |                     |
+| is_system       | INTEGER | boolean             |
+| color           | TEXT    | nullable, hex color |
+| created_at      | INTEGER |                     |
+| updated_at      | INTEGER |                     |
+
+### tasks
+
+| Column          | Type                      | Notes                                    |
+| --------------- | ------------------------- | ---------------------------------------- |
+| task_id         | TEXT PK                   | UUID                                     |
+| project_id      | TEXT FK → projects        | nullable — standalone tasks              |
+| space_id        | TEXT FK → spaces          |                                          |
+| tenant_id       | TEXT FK → accounts        |                                          |
+| title           | TEXT                      |                                          |
+| description     | TEXT                      | nullable                                 |
+| status          | TEXT                      | Enum: TODO, IN_PROGRESS, DONE, CANCELLED |
+| priority        | TEXT                      | Enum: NONE, LOW, MEDIUM, HIGH, URGENT    |
+| due_at          | INTEGER                   | nullable, epoch millis                   |
+| due_date        | TEXT                      | nullable, ISO date                       |
+| recurrence_rule | TEXT                      | nullable, RFC 5545 RRULE                 |
+| category_id     | TEXT FK → task_categories | nullable                                 |
+| created_at      | INTEGER                   |                                          |
+| updated_at      | INTEGER                   |                                          |
+| deleted_at      | INTEGER                   | nullable                                 |
+
+### shopping_lists
+
+| Column          | Type               | Notes    |
+| --------------- | ------------------ | -------- |
+| list_id         | TEXT PK            | UUID     |
+| space_id        | TEXT FK → spaces   |          |
+| tenant_id       | TEXT FK → accounts |          |
+| name            | TEXT               |          |
+| normalized_name | TEXT               |          |
+| created_at      | INTEGER            |          |
+| updated_at      | INTEGER            |          |
+| deleted_at      | INTEGER            | nullable |
+
+### shopping_list_items
+
+| Column     | Type                     | Notes                                                   |
+| ---------- | ------------------------ | ------------------------------------------------------- |
+| item_id    | TEXT PK                  | UUID                                                    |
+| list_id    | TEXT FK → shopping_lists |                                                         |
+| name       | TEXT                     |                                                         |
+| quantity   | REAL                     | decimal, default 1.0                                    |
+| unit       | TEXT                     | nullable, "pcs"/"kg"/"g"/"lb"/"oz"/"L"/"mL" or freeform |
+| is_checked | INTEGER                  | boolean                                                 |
+| sort_order | INTEGER                  | for manual ordering                                     |
+| created_at | INTEGER                  |                                                         |
+| updated_at | INTEGER                  |                                                         |
+| deleted_at | INTEGER                  | nullable                                                |
+
+### attachments
+
+| Column        | Type               | Notes                                               |
+| ------------- | ------------------ | --------------------------------------------------- |
+| attachment_id | TEXT PK            | UUID                                                |
+| entity_type   | TEXT               | Enum: EVENT, TASK, PERSON                           |
+| entity_id     | TEXT               | FK to parent entity (polymorphic)                   |
+| tenant_id     | TEXT FK → accounts |                                                     |
+| space_id      | TEXT FK → spaces   |                                                     |
+| file_name     | TEXT               | original filename                                   |
+| mime_type     | TEXT               | image/jpeg, image/png, image/webp, application/pdf  |
+| file_size     | INTEGER            | bytes                                               |
+| remote_url    | TEXT               | nullable, server URL — null until synced            |
+| local_path    | TEXT               | nullable, local cache path — null if not downloaded |
+| created_at    | INTEGER            |                                                     |
+| updated_at    | INTEGER            |                                                     |
+| deleted_at    | INTEGER            | nullable                                            |
+
+### sync_cursors
+
+| Column       | Type    | Notes                     |
+| ------------ | ------- | ------------------------- |
+| id           | TEXT PK | single row, fixed ID      |
+| last_cursor  | INTEGER | monotonic server cursor   |
+| last_sync_at | INTEGER | epoch millis of last sync |
 
 ---
 

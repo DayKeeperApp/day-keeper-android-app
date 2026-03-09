@@ -1,0 +1,726 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Day Keeper — Profile Wireframes</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        font-family: -apple-system, 'Segoe UI', Roboto, sans-serif;
+        background: #f0f0f0;
+        padding: 24px;
+        color: #333;
+      }
+      h1 {
+        text-align: center;
+        margin-bottom: 8px;
+        font-size: 24px;
+        font-weight: 600;
+      }
+      .subtitle {
+        text-align: center;
+        color: #888;
+        margin-bottom: 32px;
+        font-size: 14px;
+      }
+      .grid {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 32px;
+        justify-content: center;
+      }
+      .screen-wrapper {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+      .screen-label {
+        font-size: 13px;
+        font-weight: 600;
+        color: #666;
+        margin-bottom: 8px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+      .phone {
+        width: 375px;
+        height: 812px;
+        background: #fff;
+        border-radius: 40px;
+        border: 3px solid #ccc;
+        overflow: hidden;
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      }
+      .status-bar {
+        height: 44px;
+        background: #fafafa;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        color: #999;
+        border-bottom: 1px solid #eee;
+      }
+      .top-bar {
+        height: 56px;
+        background: #fff;
+        display: flex;
+        align-items: center;
+        padding: 0 16px;
+        border-bottom: 1px solid #e0e0e0;
+      }
+      .top-bar .left {
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+        color: #666;
+      }
+      .top-bar .title {
+        flex: 1;
+        text-align: center;
+        font-size: 18px;
+        font-weight: 600;
+      }
+      .top-bar .right {
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+        color: #666;
+      }
+      .content {
+        flex: 1;
+        overflow-y: auto;
+        background: #fafafa;
+      }
+      .bottom-nav {
+        height: 80px;
+        background: #fff;
+        border-top: 1px solid #e0e0e0;
+        display: flex;
+        align-items: center;
+        justify-content: space-around;
+        padding-bottom: 16px;
+      }
+      .nav-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+        font-size: 11px;
+        color: #999;
+        cursor: pointer;
+      }
+      .nav-item.active {
+        color: #6750a4;
+      }
+      .nav-item .icon {
+        font-size: 22px;
+      }
+      .section-header {
+        padding: 12px 16px 6px;
+        font-size: 12px;
+        font-weight: 600;
+        color: #888;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        background: #fafafa;
+      }
+      .list-item {
+        display: flex;
+        align-items: center;
+        padding: 14px 16px;
+        border-bottom: 1px solid #f0f0f0;
+        background: #fff;
+        gap: 12px;
+      }
+      .list-item .icon-circle {
+        width: 40px;
+        height: 40px;
+        border-radius: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+      }
+      .list-item .text {
+        flex: 1;
+      }
+      .list-item .text .primary {
+        font-size: 15px;
+        font-weight: 500;
+      }
+      .list-item .text .secondary {
+        font-size: 13px;
+        color: #888;
+        margin-top: 2px;
+      }
+      .list-item .chevron {
+        color: #ccc;
+        font-size: 18px;
+      }
+      .setting-row {
+        display: flex;
+        align-items: center;
+        padding: 14px 16px;
+        border-bottom: 1px solid #f0f0f0;
+        background: #fff;
+      }
+      .setting-row .label {
+        flex: 1;
+        font-size: 15px;
+      }
+      .setting-row .value {
+        font-size: 14px;
+        color: #6750a4;
+      }
+      .setting-row .toggle {
+        width: 44px;
+        height: 24px;
+        border-radius: 12px;
+        background: #e0e0e0;
+        position: relative;
+      }
+      .setting-row .toggle.on {
+        background: #6750a4;
+      }
+      .setting-row .toggle::after {
+        content: '';
+        position: absolute;
+        width: 20px;
+        height: 20px;
+        border-radius: 10px;
+        background: #fff;
+        top: 2px;
+        left: 2px;
+        transition: left 0.15s;
+      }
+      .setting-row .toggle.on::after {
+        left: 22px;
+      }
+      .divider {
+        height: 8px;
+        background: #f0f0f0;
+      }
+      .info-card {
+        margin: 12px 16px;
+        padding: 16px;
+        background: #fff;
+        border-radius: 12px;
+        border: 1px solid #e8e8e8;
+      }
+      .info-card .info-label {
+        font-size: 12px;
+        color: #888;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 4px;
+      }
+      .info-card .info-value {
+        font-size: 16px;
+        font-weight: 500;
+      }
+      .progress-bar {
+        height: 8px;
+        background: #e0e0e0;
+        border-radius: 4px;
+        margin-top: 8px;
+        overflow: hidden;
+      }
+      .progress-bar .fill {
+        height: 100%;
+        border-radius: 4px;
+        background: #6750a4;
+      }
+      .device-card {
+        margin: 8px 16px;
+        padding: 16px;
+        background: #fff;
+        border-radius: 12px;
+        border: 1px solid #e8e8e8;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+      .device-card .device-icon {
+        width: 44px;
+        height: 44px;
+        border-radius: 12px;
+        background: #e8f5e9;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 22px;
+      }
+      .device-card .device-info {
+        flex: 1;
+      }
+      .device-card .device-info .name {
+        font-size: 15px;
+        font-weight: 500;
+      }
+      .device-card .device-info .detail {
+        font-size: 13px;
+        color: #888;
+        margin-top: 2px;
+      }
+      .device-card .current-badge {
+        padding: 4px 10px;
+        border-radius: 12px;
+        font-size: 11px;
+        font-weight: 500;
+        background: #e8f5e9;
+        color: #2e7d32;
+      }
+      .sync-status-row {
+        display: flex;
+        align-items: center;
+        padding: 14px 16px;
+        border-bottom: 1px solid #f0f0f0;
+        background: #fff;
+        gap: 12px;
+      }
+      .sync-dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 5px;
+      }
+      .sync-dot.green {
+        background: #4caf50;
+      }
+      .sync-dot.amber {
+        background: #ff9800;
+      }
+      .btn-outline {
+        display: block;
+        margin: 16px;
+        padding: 12px;
+        border: 1px solid #e0e0e0;
+        border-radius: 8px;
+        text-align: center;
+        color: #6750a4;
+        font-weight: 500;
+        font-size: 14px;
+      }
+      .btn-danger {
+        display: block;
+        margin: 16px;
+        padding: 12px;
+        border: 1px solid #ffcdd2;
+        border-radius: 8px;
+        text-align: center;
+        color: #c62828;
+        font-weight: 500;
+        font-size: 14px;
+      }
+      .about-logo {
+        text-align: center;
+        margin: 32px 0 8px;
+        font-size: 48px;
+      }
+      .about-name {
+        text-align: center;
+        font-size: 22px;
+        font-weight: 600;
+      }
+      .about-version {
+        text-align: center;
+        font-size: 14px;
+        color: #888;
+        margin-bottom: 24px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Day Keeper — Profile Wireframes</h1>
+    <p class="subtitle">
+      Low-fidelity wireframes for account settings, spaces, devices, sync, storage, and about
+    </p>
+
+    <div class="grid">
+      <!-- Account Settings -->
+      <div class="screen-wrapper">
+        <div class="screen-label">Account Settings</div>
+        <div class="phone">
+          <div class="status-bar">9:41 AM</div>
+          <div class="top-bar">
+            <div class="left">&#8592;</div>
+            <div class="title">Account Settings</div>
+            <div class="right"></div>
+          </div>
+          <div class="content">
+            <div class="section-header">Account</div>
+            <div class="setting-row">
+              <div class="label">Display Name</div>
+              <div class="value">John Smith &#x203A;</div>
+            </div>
+            <div class="setting-row">
+              <div class="label">Timezone</div>
+              <div class="value">America/New_York &#x203A;</div>
+            </div>
+            <div class="setting-row">
+              <div class="label">Week Starts On</div>
+              <div class="value">Sunday &#x203A;</div>
+            </div>
+
+            <div class="section-header">Display &amp; UX</div>
+            <div class="setting-row">
+              <div class="label">Theme</div>
+              <div class="value">System &#x203A;</div>
+            </div>
+            <div class="setting-row">
+              <div class="label">Default Calendar View</div>
+              <div class="value">Month &#x203A;</div>
+            </div>
+            <div class="setting-row">
+              <div class="label">Date Format</div>
+              <div class="value">System Default &#x203A;</div>
+            </div>
+            <div class="setting-row">
+              <div class="label">Time Format</div>
+              <div class="value">12-hour &#x203A;</div>
+            </div>
+            <div class="setting-row">
+              <div class="label">List Sort Order</div>
+              <div class="value">Manual &#x203A;</div>
+            </div>
+            <div class="setting-row">
+              <div class="label">Compact Mode</div>
+              <div class="toggle"></div>
+            </div>
+
+            <div class="section-header">Notifications</div>
+            <div class="setting-row">
+              <div class="label">Do Not Disturb</div>
+              <div class="toggle"></div>
+            </div>
+            <div class="setting-row">
+              <div class="label">Default Reminder</div>
+              <div class="value">15 min &#x203A;</div>
+            </div>
+            <div class="setting-row">
+              <div class="label">Notification Sound</div>
+              <div class="value">Default &#x203A;</div>
+            </div>
+            <div class="setting-row">
+              <div class="label">Events</div>
+              <div class="toggle on"></div>
+            </div>
+            <div class="setting-row">
+              <div class="label">Tasks</div>
+              <div class="toggle on"></div>
+            </div>
+            <div class="setting-row">
+              <div class="label">Lists</div>
+              <div class="toggle on"></div>
+            </div>
+            <div class="setting-row">
+              <div class="label">People</div>
+              <div class="toggle"></div>
+            </div>
+          </div>
+          <div class="bottom-nav">
+            <div class="nav-item"><span class="icon">&#x1F4C5;</span>Calendar</div>
+            <div class="nav-item"><span class="icon">&#x2705;</span>Tasks</div>
+            <div class="nav-item"><span class="icon">&#x1F4CB;</span>Lists</div>
+            <div class="nav-item"><span class="icon">&#x1F465;</span>People</div>
+            <div class="nav-item active"><span class="icon">&#x1F464;</span>Profile</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Space Management -->
+      <div class="screen-wrapper">
+        <div class="screen-label">Space Management</div>
+        <div class="phone">
+          <div class="status-bar">9:41 AM</div>
+          <div class="top-bar">
+            <div class="left">&#8592;</div>
+            <div class="title">Spaces</div>
+            <div class="right">+</div>
+          </div>
+          <div class="content">
+            <div class="section-header">Personal</div>
+            <div class="list-item">
+              <div class="icon-circle" style="background: #e8f5e9">&#x1F464;</div>
+              <div class="text">
+                <div class="primary">My Space</div>
+                <div class="secondary">Owner &middot; 42 items</div>
+              </div>
+              <div class="chevron">&#x203A;</div>
+            </div>
+
+            <div class="section-header">Shared</div>
+            <div class="list-item">
+              <div class="icon-circle" style="background: #e3f2fd">&#x1F465;</div>
+              <div class="text">
+                <div class="primary">Family</div>
+                <div class="secondary">Editor &middot; 3 members &middot; 28 items</div>
+              </div>
+              <div class="chevron">&#x203A;</div>
+            </div>
+            <div class="list-item">
+              <div class="icon-circle" style="background: #e3f2fd">&#x1F465;</div>
+              <div class="text">
+                <div class="primary">Work Team</div>
+                <div class="secondary">Viewer &middot; 5 members &middot; 15 items</div>
+              </div>
+              <div class="chevron">&#x203A;</div>
+            </div>
+
+            <div class="btn-outline">Create New Space</div>
+          </div>
+          <div class="bottom-nav">
+            <div class="nav-item"><span class="icon">&#x1F4C5;</span>Calendar</div>
+            <div class="nav-item"><span class="icon">&#x2705;</span>Tasks</div>
+            <div class="nav-item"><span class="icon">&#x1F4CB;</span>Lists</div>
+            <div class="nav-item"><span class="icon">&#x1F465;</span>People</div>
+            <div class="nav-item active"><span class="icon">&#x1F464;</span>Profile</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Devices -->
+      <div class="screen-wrapper">
+        <div class="screen-label">Devices</div>
+        <div class="phone">
+          <div class="status-bar">9:41 AM</div>
+          <div class="top-bar">
+            <div class="left">&#8592;</div>
+            <div class="title">Devices</div>
+            <div class="right"></div>
+          </div>
+          <div class="content">
+            <div class="section-header">This Device</div>
+            <div class="device-card">
+              <div class="device-icon">&#x1F4F1;</div>
+              <div class="device-info">
+                <div class="name">Pixel 8 Pro</div>
+                <div class="detail">Android 15 &middot; Last synced just now</div>
+              </div>
+              <div class="current-badge">Current</div>
+            </div>
+
+            <div class="section-header">Other Devices</div>
+            <div class="device-card">
+              <div class="device-icon" style="background: #e3f2fd">&#x1F4F1;</div>
+              <div class="device-info">
+                <div class="name">Galaxy Tab S9</div>
+                <div class="detail">Android 14 &middot; Last synced 2 hours ago</div>
+              </div>
+            </div>
+
+            <div class="btn-outline">Register New Device</div>
+            <div style="padding: 0 16px">
+              <div style="font-size: 13px; color: #999; text-align: center; margin-top: 8px">
+                Devices sync your data across all your Android devices.
+              </div>
+            </div>
+          </div>
+          <div class="bottom-nav">
+            <div class="nav-item"><span class="icon">&#x1F4C5;</span>Calendar</div>
+            <div class="nav-item"><span class="icon">&#x2705;</span>Tasks</div>
+            <div class="nav-item"><span class="icon">&#x1F4CB;</span>Lists</div>
+            <div class="nav-item"><span class="icon">&#x1F465;</span>People</div>
+            <div class="nav-item active"><span class="icon">&#x1F464;</span>Profile</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sync Status -->
+      <div class="screen-wrapper">
+        <div class="screen-label">Sync Status</div>
+        <div class="phone">
+          <div class="status-bar">9:41 AM</div>
+          <div class="top-bar">
+            <div class="left">&#8592;</div>
+            <div class="title">Sync Status</div>
+            <div class="right"></div>
+          </div>
+          <div class="content">
+            <div class="info-card">
+              <div class="info-label">Last Sync</div>
+              <div class="info-value">5 minutes ago</div>
+            </div>
+
+            <div class="section-header">By Type</div>
+            <div class="sync-status-row">
+              <div class="sync-dot green"></div>
+              <div style="flex: 1; font-size: 15px">Calendars &amp; Events</div>
+              <div style="font-size: 13px; color: #888">Synced</div>
+            </div>
+            <div class="sync-status-row">
+              <div class="sync-dot green"></div>
+              <div style="flex: 1; font-size: 15px">People</div>
+              <div style="font-size: 13px; color: #888">Synced</div>
+            </div>
+            <div class="sync-status-row">
+              <div class="sync-dot green"></div>
+              <div style="flex: 1; font-size: 15px">Tasks &amp; Projects</div>
+              <div style="font-size: 13px; color: #888">Synced</div>
+            </div>
+            <div class="sync-status-row">
+              <div class="sync-dot amber"></div>
+              <div style="flex: 1; font-size: 15px">Lists</div>
+              <div style="font-size: 13px; color: #ff9800">2 pending</div>
+            </div>
+            <div class="sync-status-row">
+              <div class="sync-dot green"></div>
+              <div style="flex: 1; font-size: 15px">Attachments</div>
+              <div style="font-size: 13px; color: #888">Synced</div>
+            </div>
+
+            <div class="btn-outline">Sync Now</div>
+
+            <div class="section-header">Sync Log</div>
+            <div
+              style="
+                padding: 12px 16px;
+                font-size: 13px;
+                color: #888;
+                background: #fff;
+                border-bottom: 1px solid #f0f0f0;
+              "
+            >
+              <div>09:36 AM &mdash; Push: 3 events, 1 task</div>
+              <div style="margin-top: 6px">09:35 AM &mdash; Pull: 2 lists updated</div>
+              <div style="margin-top: 6px">09:20 AM &mdash; Push: 1 person added</div>
+              <div style="margin-top: 6px">08:45 AM &mdash; Full sync completed</div>
+            </div>
+          </div>
+          <div class="bottom-nav">
+            <div class="nav-item"><span class="icon">&#x1F4C5;</span>Calendar</div>
+            <div class="nav-item"><span class="icon">&#x2705;</span>Tasks</div>
+            <div class="nav-item"><span class="icon">&#x1F4CB;</span>Lists</div>
+            <div class="nav-item"><span class="icon">&#x1F465;</span>People</div>
+            <div class="nav-item active"><span class="icon">&#x1F464;</span>Profile</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Storage -->
+      <div class="screen-wrapper">
+        <div class="screen-label">Storage</div>
+        <div class="phone">
+          <div class="status-bar">9:41 AM</div>
+          <div class="top-bar">
+            <div class="left">&#8592;</div>
+            <div class="title">Storage</div>
+            <div class="right"></div>
+          </div>
+          <div class="content">
+            <div class="info-card">
+              <div class="info-label">Cache Usage</div>
+              <div class="info-value">45 MB / 200 MB</div>
+              <div class="progress-bar">
+                <div class="fill" style="width: 22%"></div>
+              </div>
+            </div>
+
+            <div class="section-header">Breakdown</div>
+            <div class="setting-row">
+              <div class="label">Attachments</div>
+              <div class="value">28 MB</div>
+            </div>
+            <div class="setting-row">
+              <div class="label">Database</div>
+              <div class="value">12 MB</div>
+            </div>
+            <div class="setting-row">
+              <div class="label">Image Cache</div>
+              <div class="value">5 MB</div>
+            </div>
+
+            <div class="section-header">Settings</div>
+            <div class="setting-row">
+              <div class="label">Cache Limit</div>
+              <div class="value">200 MB &#x203A;</div>
+            </div>
+
+            <div class="btn-outline">Clear Image Cache</div>
+            <div class="btn-danger">Clear All Cache</div>
+          </div>
+          <div class="bottom-nav">
+            <div class="nav-item"><span class="icon">&#x1F4C5;</span>Calendar</div>
+            <div class="nav-item"><span class="icon">&#x2705;</span>Tasks</div>
+            <div class="nav-item"><span class="icon">&#x1F4CB;</span>Lists</div>
+            <div class="nav-item"><span class="icon">&#x1F465;</span>People</div>
+            <div class="nav-item active"><span class="icon">&#x1F464;</span>Profile</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- About -->
+      <div class="screen-wrapper">
+        <div class="screen-label">About</div>
+        <div class="phone">
+          <div class="status-bar">9:41 AM</div>
+          <div class="top-bar">
+            <div class="left">&#8592;</div>
+            <div class="title">About</div>
+            <div class="right"></div>
+          </div>
+          <div class="content">
+            <div class="about-logo">&#x1F4C5;</div>
+            <div class="about-name">Day Keeper</div>
+            <div class="about-version">Version 1.0.0 (Build 1)</div>
+
+            <div class="divider"></div>
+
+            <div class="list-item">
+              <div class="text">
+                <div class="primary">Privacy Policy</div>
+              </div>
+              <div class="chevron">&#x203A;</div>
+            </div>
+            <div class="list-item">
+              <div class="text">
+                <div class="primary">Terms of Service</div>
+              </div>
+              <div class="chevron">&#x203A;</div>
+            </div>
+            <div class="list-item">
+              <div class="text">
+                <div class="primary">Open Source Licenses</div>
+              </div>
+              <div class="chevron">&#x203A;</div>
+            </div>
+            <div class="list-item">
+              <div class="text">
+                <div class="primary">Send Feedback</div>
+              </div>
+              <div class="chevron">&#x203A;</div>
+            </div>
+
+            <div class="divider"></div>
+
+            <div style="padding: 24px 16px; text-align: center; font-size: 13px; color: #999">
+              <div>Made with care by DayKeeperApp</div>
+              <div style="margin-top: 4px">&copy; 2026 All rights reserved</div>
+            </div>
+          </div>
+          <div class="bottom-nav">
+            <div class="nav-item"><span class="icon">&#x1F4C5;</span>Calendar</div>
+            <div class="nav-item"><span class="icon">&#x2705;</span>Tasks</div>
+            <div class="nav-item"><span class="icon">&#x1F4CB;</span>Lists</div>
+            <div class="nav-item"><span class="icon">&#x1F465;</span>People</div>
+            <div class="nav-item active"><span class="icon">&#x1F464;</span>Profile</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
