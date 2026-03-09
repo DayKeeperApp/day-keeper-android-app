@@ -1,0 +1,926 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Day Keeper — People & Tasks Wireframes</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        font-family: -apple-system, 'Segoe UI', Roboto, sans-serif;
+        background: #f0f0f0;
+        padding: 24px;
+        color: #333;
+      }
+      h1 {
+        text-align: center;
+        margin-bottom: 8px;
+        font-size: 24px;
+        font-weight: 600;
+      }
+      .subtitle {
+        text-align: center;
+        color: #888;
+        margin-bottom: 32px;
+        font-size: 14px;
+      }
+      .grid {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 32px;
+        justify-content: center;
+      }
+      .screen-wrapper {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+      .screen-label {
+        font-size: 13px;
+        font-weight: 600;
+        color: #666;
+        margin-bottom: 8px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+      .phone {
+        width: 375px;
+        height: 812px;
+        background: #fff;
+        border-radius: 40px;
+        border: 3px solid #ccc;
+        overflow: hidden;
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      }
+      .status-bar {
+        height: 44px;
+        background: #fafafa;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        color: #999;
+        border-bottom: 1px solid #eee;
+      }
+      .top-bar {
+        height: 56px;
+        background: #fff;
+        display: flex;
+        align-items: center;
+        padding: 0 16px;
+        border-bottom: 1px solid #e0e0e0;
+      }
+      .top-bar .back {
+        width: 40px;
+        font-size: 20px;
+        color: #666;
+      }
+      .top-bar .title {
+        flex: 1;
+        text-align: center;
+        font-size: 18px;
+        font-weight: 600;
+      }
+      .top-bar .actions {
+        display: flex;
+        gap: 8px;
+        font-size: 18px;
+        color: #666;
+      }
+      .content {
+        flex: 1;
+        overflow-y: auto;
+        background: #fafafa;
+      }
+      .bottom-nav {
+        height: 80px;
+        background: #fff;
+        border-top: 1px solid #e0e0e0;
+        display: flex;
+        align-items: center;
+        justify-content: space-around;
+        padding-bottom: 16px;
+      }
+      .nav-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+        font-size: 11px;
+        color: #999;
+      }
+      .nav-item.active {
+        color: #6750a4;
+      }
+      .nav-item .icon {
+        font-size: 22px;
+      }
+      .fab {
+        position: absolute;
+        bottom: 96px;
+        right: 24px;
+        width: 56px;
+        height: 56px;
+        border-radius: 16px;
+        background: #6750a4;
+        color: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 28px;
+        box-shadow: 0 4px 12px rgba(103, 80, 164, 0.4);
+      }
+      .search-bar {
+        margin: 12px 16px;
+        padding: 12px 16px;
+        background: #f0f0f0;
+        border-radius: 28px;
+        font-size: 15px;
+        color: #999;
+      }
+      .contact-item {
+        display: flex;
+        align-items: center;
+        padding: 12px 16px;
+        gap: 12px;
+        border-bottom: 1px solid #f0f0f0;
+        background: #fff;
+      }
+      .avatar {
+        width: 44px;
+        height: 44px;
+        border-radius: 22px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 16px;
+        font-weight: 600;
+        color: #fff;
+      }
+      .contact-info {
+        flex: 1;
+      }
+      .contact-name {
+        font-size: 15px;
+        font-weight: 500;
+      }
+      .contact-sub {
+        font-size: 13px;
+        color: #888;
+        margin-top: 2px;
+      }
+      .fast-scroll {
+        position: absolute;
+        right: 4px;
+        top: 140px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        font-size: 10px;
+        color: #999;
+        line-height: 14px;
+      }
+      .section-title {
+        padding: 16px 16px 8px;
+        font-size: 13px;
+        font-weight: 600;
+        color: #888;
+        text-transform: uppercase;
+      }
+      .detail-row {
+        display: flex;
+        align-items: flex-start;
+        padding: 10px 16px;
+        gap: 12px;
+      }
+      .detail-icon {
+        font-size: 18px;
+        color: #888;
+        width: 24px;
+        text-align: center;
+      }
+      .detail-text {
+        flex: 1;
+      }
+      .detail-label {
+        font-size: 12px;
+        color: #888;
+      }
+      .detail-value {
+        font-size: 15px;
+      }
+      .detail-action {
+        font-size: 18px;
+        color: #6750a4;
+      }
+      .avatar-large {
+        width: 80px;
+        height: 80px;
+        border-radius: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 32px;
+        font-weight: 600;
+        color: #fff;
+        margin: 24px auto 12px;
+      }
+      .person-name-large {
+        text-align: center;
+        font-size: 22px;
+        font-weight: 600;
+        margin-bottom: 16px;
+      }
+      .form-field {
+        padding: 12px 16px;
+      }
+      .form-label {
+        font-size: 12px;
+        color: #888;
+        margin-bottom: 4px;
+      }
+      .form-input {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid #e0e0e0;
+        border-radius: 8px;
+        font-size: 15px;
+        background: #fafafa;
+      }
+      .form-row {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 16px;
+      }
+      .form-dropdown {
+        padding: 8px 12px;
+        border: 1px solid #e0e0e0;
+        border-radius: 8px;
+        font-size: 13px;
+        background: #fafafa;
+      }
+      .form-input-sm {
+        flex: 1;
+        padding: 8px 12px;
+        border: 1px solid #e0e0e0;
+        border-radius: 8px;
+        font-size: 14px;
+        background: #fafafa;
+      }
+      .delete-btn {
+        color: #c62828;
+        font-size: 18px;
+        cursor: pointer;
+      }
+      .add-btn {
+        padding: 8px 16px;
+        color: #6750a4;
+        font-size: 14px;
+        font-weight: 500;
+      }
+      .toggle-tabs {
+        display: flex;
+        margin: 12px 16px;
+        border-radius: 8px;
+        overflow: hidden;
+        border: 1px solid #e0e0e0;
+      }
+      .toggle-tab {
+        flex: 1;
+        padding: 8px;
+        text-align: center;
+        font-size: 13px;
+        font-weight: 500;
+        background: #fff;
+        color: #666;
+      }
+      .toggle-tab.active {
+        background: #6750a4;
+        color: #fff;
+      }
+      .filter-chips {
+        display: flex;
+        gap: 8px;
+        padding: 8px 16px;
+        overflow-x: auto;
+      }
+      .chip {
+        padding: 6px 14px;
+        border-radius: 16px;
+        font-size: 13px;
+        background: #f0f0f0;
+        color: #666;
+        white-space: nowrap;
+      }
+      .chip.active {
+        background: #e8e0f0;
+        color: #6750a4;
+      }
+      .task-item {
+        display: flex;
+        align-items: center;
+        padding: 12px 16px;
+        gap: 10px;
+        border-bottom: 1px solid #f0f0f0;
+        background: #fff;
+      }
+      .checkbox {
+        width: 22px;
+        height: 22px;
+        border-radius: 4px;
+        border: 2px solid #ccc;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 14px;
+      }
+      .checkbox.checked {
+        background: #6750a4;
+        border-color: #6750a4;
+        color: #fff;
+      }
+      .task-info {
+        flex: 1;
+      }
+      .task-title {
+        font-size: 15px;
+      }
+      .task-meta {
+        font-size: 12px;
+        color: #888;
+        margin-top: 2px;
+        display: flex;
+        gap: 8px;
+        align-items: center;
+      }
+      .priority-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 4px;
+      }
+      .priority-high {
+        background: #c62828;
+      }
+      .priority-medium {
+        background: #ff8f00;
+      }
+      .priority-low {
+        background: #2e7d32;
+      }
+      .category-chip {
+        padding: 2px 8px;
+        border-radius: 8px;
+        font-size: 11px;
+        background: #e3f2fd;
+        color: #1565c0;
+      }
+      .project-section {
+        border-bottom: 1px solid #e0e0e0;
+      }
+      .project-header {
+        display: flex;
+        align-items: center;
+        padding: 12px 16px;
+        gap: 8px;
+        background: #fff;
+      }
+      .project-name {
+        flex: 1;
+        font-size: 15px;
+        font-weight: 600;
+      }
+      .progress-bar {
+        width: 60px;
+        height: 6px;
+        background: #e0e0e0;
+        border-radius: 3px;
+        overflow: hidden;
+      }
+      .progress-fill {
+        height: 100%;
+        background: #6750a4;
+        border-radius: 3px;
+      }
+      .progress-text {
+        font-size: 12px;
+        color: #888;
+      }
+      .completed-section {
+        background: #fafafa;
+      }
+      .completed-header {
+        padding: 12px 16px;
+        font-size: 14px;
+        color: #888;
+        font-weight: 500;
+        cursor: pointer;
+      }
+      .task-done {
+        text-decoration: line-through;
+        color: #999;
+      }
+      .form-row-full {
+        display: flex;
+        align-items: center;
+        padding: 12px 16px;
+        gap: 12px;
+        border-bottom: 1px solid #f0f0f0;
+      }
+      .form-row-label {
+        flex: 1;
+        font-size: 15px;
+      }
+      .form-row-value {
+        font-size: 15px;
+        color: #6750a4;
+      }
+      .seg-btn {
+        display: flex;
+        border: 1px solid #e0e0e0;
+        border-radius: 8px;
+        overflow: hidden;
+      }
+      .seg-item {
+        padding: 8px 16px;
+        font-size: 13px;
+        background: #fff;
+        color: #666;
+        border-right: 1px solid #e0e0e0;
+      }
+      .seg-item:last-child {
+        border-right: none;
+      }
+      .seg-item.active {
+        background: #6750a4;
+        color: #fff;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Day Keeper — People & Tasks Wireframes</h1>
+    <p class="subtitle">
+      Contact list, contact detail, contact form, task list, task detail, task form, categories
+    </p>
+
+    <div class="grid">
+      <!-- People List -->
+      <div class="screen-wrapper">
+        <div class="screen-label">People List</div>
+        <div class="phone">
+          <div class="status-bar">9:41 AM</div>
+          <div class="top-bar">
+            <div class="back"></div>
+            <div class="title">People</div>
+            <div class="actions">&#x1F50D;</div>
+          </div>
+          <div class="content" style="position: relative">
+            <div class="search-bar">&#x1F50D; Search contacts...</div>
+            <div class="section-title" style="padding-top: 8px">A</div>
+            <div class="contact-item">
+              <div class="avatar" style="background: #1565c0">AJ</div>
+              <div class="contact-info">
+                <div class="contact-name">Alice Johnson</div>
+                <div class="contact-sub">alice@example.com</div>
+              </div>
+            </div>
+            <div class="section-title">B</div>
+            <div class="contact-item">
+              <div class="avatar" style="background: #2e7d32">BS</div>
+              <div class="contact-info">
+                <div class="contact-name">Bob Smith</div>
+                <div class="contact-sub">(555) 234-5678</div>
+              </div>
+            </div>
+            <div class="section-title">J</div>
+            <div class="contact-item">
+              <div class="avatar" style="background: #c62828">JD</div>
+              <div class="contact-info">
+                <div class="contact-name">Jane Doe</div>
+                <div class="contact-sub">jane@example.com</div>
+              </div>
+            </div>
+            <div class="contact-item">
+              <div class="avatar" style="background: #6750a4">JS</div>
+              <div class="contact-info">
+                <div class="contact-name">John Smith</div>
+                <div class="contact-sub">(555) 123-4567</div>
+              </div>
+            </div>
+            <div class="section-title">S</div>
+            <div class="contact-item">
+              <div class="avatar" style="background: #ff8f00">SW</div>
+              <div class="contact-info">
+                <div class="contact-name">Sarah Williams</div>
+                <div class="contact-sub">sarah@example.com</div>
+              </div>
+            </div>
+            <div class="fast-scroll">
+              A<br />B<br />C<br />D<br />E<br />F<br />G<br />H<br />I<br />J<br />K<br />L<br />M<br />N<br />O<br />P<br />Q<br />R<br />S<br />T<br />U<br />V<br />W<br />X<br />Y<br />Z
+            </div>
+          </div>
+          <div class="fab">+</div>
+          <div class="bottom-nav">
+            <div class="nav-item"><span class="icon">&#x1F4C5;</span>Calendar</div>
+            <div class="nav-item"><span class="icon">&#x2705;</span>Tasks</div>
+            <div class="nav-item"><span class="icon">&#x1F4CB;</span>Lists</div>
+            <div class="nav-item active"><span class="icon">&#x1F465;</span>People</div>
+            <div class="nav-item"><span class="icon">&#x1F464;</span>Profile</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Person Detail -->
+      <div class="screen-wrapper">
+        <div class="screen-label">Person Detail</div>
+        <div class="phone">
+          <div class="status-bar">9:41 AM</div>
+          <div class="top-bar">
+            <div class="back">&#8592;</div>
+            <div class="title">Contact</div>
+            <div class="actions">&#x270E; &#x22EE;</div>
+          </div>
+          <div class="content">
+            <div class="avatar-large" style="background: #6750a4">JS</div>
+            <div class="person-name-large">John Smith</div>
+            <div class="section-title">Contact Methods</div>
+            <div class="detail-row">
+              <div class="detail-icon">&#x1F4F1;</div>
+              <div class="detail-text">
+                <div class="detail-label">Mobile</div>
+                <div class="detail-value">(555) 123-4567</div>
+              </div>
+              <div class="detail-action">&#x1F4DE;</div>
+            </div>
+            <div class="detail-row">
+              <div class="detail-icon">&#x2709;</div>
+              <div class="detail-text">
+                <div class="detail-label">Work Email</div>
+                <div class="detail-value">john@example.com</div>
+              </div>
+              <div class="detail-action">&#x2709;</div>
+            </div>
+            <div class="section-title">Addresses</div>
+            <div class="detail-row">
+              <div class="detail-icon">&#x1F3E0;</div>
+              <div class="detail-text">
+                <div class="detail-label">Home</div>
+                <div class="detail-value">123 Main Street<br />Springfield, IL 62701</div>
+              </div>
+              <div class="detail-action">&#x1F5FA;</div>
+            </div>
+            <div class="section-title">Important Dates</div>
+            <div class="detail-row">
+              <div class="detail-icon">&#x1F382;</div>
+              <div class="detail-text">
+                <div class="detail-label">Birthday</div>
+                <div class="detail-value">March 15</div>
+              </div>
+              <div style="font-size: 12px; color: #6750a4; font-weight: 500">in 7 days</div>
+            </div>
+            <div class="section-title">Attachments</div>
+            <div style="display: flex; gap: 8px; padding: 8px 16px">
+              <div
+                style="
+                  width: 64px;
+                  height: 64px;
+                  border-radius: 8px;
+                  background: #e0e0e0;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  font-size: 24px;
+                "
+              >
+                &#x1F4F7;
+              </div>
+              <div
+                style="
+                  width: 64px;
+                  height: 64px;
+                  border-radius: 8px;
+                  background: #f0f0f0;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  font-size: 24px;
+                  color: #999;
+                "
+              >
+                +
+              </div>
+            </div>
+          </div>
+          <div class="bottom-nav">
+            <div class="nav-item"><span class="icon">&#x1F4C5;</span>Calendar</div>
+            <div class="nav-item"><span class="icon">&#x2705;</span>Tasks</div>
+            <div class="nav-item"><span class="icon">&#x1F4CB;</span>Lists</div>
+            <div class="nav-item active"><span class="icon">&#x1F465;</span>People</div>
+            <div class="nav-item"><span class="icon">&#x1F464;</span>Profile</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Person Create/Edit -->
+      <div class="screen-wrapper">
+        <div class="screen-label">Person Create / Edit</div>
+        <div class="phone">
+          <div class="status-bar">9:41 AM</div>
+          <div class="top-bar">
+            <div class="back">&#8592;</div>
+            <div class="title">New Contact</div>
+            <div class="actions" style="color: #6750a4; font-size: 15px; font-weight: 600">
+              Save
+            </div>
+          </div>
+          <div class="content">
+            <div class="form-field">
+              <div class="form-label">First Name</div>
+              <div class="form-input" style="color: #999">First name</div>
+            </div>
+            <div class="form-field">
+              <div class="form-label">Last Name</div>
+              <div class="form-input" style="color: #999">Last name</div>
+            </div>
+            <div class="section-title">Contact Methods</div>
+            <div class="form-row">
+              <div class="form-dropdown">Phone &#x25BE;</div>
+              <div class="form-dropdown">Mobile &#x25BE;</div>
+              <div class="form-input-sm" style="color: #999">(555) 000-0000</div>
+              <div class="delete-btn">&#x2715;</div>
+            </div>
+            <div class="add-btn">+ Add Contact Method</div>
+            <div class="section-title">Addresses</div>
+            <div style="padding: 0 16px">
+              <div class="form-row" style="padding: 4px 0">
+                <div class="form-input-sm" style="color: #999">Street</div>
+              </div>
+              <div class="form-row" style="padding: 4px 0; gap: 8px">
+                <div class="form-input-sm" style="color: #999">City</div>
+                <div class="form-input-sm" style="color: #999; width: 80px">State</div>
+                <div class="form-input-sm" style="color: #999; width: 100px">ZIP</div>
+              </div>
+              <div style="text-align: right; padding: 4px 0">
+                <span class="delete-btn">&#x2715; Remove</span>
+              </div>
+            </div>
+            <div class="add-btn">+ Add Address</div>
+            <div class="section-title">Important Dates</div>
+            <div class="form-row">
+              <div class="form-dropdown">Birthday &#x25BE;</div>
+              <div class="form-row-value">Select date &#x25BE;</div>
+              <div class="delete-btn">&#x2715;</div>
+            </div>
+            <div class="add-btn">+ Add Date</div>
+          </div>
+          <div class="bottom-nav">
+            <div class="nav-item"><span class="icon">&#x1F4C5;</span>Calendar</div>
+            <div class="nav-item"><span class="icon">&#x2705;</span>Tasks</div>
+            <div class="nav-item"><span class="icon">&#x1F4CB;</span>Lists</div>
+            <div class="nav-item active"><span class="icon">&#x1F465;</span>People</div>
+            <div class="nav-item"><span class="icon">&#x1F464;</span>Profile</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Task List - All Tasks -->
+      <div class="screen-wrapper">
+        <div class="screen-label">Tasks — All Tasks View</div>
+        <div class="phone">
+          <div class="status-bar">9:41 AM</div>
+          <div class="top-bar">
+            <div class="back"></div>
+            <div class="title">Tasks</div>
+            <div class="actions">&#x1F50D;</div>
+          </div>
+          <div class="content">
+            <div class="toggle-tabs">
+              <div class="toggle-tab active">All Tasks</div>
+              <div class="toggle-tab">By Project</div>
+            </div>
+            <div class="filter-chips">
+              <div class="chip active">Active</div>
+              <div class="chip">Completed</div>
+              <div class="chip">High Priority</div>
+            </div>
+            <div class="task-item">
+              <div class="checkbox"></div>
+              <div class="task-info">
+                <div class="task-title">Buy groceries</div>
+                <div class="task-meta">
+                  <span class="priority-dot priority-high"></span>
+                  <span>Due Mar 10</span>
+                  <span class="category-chip">Shopping</span>
+                </div>
+              </div>
+            </div>
+            <div class="task-item">
+              <div class="checkbox"></div>
+              <div class="task-info">
+                <div class="task-title">Schedule dentist appointment</div>
+                <div class="task-meta">
+                  <span class="priority-dot priority-medium"></span>
+                  <span>Due Mar 15</span>
+                  <span class="category-chip" style="background: #e8f5e9; color: #2e7d32"
+                    >Health</span
+                  >
+                </div>
+              </div>
+            </div>
+            <div class="task-item">
+              <div class="checkbox"></div>
+              <div class="task-info">
+                <div class="task-title">Update resume</div>
+                <div class="task-meta">
+                  <span class="priority-dot priority-low"></span>
+                  <span>Due Mar 20</span>
+                  <span class="category-chip" style="background: #fff3e0; color: #e65100"
+                    >Work</span
+                  >
+                </div>
+              </div>
+            </div>
+            <div class="task-item">
+              <div class="checkbox"></div>
+              <div class="task-info">
+                <div class="task-title">Fix kitchen faucet</div>
+                <div class="task-meta">
+                  <span class="priority-dot priority-medium"></span>
+                  <span>No due date</span>
+                  <span style="color: #888; font-size: 12px">Home Reno</span>
+                </div>
+              </div>
+            </div>
+            <div class="completed-section">
+              <div class="completed-header">&#x25B6; Completed (3)</div>
+            </div>
+          </div>
+          <div class="fab">+</div>
+          <div class="bottom-nav">
+            <div class="nav-item"><span class="icon">&#x1F4C5;</span>Calendar</div>
+            <div class="nav-item active"><span class="icon">&#x2705;</span>Tasks</div>
+            <div class="nav-item"><span class="icon">&#x1F4CB;</span>Lists</div>
+            <div class="nav-item"><span class="icon">&#x1F465;</span>People</div>
+            <div class="nav-item"><span class="icon">&#x1F464;</span>Profile</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Task List - By Project -->
+      <div class="screen-wrapper">
+        <div class="screen-label">Tasks — By Project View</div>
+        <div class="phone">
+          <div class="status-bar">9:41 AM</div>
+          <div class="top-bar">
+            <div class="back"></div>
+            <div class="title">Tasks</div>
+            <div class="actions">&#x1F50D;</div>
+          </div>
+          <div class="content">
+            <div class="toggle-tabs">
+              <div class="toggle-tab">All Tasks</div>
+              <div class="toggle-tab active">By Project</div>
+            </div>
+            <div class="project-section">
+              <div class="project-header">
+                <span>&#x25BC;</span>
+                <div class="project-name">Home Renovation</div>
+                <div class="progress-bar"><div class="progress-fill" style="width: 60%"></div></div>
+                <div class="progress-text">3/5</div>
+              </div>
+              <div class="task-item" style="padding-left: 40px">
+                <div class="checkbox"></div>
+                <div class="task-info">
+                  <div class="task-title">Fix kitchen faucet</div>
+                  <div class="task-meta">
+                    <span class="priority-dot priority-medium"></span><span>No due date</span>
+                  </div>
+                </div>
+              </div>
+              <div class="task-item" style="padding-left: 40px">
+                <div class="checkbox"></div>
+                <div class="task-info">
+                  <div class="task-title">Paint bedroom</div>
+                  <div class="task-meta">
+                    <span class="priority-dot priority-low"></span><span>Due Mar 25</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="project-section">
+              <div class="project-header">
+                <span>&#x25B6;</span>
+                <div class="project-name">Work Q2 Goals</div>
+                <div class="progress-bar"><div class="progress-fill" style="width: 25%"></div></div>
+                <div class="progress-text">1/4</div>
+              </div>
+            </div>
+            <div class="project-section">
+              <div class="project-header">
+                <span>&#x25BC;</span>
+                <div class="project-name" style="color: #888">No Project</div>
+                <div class="progress-text" style="margin-left: auto">2 tasks</div>
+              </div>
+              <div class="task-item" style="padding-left: 40px">
+                <div class="checkbox"></div>
+                <div class="task-info">
+                  <div class="task-title">Buy groceries</div>
+                  <div class="task-meta">
+                    <span class="priority-dot priority-high"></span><span>Due Mar 10</span>
+                  </div>
+                </div>
+              </div>
+              <div class="task-item" style="padding-left: 40px">
+                <div class="checkbox"></div>
+                <div class="task-info">
+                  <div class="task-title">Schedule dentist</div>
+                  <div class="task-meta">
+                    <span class="priority-dot priority-medium"></span><span>Due Mar 15</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="fab">+</div>
+          <div class="bottom-nav">
+            <div class="nav-item"><span class="icon">&#x1F4C5;</span>Calendar</div>
+            <div class="nav-item active"><span class="icon">&#x2705;</span>Tasks</div>
+            <div class="nav-item"><span class="icon">&#x1F4CB;</span>Lists</div>
+            <div class="nav-item"><span class="icon">&#x1F465;</span>People</div>
+            <div class="nav-item"><span class="icon">&#x1F464;</span>Profile</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Task Create/Edit -->
+      <div class="screen-wrapper">
+        <div class="screen-label">Task Create / Edit</div>
+        <div class="phone">
+          <div class="status-bar">9:41 AM</div>
+          <div class="top-bar">
+            <div class="back">&#8592;</div>
+            <div class="title">New Task</div>
+            <div class="actions" style="color: #6750a4; font-size: 15px; font-weight: 600">
+              Save
+            </div>
+          </div>
+          <div class="content">
+            <div class="form-field">
+              <div class="form-label">Title</div>
+              <div class="form-input" style="color: #999">Task title</div>
+            </div>
+            <div class="form-field">
+              <div class="form-label">Description (optional)</div>
+              <div class="form-input" style="color: #999; min-height: 60px">Add description...</div>
+            </div>
+            <div class="form-row-full">
+              <div class="form-row-label">Project</div>
+              <div class="form-row-value">None &#x25BE;</div>
+            </div>
+            <div class="form-field">
+              <div class="form-label">Priority</div>
+              <div class="seg-btn">
+                <div class="seg-item">Low</div>
+                <div class="seg-item active">Medium</div>
+                <div class="seg-item">High</div>
+              </div>
+            </div>
+            <div class="form-field">
+              <div class="form-label">Category</div>
+              <div class="filter-chips" style="padding: 4px 0">
+                <div class="chip">Work</div>
+                <div class="chip active">Personal</div>
+                <div class="chip">Health</div>
+                <div class="chip">Shopping</div>
+              </div>
+            </div>
+            <div class="form-row-full">
+              <div class="form-row-label">Due Date</div>
+              <div class="form-row-value">Select date &#x25BE;</div>
+            </div>
+            <div class="form-row-full">
+              <div class="form-row-label">Repeat</div>
+              <div class="form-row-value">Does not repeat &#x203A;</div>
+            </div>
+            <div class="section-title">Reminders</div>
+            <div class="add-btn">+ Add Reminder</div>
+          </div>
+          <div class="bottom-nav">
+            <div class="nav-item"><span class="icon">&#x1F4C5;</span>Calendar</div>
+            <div class="nav-item active"><span class="icon">&#x2705;</span>Tasks</div>
+            <div class="nav-item"><span class="icon">&#x1F4CB;</span>Lists</div>
+            <div class="nav-item"><span class="icon">&#x1F465;</span>People</div>
+            <div class="nav-item"><span class="icon">&#x1F464;</span>Profile</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

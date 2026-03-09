@@ -1,0 +1,621 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Day Keeper — Lists Wireframes</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        font-family: -apple-system, 'Segoe UI', Roboto, sans-serif;
+        background: #f0f0f0;
+        padding: 24px;
+        color: #333;
+      }
+      h1 {
+        text-align: center;
+        margin-bottom: 8px;
+        font-size: 24px;
+        font-weight: 600;
+      }
+      .subtitle {
+        text-align: center;
+        color: #888;
+        margin-bottom: 32px;
+        font-size: 14px;
+      }
+      .grid {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 32px;
+        justify-content: center;
+      }
+      .screen-wrapper {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+      .screen-label {
+        font-size: 13px;
+        font-weight: 600;
+        color: #666;
+        margin-bottom: 8px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+      .phone {
+        width: 375px;
+        height: 812px;
+        background: #fff;
+        border-radius: 40px;
+        border: 3px solid #ccc;
+        overflow: hidden;
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      }
+      .status-bar {
+        height: 44px;
+        background: #fafafa;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        color: #999;
+        border-bottom: 1px solid #eee;
+      }
+      .top-bar {
+        height: 56px;
+        background: #fff;
+        display: flex;
+        align-items: center;
+        padding: 0 16px;
+        border-bottom: 1px solid #e0e0e0;
+      }
+      .top-bar .back {
+        width: 40px;
+        font-size: 20px;
+        color: #666;
+      }
+      .top-bar .title {
+        flex: 1;
+        text-align: center;
+        font-size: 18px;
+        font-weight: 600;
+      }
+      .top-bar .actions {
+        display: flex;
+        gap: 8px;
+        font-size: 18px;
+        color: #666;
+      }
+      .content {
+        flex: 1;
+        overflow-y: auto;
+        background: #fafafa;
+      }
+      .bottom-nav {
+        height: 80px;
+        background: #fff;
+        border-top: 1px solid #e0e0e0;
+        display: flex;
+        align-items: center;
+        justify-content: space-around;
+        padding-bottom: 16px;
+      }
+      .nav-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+        font-size: 11px;
+        color: #999;
+      }
+      .nav-item.active {
+        color: #6750a4;
+      }
+      .nav-item .icon {
+        font-size: 22px;
+      }
+      .fab {
+        position: absolute;
+        bottom: 96px;
+        right: 24px;
+        width: 56px;
+        height: 56px;
+        border-radius: 16px;
+        background: #6750a4;
+        color: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 28px;
+        box-shadow: 0 4px 12px rgba(103, 80, 164, 0.4);
+      }
+      .list-card {
+        margin: 8px 16px;
+        background: #fff;
+        border-radius: 12px;
+        padding: 16px;
+        border: 1px solid #e8e8e8;
+      }
+      .list-card-header {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+      .list-card-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+      }
+      .list-card-info {
+        flex: 1;
+      }
+      .list-card-name {
+        font-size: 16px;
+        font-weight: 600;
+      }
+      .list-card-meta {
+        font-size: 13px;
+        color: #888;
+        margin-top: 2px;
+      }
+      .remaining-badge {
+        background: #fff3e0;
+        color: #e65100;
+        padding: 2px 8px;
+        border-radius: 10px;
+        font-size: 12px;
+        font-weight: 500;
+      }
+      .done-badge {
+        background: #e8f5e9;
+        color: #2e7d32;
+        padding: 2px 8px;
+        border-radius: 10px;
+        font-size: 12px;
+        font-weight: 500;
+      }
+      .quick-add {
+        display: flex;
+        align-items: center;
+        margin: 12px 16px;
+        background: #fff;
+        border: 1px solid #e0e0e0;
+        border-radius: 12px;
+        padding: 4px;
+      }
+      .quick-add input {
+        flex: 1;
+        border: none;
+        padding: 12px;
+        font-size: 15px;
+        outline: none;
+        background: transparent;
+      }
+      .quick-add .add-btn {
+        width: 40px;
+        height: 40px;
+        border-radius: 10px;
+        background: #6750a4;
+        color: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+      }
+      .shopping-item {
+        display: flex;
+        align-items: center;
+        padding: 12px 16px;
+        gap: 10px;
+        border-bottom: 1px solid #f0f0f0;
+        background: #fff;
+      }
+      .drag-handle {
+        color: #ccc;
+        font-size: 16px;
+        cursor: grab;
+      }
+      .checkbox {
+        width: 22px;
+        height: 22px;
+        border-radius: 4px;
+        border: 2px solid #ccc;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .checkbox.checked {
+        background: #6750a4;
+        border-color: #6750a4;
+        color: #fff;
+        font-size: 14px;
+      }
+      .item-name {
+        flex: 1;
+        font-size: 15px;
+      }
+      .item-qty {
+        font-size: 14px;
+        color: #888;
+      }
+      .item-checked {
+        text-decoration: line-through;
+        color: #999;
+      }
+      .checked-section {
+        background: #fafafa;
+        margin-top: 8px;
+      }
+      .checked-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 12px 16px;
+      }
+      .checked-title {
+        font-size: 14px;
+        color: #888;
+        font-weight: 500;
+      }
+      .clear-btn {
+        font-size: 13px;
+        color: #c62828;
+        font-weight: 500;
+      }
+      .form-field {
+        padding: 12px 16px;
+      }
+      .form-label {
+        font-size: 12px;
+        color: #888;
+        margin-bottom: 4px;
+      }
+      .form-input {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid #e0e0e0;
+        border-radius: 8px;
+        font-size: 15px;
+        background: #fafafa;
+      }
+      .form-row-full {
+        display: flex;
+        align-items: center;
+        padding: 12px 16px;
+        gap: 12px;
+        border-bottom: 1px solid #f0f0f0;
+      }
+      .form-row-label {
+        flex: 1;
+        font-size: 15px;
+      }
+      .form-row-value {
+        font-size: 15px;
+        color: #6750a4;
+      }
+      .sheet-overlay {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: #fff;
+        border-radius: 16px 16px 0 0;
+        box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.15);
+        z-index: 10;
+      }
+      .sheet-handle {
+        width: 40px;
+        height: 4px;
+        background: #ddd;
+        border-radius: 2px;
+        margin: 8px auto;
+      }
+      .sheet-title {
+        padding: 8px 16px 12px;
+        font-size: 18px;
+        font-weight: 600;
+      }
+      .unit-chips {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        padding: 0 16px 12px;
+      }
+      .unit-chip {
+        padding: 8px 16px;
+        border-radius: 20px;
+        font-size: 14px;
+        background: #f0f0f0;
+        color: #666;
+      }
+      .unit-chip.active {
+        background: #6750a4;
+        color: #fff;
+      }
+      .sheet-actions {
+        display: flex;
+        gap: 12px;
+        padding: 16px;
+      }
+      .sheet-btn {
+        flex: 1;
+        padding: 12px;
+        border-radius: 8px;
+        text-align: center;
+        font-size: 15px;
+        font-weight: 500;
+      }
+      .sheet-btn-cancel {
+        background: #f0f0f0;
+        color: #666;
+      }
+      .sheet-btn-save {
+        background: #6750a4;
+        color: #fff;
+      }
+      .empty-state {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
+        gap: 12px;
+        color: #bbb;
+      }
+      .empty-icon {
+        font-size: 48px;
+      }
+      .empty-text {
+        font-size: 16px;
+      }
+      .empty-sub {
+        font-size: 13px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Day Keeper — Lists Wireframes</h1>
+    <p class="subtitle">
+      Lists overview, shopping list detail, list create/edit, item edit bottom sheet
+    </p>
+
+    <div class="grid">
+      <!-- Lists Overview -->
+      <div class="screen-wrapper">
+        <div class="screen-label">Lists Overview</div>
+        <div class="phone">
+          <div class="status-bar">9:41 AM</div>
+          <div class="top-bar">
+            <div class="back"></div>
+            <div class="title">Lists</div>
+            <div class="actions"></div>
+          </div>
+          <div class="content">
+            <div class="list-card">
+              <div class="list-card-header">
+                <div class="list-card-icon" style="background: #fff3e0">&#x1F6D2;</div>
+                <div class="list-card-info">
+                  <div class="list-card-name">Groceries</div>
+                  <div class="list-card-meta">8 items &middot; Updated 2h ago</div>
+                </div>
+                <div class="remaining-badge">3 left</div>
+              </div>
+            </div>
+            <div class="list-card">
+              <div class="list-card-header">
+                <div class="list-card-icon" style="background: #e3f2fd">&#x1F527;</div>
+                <div class="list-card-info">
+                  <div class="list-card-name">Hardware Store</div>
+                  <div class="list-card-meta">4 items &middot; Updated 1d ago</div>
+                </div>
+                <div class="remaining-badge">4 left</div>
+              </div>
+            </div>
+            <div class="list-card">
+              <div class="list-card-header">
+                <div class="list-card-icon" style="background: #f3e5f5">&#x1F389;</div>
+                <div class="list-card-info">
+                  <div class="list-card-name">Party Supplies</div>
+                  <div class="list-card-meta">12 items &middot; Updated 3d ago</div>
+                </div>
+                <div class="done-badge">&#x2713; Done</div>
+              </div>
+            </div>
+            <div class="list-card">
+              <div class="list-card-header">
+                <div class="list-card-icon" style="background: #e8f5e9">&#x1F4DA;</div>
+                <div class="list-card-info">
+                  <div class="list-card-name">Books to Read</div>
+                  <div class="list-card-meta">6 items &middot; Updated 1w ago</div>
+                </div>
+                <div class="remaining-badge">5 left</div>
+              </div>
+            </div>
+          </div>
+          <div class="fab">+</div>
+          <div class="bottom-nav">
+            <div class="nav-item"><span class="icon">&#x1F4C5;</span>Calendar</div>
+            <div class="nav-item"><span class="icon">&#x2705;</span>Tasks</div>
+            <div class="nav-item active"><span class="icon">&#x1F4CB;</span>Lists</div>
+            <div class="nav-item"><span class="icon">&#x1F465;</span>People</div>
+            <div class="nav-item"><span class="icon">&#x1F464;</span>Profile</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Shopping List Detail -->
+      <div class="screen-wrapper">
+        <div class="screen-label">Shopping List Detail</div>
+        <div class="phone">
+          <div class="status-bar">9:41 AM</div>
+          <div class="top-bar">
+            <div class="back">&#8592;</div>
+            <div class="title">Groceries</div>
+            <div class="actions">&#x270E; &#x22EE;</div>
+          </div>
+          <div class="content">
+            <div class="quick-add">
+              <input type="text" placeholder="Add item..." readonly />
+              <div class="add-btn">+</div>
+            </div>
+            <div class="shopping-item">
+              <div class="drag-handle">&#x2630;</div>
+              <div class="checkbox"></div>
+              <div class="item-name">Milk</div>
+              <div class="item-qty">2 L</div>
+            </div>
+            <div class="shopping-item">
+              <div class="drag-handle">&#x2630;</div>
+              <div class="checkbox"></div>
+              <div class="item-name">Bread</div>
+              <div class="item-qty">1 pcs</div>
+            </div>
+            <div class="shopping-item">
+              <div class="drag-handle">&#x2630;</div>
+              <div class="checkbox"></div>
+              <div class="item-name">Eggs</div>
+              <div class="item-qty">12 pcs</div>
+            </div>
+            <div class="shopping-item">
+              <div class="drag-handle">&#x2630;</div>
+              <div class="checkbox"></div>
+              <div class="item-name">Cheese</div>
+              <div class="item-qty">500 g</div>
+            </div>
+            <div class="checked-section">
+              <div class="checked-header">
+                <div class="checked-title">&#x25BC; Checked (4)</div>
+                <div class="clear-btn">Clear checked</div>
+              </div>
+              <div class="shopping-item">
+                <div class="drag-handle" style="visibility: hidden">&#x2630;</div>
+                <div class="checkbox checked">&#x2713;</div>
+                <div class="item-name item-checked">Butter</div>
+                <div class="item-qty item-checked">250 g</div>
+              </div>
+              <div class="shopping-item">
+                <div class="drag-handle" style="visibility: hidden">&#x2630;</div>
+                <div class="checkbox checked">&#x2713;</div>
+                <div class="item-name item-checked">Apples</div>
+                <div class="item-qty item-checked">1 kg</div>
+              </div>
+              <div class="shopping-item">
+                <div class="drag-handle" style="visibility: hidden">&#x2630;</div>
+                <div class="checkbox checked">&#x2713;</div>
+                <div class="item-name item-checked">Rice</div>
+                <div class="item-qty item-checked">2 kg</div>
+              </div>
+              <div class="shopping-item">
+                <div class="drag-handle" style="visibility: hidden">&#x2630;</div>
+                <div class="checkbox checked">&#x2713;</div>
+                <div class="item-name item-checked">Pasta</div>
+                <div class="item-qty item-checked">500 g</div>
+              </div>
+            </div>
+          </div>
+          <div class="bottom-nav">
+            <div class="nav-item"><span class="icon">&#x1F4C5;</span>Calendar</div>
+            <div class="nav-item"><span class="icon">&#x2705;</span>Tasks</div>
+            <div class="nav-item active"><span class="icon">&#x1F4CB;</span>Lists</div>
+            <div class="nav-item"><span class="icon">&#x1F465;</span>People</div>
+            <div class="nav-item"><span class="icon">&#x1F464;</span>Profile</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- List Create/Edit -->
+      <div class="screen-wrapper">
+        <div class="screen-label">List Create / Edit</div>
+        <div class="phone">
+          <div class="status-bar">9:41 AM</div>
+          <div class="top-bar">
+            <div class="back">&#8592;</div>
+            <div class="title">New List</div>
+            <div class="actions" style="color: #6750a4; font-size: 15px; font-weight: 600">
+              Save
+            </div>
+          </div>
+          <div class="content">
+            <div class="form-field">
+              <div class="form-label">List Name</div>
+              <div class="form-input" style="color: #999">Enter list name</div>
+            </div>
+            <div class="form-row-full">
+              <div class="form-row-label">Space</div>
+              <div class="form-row-value">My Space &#x25BE;</div>
+            </div>
+          </div>
+          <div class="bottom-nav">
+            <div class="nav-item"><span class="icon">&#x1F4C5;</span>Calendar</div>
+            <div class="nav-item"><span class="icon">&#x2705;</span>Tasks</div>
+            <div class="nav-item active"><span class="icon">&#x1F4CB;</span>Lists</div>
+            <div class="nav-item"><span class="icon">&#x1F465;</span>People</div>
+            <div class="nav-item"><span class="icon">&#x1F464;</span>Profile</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Item Edit Bottom Sheet -->
+      <div class="screen-wrapper">
+        <div class="screen-label">Item Edit (Bottom Sheet)</div>
+        <div class="phone">
+          <div class="status-bar">9:41 AM</div>
+          <div class="top-bar">
+            <div class="back">&#8592;</div>
+            <div class="title">Groceries</div>
+            <div class="actions">&#x270E; &#x22EE;</div>
+          </div>
+          <div class="content" style="background: rgba(0, 0, 0, 0.3)">
+            <div class="shopping-item" style="background: rgba(255, 255, 255, 0.5)">
+              <div class="drag-handle">&#x2630;</div>
+              <div class="checkbox"></div>
+              <div class="item-name" style="opacity: 0.5">Milk</div>
+              <div class="item-qty" style="opacity: 0.5">2 L</div>
+            </div>
+          </div>
+          <div class="sheet-overlay" style="height: 360px">
+            <div class="sheet-handle"></div>
+            <div class="sheet-title">Edit Item</div>
+            <div class="form-field">
+              <div class="form-label">Item Name</div>
+              <div class="form-input">Milk</div>
+            </div>
+            <div class="form-field">
+              <div class="form-label">Quantity</div>
+              <div class="form-input">2</div>
+            </div>
+            <div class="form-field">
+              <div class="form-label">Unit</div>
+              <div class="unit-chips">
+                <div class="unit-chip">pcs</div>
+                <div class="unit-chip">kg</div>
+                <div class="unit-chip">g</div>
+                <div class="unit-chip">lb</div>
+                <div class="unit-chip">oz</div>
+                <div class="unit-chip active">L</div>
+                <div class="unit-chip">mL</div>
+                <div class="unit-chip">Custom</div>
+              </div>
+            </div>
+            <div class="sheet-actions">
+              <div class="sheet-btn sheet-btn-cancel">Cancel</div>
+              <div class="sheet-btn sheet-btn-save">Save</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
