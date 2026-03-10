@@ -13,6 +13,9 @@ naming:
     functionPattern: '[a-zA-Z][a-zA-Z0-9]*'
 
 style:
+  UnusedPrivateMember:
+    ignoreAnnotated:
+      - 'Preview'
   MagicNumber:
     ignorePropertyDeclaration: true
     ignoreCompanionObjectPropertyDeclaration: true
