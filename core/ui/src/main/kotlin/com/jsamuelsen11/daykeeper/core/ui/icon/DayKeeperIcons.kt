@@ -13,6 +13,7 @@ import androidx.compose.material.icons.outlined.CheckCircle
 import androidx.compose.material.icons.outlined.Checklist
 import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material.icons.outlined.Delete
+import androidx.compose.material.icons.outlined.DragHandle
 import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material.icons.outlined.Email
 import androidx.compose.material.icons.outlined.Event
@@ -70,6 +71,7 @@ object DayKeeperIcons {
   val Sort: ImageVector = Icons.AutoMirrored.Outlined.Sort
   val FilterList: ImageVector = Icons.Outlined.FilterList
   val Share: ImageVector = Icons.Outlined.Share
+  val DragHandle: ImageVector = Icons.Outlined.DragHandle
   // endregion
 
   // region Navigation chrome
