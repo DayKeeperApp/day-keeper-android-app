@@ -3,6 +3,7 @@ package com.jsamuelsen11.daykeeper.core.ui.icon
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.ArrowBack
 import androidx.compose.material.icons.automirrored.outlined.KeyboardArrowRight
+import androidx.compose.material.icons.automirrored.outlined.Label
 import androidx.compose.material.icons.automirrored.outlined.Sort
 import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material.icons.outlined.AttachFile
@@ -20,6 +21,7 @@ import androidx.compose.material.icons.outlined.Event
 import androidx.compose.material.icons.outlined.ExpandLess
 import androidx.compose.material.icons.outlined.ExpandMore
 import androidx.compose.material.icons.outlined.FilterList
+import androidx.compose.material.icons.outlined.Flag
 import androidx.compose.material.icons.outlined.Folder
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Info
@@ -41,6 +43,7 @@ import androidx.compose.material.icons.outlined.ShoppingCart
 import androidx.compose.material.icons.outlined.Storage
 import androidx.compose.material.icons.outlined.Sync
 import androidx.compose.material.icons.outlined.Task
+import androidx.compose.material.icons.outlined.Visibility
 import androidx.compose.ui.graphics.vector.ImageVector
 
 /**
@@ -101,6 +104,8 @@ object DayKeeperIcons {
   // region Tasks & Projects
   val Task: ImageVector = Icons.Outlined.Task
   val Project: ImageVector = Icons.Outlined.Folder
+  val Flag: ImageVector = Icons.Outlined.Flag
+  val Label: ImageVector = Icons.AutoMirrored.Outlined.Label
   // endregion
 
   // region Lists
@@ -117,5 +122,6 @@ object DayKeeperIcons {
   val Sync: ImageVector = Icons.Outlined.Sync
   val StorageIcon: ImageVector = Icons.Outlined.Storage
   val Info: ImageVector = Icons.Outlined.Info
+  val Visibility: ImageVector = Icons.Outlined.Visibility
   // endregion
 }
