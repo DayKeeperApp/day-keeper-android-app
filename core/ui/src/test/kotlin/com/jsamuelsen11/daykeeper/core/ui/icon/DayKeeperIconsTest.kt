@@ -28,6 +28,7 @@ class DayKeeperIconsTest {
       DayKeeperIcons.Sort,
       DayKeeperIcons.FilterList,
       DayKeeperIcons.Share,
+      DayKeeperIcons.DragHandle,
       // Navigation chrome
       DayKeeperIcons.ArrowBack,
       DayKeeperIcons.ChevronRight,
@@ -72,7 +73,7 @@ class DayKeeperIconsTest {
 
   @Test
   fun `icon catalog contains expected number of icons`() {
-    val expectedCount = 39
+    val expectedCount = 40
     allIcons shouldHaveSize expectedCount
   }
 
