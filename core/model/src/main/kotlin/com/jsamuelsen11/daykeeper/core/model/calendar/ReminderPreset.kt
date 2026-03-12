@@ -1,4 +1,4 @@
-package com.jsamuelsen11.daykeeper.core.model
+package com.jsamuelsen11.daykeeper.core.model.calendar
 
 /** Preset reminder times expressed as minutes before an event. */
 enum class ReminderPreset(val minutesBefore: Int, val displayLabel: String) {

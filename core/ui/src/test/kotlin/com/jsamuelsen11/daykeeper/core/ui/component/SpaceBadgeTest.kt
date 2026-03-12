@@ -1,7 +1,7 @@
 package com.jsamuelsen11.daykeeper.core.ui.component
 
-import com.jsamuelsen11.daykeeper.core.model.SpaceRole
-import com.jsamuelsen11.daykeeper.core.model.SpaceType
+import com.jsamuelsen11.daykeeper.core.model.space.SpaceRole
+import com.jsamuelsen11.daykeeper.core.model.space.SpaceType
 import io.kotest.matchers.shouldBe
 import org.junit.jupiter.api.Test
 
