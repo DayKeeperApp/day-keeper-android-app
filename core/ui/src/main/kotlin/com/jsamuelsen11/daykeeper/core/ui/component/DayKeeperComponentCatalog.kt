@@ -23,9 +23,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.jsamuelsen11.daykeeper.core.model.Priority
-import com.jsamuelsen11.daykeeper.core.model.SpaceRole
-import com.jsamuelsen11.daykeeper.core.model.SpaceType
+import com.jsamuelsen11.daykeeper.core.model.space.SpaceRole
+import com.jsamuelsen11.daykeeper.core.model.space.SpaceType
+import com.jsamuelsen11.daykeeper.core.model.task.Priority
 import com.jsamuelsen11.daykeeper.core.ui.icon.DayKeeperIcons
 import com.jsamuelsen11.daykeeper.core.ui.theme.DayKeeperTheme
 

@@ -1,7 +1,7 @@
 package com.jsamuelsen11.daykeeper.core.ui.component
 
-import com.jsamuelsen11.daykeeper.core.model.RecurrenceDay
-import com.jsamuelsen11.daykeeper.core.model.RecurrenceFrequency
+import com.jsamuelsen11.daykeeper.core.model.calendar.RecurrenceDay
+import com.jsamuelsen11.daykeeper.core.model.calendar.RecurrenceFrequency
 import io.kotest.matchers.ints.shouldBeGreaterThan
 import io.kotest.matchers.maps.shouldHaveSize
 import io.kotest.matchers.shouldBe

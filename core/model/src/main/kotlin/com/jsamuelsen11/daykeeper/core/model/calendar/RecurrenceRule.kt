@@ -1,4 +1,6 @@
-package com.jsamuelsen11.daykeeper.core.model
+package com.jsamuelsen11.daykeeper.core.model.calendar
+
+import com.jsamuelsen11.daykeeper.core.model.DayKeeperModel
 
 /** Supported recurrence frequencies per RFC 5545. */
 enum class RecurrenceFrequency(val rruleValue: String) {

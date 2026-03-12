@@ -35,10 +35,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.jsamuelsen11.daykeeper.core.model.RecurrenceDay
-import com.jsamuelsen11.daykeeper.core.model.RecurrenceEndCondition
-import com.jsamuelsen11.daykeeper.core.model.RecurrenceFrequency
-import com.jsamuelsen11.daykeeper.core.model.RecurrenceRule
+import com.jsamuelsen11.daykeeper.core.model.calendar.RecurrenceDay
+import com.jsamuelsen11.daykeeper.core.model.calendar.RecurrenceEndCondition
+import com.jsamuelsen11.daykeeper.core.model.calendar.RecurrenceFrequency
+import com.jsamuelsen11.daykeeper.core.model.calendar.RecurrenceRule
 import com.jsamuelsen11.daykeeper.core.ui.icon.DayKeeperIcons
 import com.jsamuelsen11.daykeeper.core.ui.theme.DayKeeperTheme
 import java.text.SimpleDateFormat

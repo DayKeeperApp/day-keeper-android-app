@@ -1,4 +1,4 @@
-package com.jsamuelsen11.daykeeper.core.model
+package com.jsamuelsen11.daykeeper.core.model.calendar
 
 import io.kotest.matchers.ints.shouldBeGreaterThanOrEqual
 import io.kotest.matchers.shouldBe
