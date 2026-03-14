@@ -45,4 +45,6 @@ include(":core:common")
 
 include(":core:database")
 
+include(":core:data")
+
 include(":core:ui")
