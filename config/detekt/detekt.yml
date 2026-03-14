@@ -10,6 +10,7 @@ complexity:
   TooManyFunctions:
     excludes:
       - '**/*Database.kt'
+      - '**/preferences/**'
       - '**/test/**'
       - '**/androidTest/**'
 

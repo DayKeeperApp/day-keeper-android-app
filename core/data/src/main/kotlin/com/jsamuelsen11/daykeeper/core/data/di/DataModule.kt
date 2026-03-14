@@ -1,5 +1,11 @@
 package com.jsamuelsen11.daykeeper.core.data.di
 
+import android.content.Context
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.preferencesDataStore
+import com.jsamuelsen11.daykeeper.core.data.preferences.UserPreferencesRepository
+import com.jsamuelsen11.daykeeper.core.data.preferences.UserPreferencesRepositoryImpl
 import com.jsamuelsen11.daykeeper.core.data.repository.AccountRepository
 import com.jsamuelsen11.daykeeper.core.data.repository.AccountRepositoryImpl
 import com.jsamuelsen11.daykeeper.core.data.repository.AddressRepository
@@ -38,10 +44,17 @@ import com.jsamuelsen11.daykeeper.core.data.repository.TaskCategoryRepository
 import com.jsamuelsen11.daykeeper.core.data.repository.TaskCategoryRepositoryImpl
 import com.jsamuelsen11.daykeeper.core.data.repository.TaskRepository
 import com.jsamuelsen11.daykeeper.core.data.repository.TaskRepositoryImpl
+import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.bind
 import org.koin.dsl.module
 
+private val Context.userPreferencesDataStore: DataStore<Preferences> by
+  preferencesDataStore(name = "user_preferences")
+
 public val dataModule = module {
+  single<DataStore<Preferences>> { androidContext().userPreferencesDataStore }
+  single { UserPreferencesRepositoryImpl(get()) } bind UserPreferencesRepository::class
+
   single { AccountRepositoryImpl(get()) } bind AccountRepository::class
   single { DeviceRepositoryImpl(get()) } bind DeviceRepository::class
   single { SpaceRepositoryImpl(get()) } bind SpaceRepository::class
