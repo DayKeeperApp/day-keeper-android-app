@@ -8,6 +8,9 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
 public class ShoppingListRepositoryImpl(private val dao: ShoppingListDao) : ShoppingListRepository {
+  public override fun observeAll(): Flow<List<ShoppingList>> =
+    dao.observeAll().map { list -> list.map { it.toDomain() } }
+
   public override fun observeById(listId: String): Flow<ShoppingList?> =
     dao.observeById(listId).map { it?.toDomain() }
 

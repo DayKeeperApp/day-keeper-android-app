@@ -4,6 +4,8 @@ import com.jsamuelsen11.daykeeper.core.model.list.ShoppingList
 import kotlinx.coroutines.flow.Flow
 
 public interface ShoppingListRepository {
+  public fun observeAll(): Flow<List<ShoppingList>>
+
   public fun observeById(listId: String): Flow<ShoppingList?>
 
   public fun observeBySpace(spaceId: String): Flow<List<ShoppingList>>

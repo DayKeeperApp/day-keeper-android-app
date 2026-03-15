@@ -19,6 +19,10 @@ public class ShoppingListItemRepositoryImpl(private val dao: ShoppingListItemDao
     dao.upsert(item.toEntity())
   }
 
+  public override suspend fun upsertAll(items: List<ShoppingListItem>) {
+    dao.upsertAll(items.map { it.toEntity() })
+  }
+
   public override suspend fun delete(itemId: String) {
     val now = System.currentTimeMillis()
     dao.softDelete(itemId, deletedAt = now, updatedAt = now)
