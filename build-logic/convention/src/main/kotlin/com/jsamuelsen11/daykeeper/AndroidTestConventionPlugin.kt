@@ -25,6 +25,8 @@ class AndroidTestConventionPlugin : Plugin<Project> {
         }
       }
 
+      pluginManager.apply("daykeeper.jacoco")
+
       val catalog = libs
       dependencies {
         add("testImplementation", catalog.findBundle("testing-unit").get())

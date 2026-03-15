@@ -29,5 +29,9 @@ gradlePlugin {
       id = "daykeeper.android.test"
       implementationClass = "com.jsamuelsen11.daykeeper.AndroidTestConventionPlugin"
     }
+    register("jacocoCoverage") {
+      id = "daykeeper.jacoco"
+      implementationClass = "com.jsamuelsen11.daykeeper.JacocoConventionPlugin"
+    }
   }
 }
