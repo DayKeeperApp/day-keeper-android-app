@@ -7,10 +7,17 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavGraphBuilder
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
+import com.jsamuelsen11.daykeeper.feature.people.list.PeopleListScreen
 
-fun NavGraphBuilder.peopleGraph() {
-  composable<PeopleListRoute> { PlaceholderScreen("People List") }
+fun NavGraphBuilder.peopleGraph(navController: NavHostController) {
+  composable<PeopleListRoute> {
+    PeopleListScreen(
+      onPersonClick = { personId -> navController.navigate(PersonDetailRoute(personId)) },
+      onCreatePerson = { navController.navigate(PersonCreateEditRoute()) },
+    )
+  }
   composable<PersonDetailRoute> { PlaceholderScreen("Person Detail") }
   composable<PersonCreateEditRoute> { PlaceholderScreen("Person Create/Edit") }
 }

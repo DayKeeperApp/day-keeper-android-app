@@ -21,7 +21,7 @@ fun DayKeeperNavHost(navController: NavHostController, modifier: Modifier = Modi
       composable<TasksHomeRoute> { ComingSoonScreen(TopLevelDestination.TASKS) }
     }
     navigation<ListsRoute>(startDestination = ListsHomeRoute) { listsGraph(navController) }
-    navigation<PeopleRoute>(startDestination = PeopleListRoute) { peopleGraph() }
+    navigation<PeopleRoute>(startDestination = PeopleListRoute) { peopleGraph(navController) }
     navigation<ProfileRoute>(startDestination = ProfileHomeRoute) {
       composable<ProfileHomeRoute> { ComingSoonScreen(TopLevelDestination.PROFILE) }
     }
