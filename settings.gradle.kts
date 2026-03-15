@@ -43,4 +43,8 @@ include(":core:model")
 
 include(":core:common")
 
+include(":core:database")
+
+include(":core:data")
+
 include(":core:ui")

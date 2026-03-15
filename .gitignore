@@ -53,6 +53,9 @@ keystore.properties
 .env
 .env.*
 
+# --- Android Lint ---
+lint-baseline.xml
+
 # --- Coverage & Reports ---
 *.exec
 jacoco/
@@ -84,3 +87,6 @@ replay_pid*
 
 # --- Lefthook ---
 .lefthook-local/
+
+# bv (beads viewer) local config and caches
+.bv/

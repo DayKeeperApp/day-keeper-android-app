@@ -7,6 +7,12 @@ complexity:
     ignoreDefaultParameters: true
   ComplexCondition:
     threshold: 5
+  TooManyFunctions:
+    excludes:
+      - '**/*Database.kt'
+      - '**/preferences/**'
+      - '**/test/**'
+      - '**/androidTest/**'
 
 naming:
   FunctionNaming:
