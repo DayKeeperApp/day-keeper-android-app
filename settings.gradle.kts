@@ -50,3 +50,5 @@ include(":core:data")
 include(":core:ui")
 
 include(":feature:lists")
+
+include(":feature:people")
