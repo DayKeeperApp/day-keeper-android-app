@@ -22,6 +22,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MenuAnchorType
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -50,10 +52,14 @@ fun PersonCreateEditScreen(
   viewModel: PersonCreateEditViewModel = koinViewModel(),
 ) {
   val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+  val snackbarHostState = remember { SnackbarHostState() }
 
   LaunchedEffect(Unit) {
     viewModel.events.collect { if (it is PersonCreateEditEvent.Saved) onNavigateBack() }
   }
+
+  val saveError = (uiState as? PersonCreateEditUiState.Ready)?.saveError
+  LaunchedEffect(saveError) { if (saveError != null) snackbarHostState.showSnackbar(saveError) }
 
   val title =
     when (val state = uiState) {
@@ -64,6 +70,7 @@ fun PersonCreateEditScreen(
   Scaffold(
     modifier = modifier,
     topBar = { DayKeeperTopAppBar(title = title, onNavigationClick = onNavigateBack) },
+    snackbarHost = { SnackbarHost(snackbarHostState) },
   ) { innerPadding ->
     when (val state = uiState) {
       is PersonCreateEditUiState.Loading ->

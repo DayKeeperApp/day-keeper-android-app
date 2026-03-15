@@ -407,10 +407,10 @@ class PersonCreateEditViewModelTest {
       if (savingState.isSaving) {
         val resetState = awaitItem() as PersonCreateEditUiState.Ready
         resetState.isSaving shouldBe false
-        resetState.firstNameError shouldBe "DB write failed"
+        resetState.saveError shouldBe "DB write failed"
       } else {
         savingState.isSaving shouldBe false
-        savingState.firstNameError shouldBe "DB write failed"
+        savingState.saveError shouldBe "DB write failed"
       }
     }
   }

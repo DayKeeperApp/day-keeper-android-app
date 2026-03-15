@@ -2,7 +2,9 @@ package com.jsamuelsen11.daykeeper.feature.people.list
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.jsamuelsen11.daykeeper.core.data.repository.AddressRepository
 import com.jsamuelsen11.daykeeper.core.data.repository.ContactMethodRepository
+import com.jsamuelsen11.daykeeper.core.data.repository.ImportantDateRepository
 import com.jsamuelsen11.daykeeper.core.data.repository.PersonRepository
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -10,6 +12,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.stateIn
@@ -21,6 +24,8 @@ private const val DEFAULT_SPACE_ID = "default-space"
 class PeopleListViewModel(
   private val personRepository: PersonRepository,
   private val contactMethodRepository: ContactMethodRepository,
+  private val addressRepository: AddressRepository,
+  private val importantDateRepository: ImportantDateRepository,
 ) : ViewModel() {
 
   private val searchQuery = MutableStateFlow("")
@@ -84,6 +89,17 @@ class PeopleListViewModel(
   }
 
   fun deletePerson(personId: String) {
-    viewModelScope.launch { personRepository.delete(personId) }
+    viewModelScope.launch {
+      contactMethodRepository.observeByPerson(personId).first().forEach {
+        contactMethodRepository.delete(it.contactMethodId)
+      }
+      addressRepository.observeByPerson(personId).first().forEach {
+        addressRepository.delete(it.addressId)
+      }
+      importantDateRepository.observeByPerson(personId).first().forEach {
+        importantDateRepository.delete(it.importantDateId)
+      }
+      personRepository.delete(personId)
+    }
   }
 }

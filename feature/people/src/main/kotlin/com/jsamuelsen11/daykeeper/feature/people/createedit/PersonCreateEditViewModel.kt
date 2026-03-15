@@ -149,6 +149,7 @@ class PersonCreateEditViewModel(
         contacts.map {
           ContactMethodFormEntry(
             existingId = it.contactMethodId,
+            originalCreatedAt = it.createdAt,
             type = it.type,
             value = it.value,
             label = it.label,
@@ -159,6 +160,7 @@ class PersonCreateEditViewModel(
         addresses.map {
           AddressFormEntry(
             existingId = it.addressId,
+            originalCreatedAt = it.createdAt,
             label = it.label,
             street = it.street.orEmpty(),
             city = it.city.orEmpty(),
@@ -169,7 +171,12 @@ class PersonCreateEditViewModel(
         },
       importantDates =
         dates.map {
-          ImportantDateFormEntry(existingId = it.importantDateId, label = it.label, date = it.date)
+          ImportantDateFormEntry(
+            existingId = it.importantDateId,
+            originalCreatedAt = it.createdAt,
+            label = it.label,
+            date = it.date,
+          )
         },
       isEditing = true,
     )
@@ -191,7 +198,7 @@ class PersonCreateEditViewModel(
       }
       .onSuccess { _events.send(PersonCreateEditEvent.Saved) }
       .onFailure { error ->
-        updateReady { it.copy(isSaving = false, firstNameError = error.message ?: "Save failed") }
+        updateReady { it.copy(isSaving = false, saveError = error.message ?: "Save failed") }
       }
   }
 
@@ -248,7 +255,7 @@ class PersonCreateEditViewModel(
           value = entry.value.trim(),
           label = entry.label.trim(),
           isPrimary = entry.isPrimary,
-          createdAt = now,
+          createdAt = entry.originalCreatedAt ?: now,
           updatedAt = now,
         )
       )
@@ -269,7 +276,7 @@ class PersonCreateEditViewModel(
           state = entry.state.trim().ifBlank { null },
           postalCode = entry.postalCode.trim().ifBlank { null },
           country = entry.country.trim().ifBlank { null },
-          createdAt = now,
+          createdAt = entry.originalCreatedAt ?: now,
           updatedAt = now,
         )
       )
@@ -290,7 +297,7 @@ class PersonCreateEditViewModel(
           personId = pid,
           label = entry.label.trim(),
           date = entry.date.trim(),
-          createdAt = now,
+          createdAt = entry.originalCreatedAt ?: now,
           updatedAt = now,
         )
       )

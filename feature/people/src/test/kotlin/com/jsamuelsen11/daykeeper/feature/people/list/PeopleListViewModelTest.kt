@@ -1,12 +1,16 @@
 package com.jsamuelsen11.daykeeper.feature.people.list
 
 import app.cash.turbine.test
+import com.jsamuelsen11.daykeeper.core.data.repository.AddressRepository
 import com.jsamuelsen11.daykeeper.core.data.repository.ContactMethodRepository
+import com.jsamuelsen11.daykeeper.core.data.repository.ImportantDateRepository
 import com.jsamuelsen11.daykeeper.core.data.repository.PersonRepository
 import com.jsamuelsen11.daykeeper.feature.people.MainDispatcherExtension
 import com.jsamuelsen11.daykeeper.feature.people.TEST_PERSON_ID
 import com.jsamuelsen11.daykeeper.feature.people.TEST_PERSON_ID_2
+import com.jsamuelsen11.daykeeper.feature.people.makeAddress
 import com.jsamuelsen11.daykeeper.feature.people.makeContactMethod
+import com.jsamuelsen11.daykeeper.feature.people.makeImportantDate
 import com.jsamuelsen11.daykeeper.feature.people.makePerson
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeInstanceOf
@@ -30,17 +34,23 @@ class PeopleListViewModelTest {
 
   private val personRepository = mockk<PersonRepository>()
   private val contactMethodRepository = mockk<ContactMethodRepository>()
+  private val addressRepository = mockk<AddressRepository>()
+  private val importantDateRepository = mockk<ImportantDateRepository>()
 
   @BeforeEach
   fun setUp() {
     every { personRepository.observeBySpace(any()) } returns flowOf(emptyList())
     every { contactMethodRepository.observeByPerson(any()) } returns flowOf(emptyList())
+    every { addressRepository.observeByPerson(any()) } returns flowOf(emptyList())
+    every { importantDateRepository.observeByPerson(any()) } returns flowOf(emptyList())
   }
 
   private fun createViewModel(): PeopleListViewModel =
     PeopleListViewModel(
       personRepository = personRepository,
       contactMethodRepository = contactMethodRepository,
+      addressRepository = addressRepository,
+      importantDateRepository = importantDateRepository,
     )
 
   // --- UiState shape ---
@@ -189,12 +199,25 @@ class PeopleListViewModelTest {
   }
 
   @Test
-  fun `deletePerson delegates to repository`() = runTest {
+  fun `deletePerson cascades to all sub-entities`() = runTest {
+    val cm = makeContactMethod(personId = TEST_PERSON_ID)
+    val address = makeAddress(personId = TEST_PERSON_ID)
+    val date = makeImportantDate(personId = TEST_PERSON_ID)
+
+    every { contactMethodRepository.observeByPerson(TEST_PERSON_ID) } returns flowOf(listOf(cm))
+    every { addressRepository.observeByPerson(TEST_PERSON_ID) } returns flowOf(listOf(address))
+    every { importantDateRepository.observeByPerson(TEST_PERSON_ID) } returns flowOf(listOf(date))
+    coEvery { contactMethodRepository.delete(any()) } just runs
+    coEvery { addressRepository.delete(any()) } just runs
+    coEvery { importantDateRepository.delete(any()) } just runs
     coEvery { personRepository.delete(any()) } just runs
 
     val viewModel = createViewModel()
     viewModel.deletePerson(TEST_PERSON_ID)
 
+    coVerify { contactMethodRepository.delete(cm.contactMethodId) }
+    coVerify { addressRepository.delete(address.addressId) }
+    coVerify { importantDateRepository.delete(date.importantDateId) }
     coVerify { personRepository.delete(TEST_PERSON_ID) }
   }
 

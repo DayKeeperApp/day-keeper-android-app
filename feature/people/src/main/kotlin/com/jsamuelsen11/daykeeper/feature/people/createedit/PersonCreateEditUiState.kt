@@ -18,12 +18,14 @@ sealed interface PersonCreateEditUiState {
     val isSaving: Boolean = false,
     val firstNameError: String? = null,
     val lastNameError: String? = null,
+    val saveError: String? = null,
   ) : PersonCreateEditUiState
 }
 
 data class ContactMethodFormEntry(
   val tempId: String = UUID.randomUUID().toString(),
   val existingId: String? = null,
+  val originalCreatedAt: Long? = null,
   val type: ContactMethodType = ContactMethodType.PHONE,
   val value: String = "",
   val label: String = "",
@@ -33,6 +35,7 @@ data class ContactMethodFormEntry(
 data class AddressFormEntry(
   val tempId: String = UUID.randomUUID().toString(),
   val existingId: String? = null,
+  val originalCreatedAt: Long? = null,
   val label: String = "",
   val street: String = "",
   val city: String = "",
@@ -44,6 +47,7 @@ data class AddressFormEntry(
 data class ImportantDateFormEntry(
   val tempId: String = UUID.randomUUID().toString(),
   val existingId: String? = null,
+  val originalCreatedAt: Long? = null,
   val label: String = "",
   val date: String = "",
 )
