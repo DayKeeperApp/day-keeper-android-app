@@ -6,6 +6,8 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
+import com.jsamuelsen11.daykeeper.feature.lists.navigation.ListsHomeRoute
+import com.jsamuelsen11.daykeeper.feature.lists.navigation.listsGraph
 
 @Composable
 fun DayKeeperNavHost(navController: NavHostController, modifier: Modifier = Modifier) {
@@ -16,9 +18,7 @@ fun DayKeeperNavHost(navController: NavHostController, modifier: Modifier = Modi
     navigation<TasksRoute>(startDestination = TasksHomeRoute) {
       composable<TasksHomeRoute> { ComingSoonScreen(TopLevelDestination.TASKS) }
     }
-    navigation<ListsRoute>(startDestination = ListsHomeRoute) {
-      composable<ListsHomeRoute> { ComingSoonScreen(TopLevelDestination.LISTS) }
-    }
+    navigation<ListsRoute>(startDestination = ListsHomeRoute) { listsGraph(navController) }
     navigation<PeopleRoute>(startDestination = PeopleHomeRoute) {
       composable<PeopleHomeRoute> { ComingSoonScreen(TopLevelDestination.PEOPLE) }
     }
