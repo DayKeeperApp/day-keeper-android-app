@@ -1,3 +1,17 @@
 <resources>
     <string name="app_name">Day Keeper</string>
+
+    <!-- Bottom Navigation -->
+    <string name="nav_calendar">Calendar</string>
+    <string name="nav_tasks">Tasks</string>
+    <string name="nav_lists">Lists</string>
+    <string name="nav_people">People</string>
+    <string name="nav_profile">Profile</string>
+
+    <!-- Placeholder Screens -->
+    <string name="coming_soon_title">Coming Soon</string>
+    <string name="coming_soon_body">This feature is under development.</string>
+
+    <!-- Global Search -->
+    <string name="global_search_placeholder">Search Day Keeper</string>
 </resources>
