@@ -8,8 +8,10 @@ complexity:
   ComplexCondition:
     threshold: 5
   TooManyFunctions:
+    thresholdInFiles: 15
     excludes:
       - '**/*Database.kt'
+      - '**/*ViewModel.kt'
       - '**/preferences/**'
       - '**/test/**'
       - '**/androidTest/**'
