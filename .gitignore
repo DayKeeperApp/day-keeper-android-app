@@ -46,8 +46,6 @@ keystore.properties
 .env
 .env.*
 
-# --- Android Lint ---
-lint-baseline.xml
 
 # --- Coverage & Reports ---
 *.exec
