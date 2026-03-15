@@ -1,6 +1,8 @@
 name: CI
 
 'on':
+  push:
+    branches: [main]
   pull_request:
     branches: [main]
 
@@ -34,6 +36,12 @@ jobs:
       - name: Run unit tests
         run: ./gradlew testDebugUnitTest
 
+      - name: Generate coverage report
+        run: ./gradlew jacocoMergedReport
+
+      - name: Verify coverage threshold
+        run: ./gradlew jacocoCoverageVerification
+
       - name: Build debug APK
         run: ./gradlew assembleDebug
 
@@ -47,6 +55,45 @@ jobs:
             **/build/reports/detekt/
             **/build/reports/lint-results-*.html
           retention-days: 14
+
+      - name: Upload coverage report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: build/reports/jacoco/merged/
+          retention-days: 14
+
+      - name: Extract coverage percentage
+        if: github.ref == 'refs/heads/main'
+        id: coverage
+        run: |
+          if [ -f build/reports/jacoco/merged/jacocoMergedReport.csv ]; then
+            MISSED=$(awk -F',' 'NR>1 {sum+=$4} END {print sum}' build/reports/jacoco/merged/jacocoMergedReport.csv)
+            COVERED=$(awk -F',' 'NR>1 {sum+=$5} END {print sum}' build/reports/jacoco/merged/jacocoMergedReport.csv)
+            TOTAL=$((MISSED + COVERED))
+            if [ "$TOTAL" -gt 0 ]; then
+              PERCENT=$(awk "BEGIN {printf \"%.1f\", ($COVERED/$TOTAL)*100}")
+            else
+              PERCENT="0.0"
+            fi
+            echo "percentage=$PERCENT" >> "$GITHUB_OUTPUT"
+          else
+            echo "percentage=0.0" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Update coverage badge
+        if: github.ref == 'refs/heads/main'
+        uses: schneegans/dynamic-badges-action@v1.7.0
+        with:
+          auth: ${{ secrets.GIST_TOKEN }}
+          gistID: ${{ vars.COVERAGE_GIST_ID }}
+          filename: coverage.json
+          label: coverage
+          message: ${{ steps.coverage.outputs.percentage }}%
+          valColorRange: ${{ steps.coverage.outputs.percentage }}
+          minColorRange: 0
+          maxColorRange: 100
 
   actionlint:
     name: Lint workflows

@@ -26,6 +26,9 @@ tasks:
         echo -e "  ${D}${HR}${R}"
         echo -e "    ${B}test${R}                 Run unit tests"
         echo -e "    ${B}check${R}                Run all Gradle checks"
+        echo -e "    ${B}coverage${R}             Run tests with coverage report"
+        echo -e "    ${B}coverage:report${R}      Open coverage HTML report"
+        echo -e "    ${B}coverage:verify${R}      Check coverage meets threshold"
         echo ""
         echo -e "  ${B}${C}✨ Code Quality${R}"
         echo -e "  ${D}${HR}${R}"
@@ -75,6 +78,22 @@ tasks:
     desc: Run all Gradle checks
     cmds:
       - ./gradlew check
+
+  coverage:
+    desc: Run tests with code coverage report
+    cmds:
+      - ./gradlew testDebugUnitTest jacocoMergedReport
+
+  coverage:report:
+    desc: Open coverage HTML report in browser
+    cmds:
+      - xdg-open build/reports/jacoco/merged/html/index.html 2>/dev/null || open
+        build/reports/jacoco/merged/html/index.html
+
+  coverage:verify:
+    desc: Check coverage meets minimum threshold
+    cmds:
+      - ./gradlew testDebugUnitTest jacocoMergedReport jacocoCoverageVerification
 
   # ── Code Quality ────────────────────────────────────
 

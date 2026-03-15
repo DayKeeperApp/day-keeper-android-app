@@ -34,6 +34,9 @@ kotlinx-serialization-json = "1.8.1"
 # Coroutines
 kotlinx-coroutines = "1.10.2"
 
+# Coverage
+jacoco = "0.8.12"
+
 # Testing
 junit5 = "6.0.3"
 android-junit5-plugin = "2.0.1"
@@ -192,3 +195,4 @@ daykeeper-android-library = { id = "daykeeper.android.library" }
 daykeeper-android-feature = { id = "daykeeper.android.feature" }
 daykeeper-kotlin-library = { id = "daykeeper.kotlin.library" }
 daykeeper-android-test = { id = "daykeeper.android.test" }
+daykeeper-jacoco = { id = "daykeeper.jacoco" }
