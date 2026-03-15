@@ -27,6 +27,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.core.net.toUri
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.jsamuelsen11.daykeeper.core.model.people.Address
 import com.jsamuelsen11.daykeeper.core.model.people.ContactMethod
@@ -205,14 +206,14 @@ private fun SectionHeader(title: String) {
 private fun launchContactIntent(context: android.content.Context, cm: ContactMethod) {
   val intent =
     when (cm.type) {
-      ContactMethodType.PHONE -> Intent(Intent.ACTION_DIAL, Uri.parse("tel:${cm.value}"))
-      ContactMethodType.EMAIL -> Intent(Intent.ACTION_SENDTO, Uri.parse("mailto:${cm.value}"))
+      ContactMethodType.PHONE -> Intent(Intent.ACTION_DIAL, "tel:${cm.value}".toUri())
+      ContactMethodType.EMAIL -> Intent(Intent.ACTION_SENDTO, "mailto:${cm.value}".toUri())
     }
   runCatching { context.startActivity(intent) }
 }
 
 private fun launchMapIntent(context: android.content.Context, address: Address) {
   val query = Uri.encode(formatAddress(address))
-  val intent = Intent(Intent.ACTION_VIEW, Uri.parse("geo:0,0?q=$query"))
+  val intent = Intent(Intent.ACTION_VIEW, "geo:0,0?q=$query".toUri())
   runCatching { context.startActivity(intent) }
 }
