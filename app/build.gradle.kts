@@ -23,6 +23,8 @@ dependencies {
   implementation(project(":core:database"))
   implementation(project(":core:data"))
 
+  implementation(project(":feature:lists"))
+
   implementation(libs.androidx.core.ktx)
   implementation(libs.androidx.activity.compose)
   implementation(platform(libs.androidx.compose.bom))

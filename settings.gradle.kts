@@ -48,3 +48,5 @@ include(":core:database")
 include(":core:data")
 
 include(":core:ui")
+
+include(":feature:lists")

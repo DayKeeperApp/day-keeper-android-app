@@ -1,5 +1,6 @@
 package com.jsamuelsen11.daykeeper.app.navigation
 
+import com.jsamuelsen11.daykeeper.feature.lists.navigation.ListsHomeRoute
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeInstanceOf
 import kotlinx.serialization.encodeToString

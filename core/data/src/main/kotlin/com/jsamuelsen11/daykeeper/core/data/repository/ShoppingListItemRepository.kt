@@ -10,6 +10,8 @@ public interface ShoppingListItemRepository {
 
   public suspend fun upsert(item: ShoppingListItem)
 
+  public suspend fun upsertAll(items: List<ShoppingListItem>)
+
   public suspend fun delete(itemId: String)
 
   public suspend fun toggleChecked(itemId: String, isChecked: Boolean)

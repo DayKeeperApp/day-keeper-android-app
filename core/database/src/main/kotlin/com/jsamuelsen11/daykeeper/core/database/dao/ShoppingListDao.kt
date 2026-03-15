@@ -15,6 +15,9 @@ public interface ShoppingListDao {
   @Query("SELECT * FROM shopping_lists WHERE space_id = :spaceId AND deleted_at IS NULL")
   public fun observeBySpace(spaceId: String): Flow<List<ShoppingListEntity>>
 
+  @Query("SELECT * FROM shopping_lists WHERE deleted_at IS NULL ORDER BY updated_at DESC")
+  public fun observeAll(): Flow<List<ShoppingListEntity>>
+
   @Query("SELECT * FROM shopping_lists WHERE list_id = :listId")
   public suspend fun getById(listId: String): ShoppingListEntity?
 
