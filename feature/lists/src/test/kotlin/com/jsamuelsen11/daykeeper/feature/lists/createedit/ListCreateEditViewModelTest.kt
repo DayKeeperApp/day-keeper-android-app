@@ -294,4 +294,56 @@ class ListCreateEditViewModelTest {
 
     coVerify(exactly = 0) { listRepository.upsert(any()) }
   }
+
+  @Test
+  fun `onSave in edit mode with missing list resets isSaving`() = runTest {
+    coEvery { listRepository.getById(TEST_LIST_ID) } returns makeList(name = "Exists")
+
+    val viewModel = editModeViewModel()
+
+    viewModel.uiState.test {
+      awaitItem() // Ready with loaded name
+
+      // Now make getById return null for the save attempt
+      coEvery { listRepository.getById(TEST_LIST_ID) } returns null
+
+      viewModel.onNameChanged("Updated")
+      awaitItem()
+      viewModel.onSave()
+
+      // Should transition through isSaving=true then back to isSaving=false
+      val savingState = awaitItem() as ListCreateEditUiState.Ready
+      if (savingState.isSaving) {
+        val resetState = awaitItem() as ListCreateEditUiState.Ready
+        resetState.isSaving shouldBe false
+      } else {
+        savingState.isSaving shouldBe false
+      }
+    }
+  }
+
+  @Test
+  fun `onSave resets isSaving and sets error on repository failure`() = runTest {
+    coEvery { listRepository.upsert(any()) } throws RuntimeException("DB error")
+
+    val viewModel = createModeViewModel()
+
+    viewModel.uiState.test {
+      awaitItem()
+      viewModel.onNameChanged("Valid Name")
+      awaitItem()
+      viewModel.onSave()
+
+      // Should transition through isSaving=true then back to isSaving=false with error
+      val savingState = awaitItem() as ListCreateEditUiState.Ready
+      if (savingState.isSaving) {
+        val resetState = awaitItem() as ListCreateEditUiState.Ready
+        resetState.isSaving shouldBe false
+        resetState.nameError shouldBe "DB error"
+      } else {
+        savingState.isSaving shouldBe false
+        savingState.nameError shouldBe "DB error"
+      }
+    }
+  }
 }

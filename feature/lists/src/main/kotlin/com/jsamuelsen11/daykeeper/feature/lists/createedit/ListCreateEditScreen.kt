@@ -20,7 +20,6 @@ import com.jsamuelsen11.daykeeper.core.ui.component.LoadingIndicator
 import org.koin.compose.viewmodel.koinViewModel
 
 private val ContentPadding = 24.dp
-private val FieldSpacing = 16.dp
 private val ButtonTopSpacing = 24.dp
 
 @Composable
@@ -61,7 +60,6 @@ fun ListCreateEditScreen(
             singleLine = true,
             enabled = !state.isSaving,
           )
-          Spacer(modifier = Modifier.height(FieldSpacing))
           Spacer(modifier = Modifier.height(ButtonTopSpacing))
           Button(
             onClick = viewModel::onSave,

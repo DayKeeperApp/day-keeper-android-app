@@ -64,7 +64,11 @@ class ListCreateEditViewModel(
             name = trimmedName,
             normalizedName = trimmedName.lowercase().trim(),
             updatedAt = now,
-          ) ?: return@launch
+          )
+            ?: run {
+              resetSaving()
+              return@launch
+            }
         } else {
           ShoppingList(
             listId = UUID.randomUUID().toString(),
@@ -76,9 +80,22 @@ class ListCreateEditViewModel(
             updatedAt = now,
           )
         }
-      listRepository.upsert(list)
-      _events.send(ListCreateEditEvent.Saved)
+      runCatching { listRepository.upsert(list) }
+        .onSuccess { _events.send(ListCreateEditEvent.Saved) }
+        .onFailure { error ->
+          _uiState.update {
+            if (it is ListCreateEditUiState.Ready) {
+              it.copy(isSaving = false, nameError = error.message ?: "Save failed")
+            } else {
+              it
+            }
+          }
+        }
     }
+  }
+
+  private fun resetSaving() {
+    _uiState.update { if (it is ListCreateEditUiState.Ready) it.copy(isSaving = false) else it }
   }
 
   companion object {
