@@ -24,6 +24,7 @@ dependencies {
   implementation(project(":core:data"))
 
   implementation(project(":feature:lists"))
+  implementation(project(":feature:people"))
 
   implementation(libs.androidx.core.ktx)
   implementation(libs.androidx.activity.compose)

@@ -21,6 +21,4 @@ import kotlinx.serialization.Serializable
 
 @Serializable object TasksHomeRoute
 
-@Serializable object PeopleHomeRoute
-
 @Serializable object ProfileHomeRoute
