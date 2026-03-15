@@ -28,6 +28,9 @@ koin-bom = "4.1.1"
 # Networking (Ktor)
 ktor = "3.4.1"
 
+# Serialization
+kotlinx-serialization-json = "1.8.1"
+
 # Coroutines
 kotlinx-coroutines = "1.10.2"
 
@@ -113,6 +116,9 @@ ktor-client-okhttp = { group = "io.ktor", name = "ktor-client-okhttp", version.r
 ktor-client-content-negotiation = { group = "io.ktor", name = "ktor-client-content-negotiation", version.ref = "ktor" }
 ktor-serialization-kotlinx-json = { group = "io.ktor", name = "ktor-serialization-kotlinx-json", version.ref = "ktor" }
 
+# Serialization
+kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinx-serialization-json" }
+
 # Testing
 junit5-api = { group = "org.junit.jupiter", name = "junit-jupiter-api", version.ref = "junit5" }
 junit5-engine = { group = "org.junit.jupiter", name = "junit-jupiter-engine", version.ref = "junit5" }
@@ -177,6 +183,7 @@ spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
 dokka = { id = "org.jetbrains.dokka", version.ref = "dokka" }
 develocity = { id = "com.gradle.develocity", version.ref = "develocity" }
 android-junit5 = { id = "de.mannodermaus.android-junit5", version.ref = "android-junit5-plugin" }
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 
 # Convention plugins (resolved from build-logic included build, no version needed)
 daykeeper-android-application = { id = "daykeeper.android.application" }

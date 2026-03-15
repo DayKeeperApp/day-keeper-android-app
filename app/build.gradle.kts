@@ -1,6 +1,7 @@
 plugins {
   alias(libs.plugins.daykeeper.android.application)
   alias(libs.plugins.kotlin.compose)
+  alias(libs.plugins.kotlin.serialization)
 }
 
 android {
@@ -27,6 +28,9 @@ dependencies {
   implementation(platform(libs.androidx.compose.bom))
   implementation(libs.bundles.compose)
   implementation(libs.bundles.lifecycle)
+
+  implementation(libs.androidx.navigation.compose)
+  implementation(libs.kotlinx.serialization.json)
 
   implementation(platform(libs.koin.bom))
   implementation(libs.koin.core)
