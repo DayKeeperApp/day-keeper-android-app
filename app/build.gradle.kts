@@ -19,12 +19,22 @@ dependencies {
   implementation(project(":core:model"))
   implementation(project(":core:common"))
   implementation(project(":core:ui"))
+  implementation(project(":core:database"))
+  implementation(project(":core:data"))
 
   implementation(libs.androidx.core.ktx)
   implementation(libs.androidx.activity.compose)
   implementation(platform(libs.androidx.compose.bom))
   implementation(libs.bundles.compose)
   implementation(libs.bundles.lifecycle)
+
+  implementation(platform(libs.koin.bom))
+  implementation(libs.koin.core)
+  implementation(libs.koin.android)
+
+  testImplementation(platform(libs.koin.bom))
+  testImplementation(libs.koin.test)
+  testImplementation(libs.koin.test.junit5)
 
   androidTestImplementation(platform(libs.androidx.compose.bom))
   debugImplementation(libs.bundles.compose.debug)
