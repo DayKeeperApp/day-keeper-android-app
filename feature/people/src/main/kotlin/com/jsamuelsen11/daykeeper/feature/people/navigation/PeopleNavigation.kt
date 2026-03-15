@@ -9,6 +9,8 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
+import androidx.navigation.toRoute
+import com.jsamuelsen11.daykeeper.feature.people.detail.PersonDetailScreen
 import com.jsamuelsen11.daykeeper.feature.people.list.PeopleListScreen
 
 fun NavGraphBuilder.peopleGraph(navController: NavHostController) {
@@ -18,7 +20,13 @@ fun NavGraphBuilder.peopleGraph(navController: NavHostController) {
       onCreatePerson = { navController.navigate(PersonCreateEditRoute()) },
     )
   }
-  composable<PersonDetailRoute> { PlaceholderScreen("Person Detail") }
+  composable<PersonDetailRoute> { backStackEntry ->
+    val route = backStackEntry.toRoute<PersonDetailRoute>()
+    PersonDetailScreen(
+      onNavigateBack = { navController.popBackStack() },
+      onEditPerson = { navController.navigate(PersonCreateEditRoute(route.personId)) },
+    )
+  }
   composable<PersonCreateEditRoute> { PlaceholderScreen("Person Create/Edit") }
 }
 
