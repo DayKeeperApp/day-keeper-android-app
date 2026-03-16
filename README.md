@@ -6,7 +6,7 @@
 ![Android](https://img.shields.io/badge/Android-API%2026+-34A853?logo=android&logoColor=white)
 [![Conventional Commits](https://img.shields.io/badge/Conventional%20Commits-1.0.0-FE5196?logo=conventionalcommits&logoColor=white)](https://conventionalcommits.org)
 [![Code Style: ktfmt](https://img.shields.io/badge/code%20style-ktfmt-7F52FF)](https://facebook.github.io/ktfmt/)
-![Coverage](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/jsamuelsen11/COVERAGE_GIST_ID/raw/coverage.json)
+![Coverage](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/jsamuelsen11/3e228f7c5ebbb4b50a5992c10675c186/raw/coverage.json)
 
 A personal life-management Android app — calendars, tasks, lists, contacts — built offline-first
 with a self-hosted backend. See [docs/day-keeper-plan.md](docs/day-keeper-plan.md) for the full
