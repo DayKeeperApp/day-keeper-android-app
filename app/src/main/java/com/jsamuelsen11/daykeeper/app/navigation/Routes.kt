@@ -19,6 +19,4 @@ import kotlinx.serialization.Serializable
 // Start destinations within each tab graph
 @Serializable object CalendarHomeRoute
 
-@Serializable object TasksHomeRoute
-
 @Serializable object ProfileHomeRoute

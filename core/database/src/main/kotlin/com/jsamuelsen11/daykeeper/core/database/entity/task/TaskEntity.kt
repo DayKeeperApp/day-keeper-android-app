@@ -60,6 +60,7 @@ public data class TaskEntity(
   @ColumnInfo(name = "due_date") val dueDate: String?,
   @ColumnInfo(name = "recurrence_rule") val recurrenceRule: String?,
   @ColumnInfo(name = "category_id") val categoryId: String?,
+  @ColumnInfo(name = "reminder_minutes_before") val reminderMinutesBefore: Int? = null,
   @ColumnInfo(name = "created_at") val createdAt: Long,
   @ColumnInfo(name = "updated_at") val updatedAt: Long,
   @ColumnInfo(name = "deleted_at") val deletedAt: Long?,

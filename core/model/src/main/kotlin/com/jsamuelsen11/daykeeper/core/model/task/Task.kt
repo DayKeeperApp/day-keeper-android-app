@@ -17,6 +17,7 @@ data class Task(
   val dueDate: String? = null,
   val recurrenceRule: RecurrenceRule? = null,
   val categoryId: String? = null,
+  val reminderMinutesBefore: Int? = null,
   val createdAt: Long,
   val updatedAt: Long,
   val deletedAt: Long? = null,

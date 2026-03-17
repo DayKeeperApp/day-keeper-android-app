@@ -64,7 +64,7 @@ import com.jsamuelsen11.daykeeper.core.database.entity.task.TaskEntity
       AttachmentEntity::class,
       SyncCursorEntity::class,
     ],
-  version = 1,
+  version = 2,
   exportSchema = true,
 )
 public abstract class DayKeeperDatabase : RoomDatabase() {

@@ -32,6 +32,7 @@ class TaskTest {
     task.dueDate shouldBe null
     task.recurrenceRule shouldBe null
     task.categoryId shouldBe null
+    task.reminderMinutesBefore shouldBe null
     task.deletedAt shouldBe null
   }
 
