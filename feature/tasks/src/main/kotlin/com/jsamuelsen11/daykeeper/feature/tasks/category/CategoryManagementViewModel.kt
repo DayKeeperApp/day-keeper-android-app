@@ -25,7 +25,8 @@ class CategoryManagementViewModel(
     combine(taskCategoryRepository.observeAll(), taskRepository.observeBySpace(DEFAULT_SPACE_ID)) {
         categories,
         tasks ->
-        val countsByCategory = tasks.groupingBy { it.categoryId }.eachCount()
+        val countsByCategory =
+          tasks.filter { it.deletedAt == null }.groupingBy { it.categoryId }.eachCount()
         val items =
           categories
             .sortedWith(compareByDescending<TaskCategory> { it.isSystem }.thenBy { it.name })

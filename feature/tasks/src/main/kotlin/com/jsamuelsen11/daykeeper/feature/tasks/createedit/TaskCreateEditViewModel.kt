@@ -182,7 +182,7 @@ class TaskCreateEditViewModel(
    * as a [titleError] message on unexpected failure.
    */
   fun onSave() {
-    val state = _uiState.value as? TaskCreateEditUiState.Ready ?: return
+    val state = (_uiState.value as? TaskCreateEditUiState.Ready)?.takeIf { !it.isSaving } ?: return
     val trimmedTitle = state.title.trim()
     if (trimmedTitle.isBlank()) {
       _uiState.update { current ->

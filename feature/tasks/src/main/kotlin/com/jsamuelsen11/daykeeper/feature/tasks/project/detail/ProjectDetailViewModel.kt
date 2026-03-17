@@ -13,6 +13,7 @@ import com.jsamuelsen11.daykeeper.feature.tasks.list.TaskListItem
 import com.jsamuelsen11.daykeeper.feature.tasks.navigation.ProjectDetailRoute
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -63,6 +64,7 @@ public class ProjectDetailViewModel(
           )
         }
       }
+      .catch { e -> emit(ProjectDetailUiState.Error(e.message ?: "Unknown error")) }
       .stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(STOP_TIMEOUT_MILLIS),
