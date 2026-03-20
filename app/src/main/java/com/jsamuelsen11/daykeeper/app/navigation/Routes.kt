@@ -17,6 +17,4 @@ import kotlinx.serialization.Serializable
 @Serializable object GlobalSearchRoute
 
 // Start destinations within each tab graph
-@Serializable object CalendarHomeRoute
-
 @Serializable object ProfileHomeRoute
