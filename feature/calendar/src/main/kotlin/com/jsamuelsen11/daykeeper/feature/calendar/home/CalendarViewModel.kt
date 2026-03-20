@@ -1,6 +1,5 @@
 package com.jsamuelsen11.daykeeper.feature.calendar.home
 
-import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jsamuelsen11.daykeeper.core.data.repository.CalendarRepository
@@ -13,6 +12,7 @@ import com.jsamuelsen11.daykeeper.feature.calendar.component.CalendarEventItem
 import com.jsamuelsen11.daykeeper.feature.calendar.component.DayCellData
 import com.jsamuelsen11.daykeeper.feature.calendar.component.MAX_EVENT_DOTS
 import com.jsamuelsen11.daykeeper.feature.calendar.component.MonthGridData
+import com.jsamuelsen11.daykeeper.feature.calendar.component.parseHexColor
 import java.time.LocalDate
 import java.time.YearMonth
 import java.time.ZoneId
@@ -29,9 +29,6 @@ import kotlinx.coroutines.flow.stateIn
 
 private const val STOP_TIMEOUT_MILLIS = 5_000L
 private const val DEFAULT_SPACE_ID = "default-space"
-private const val HEX_RADIX = 16
-private const val HEX_RGB_LENGTH = 6
-private const val HEX_ARGB_LENGTH = 8
 
 /**
  * ViewModel for the calendar home screen.
@@ -301,19 +298,6 @@ class CalendarViewModel(
       calendarColor = calendar.color,
       eventTypeName = eventTypeId?.let { eventTypeById[it]?.name },
     )
-
-  private fun parseHexColor(hex: String): Color? =
-    runCatching {
-        val cleaned = hex.trimStart('#')
-        val argb =
-          when (cleaned.length) {
-            HEX_RGB_LENGTH -> "FF$cleaned".toLong(radix = HEX_RADIX)
-            HEX_ARGB_LENGTH -> cleaned.toLong(radix = HEX_RADIX)
-            else -> return@runCatching null
-          }
-        Color(argb.toInt())
-      }
-      .getOrNull()
 
   // endregion
 

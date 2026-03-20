@@ -27,7 +27,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.jsamuelsen11.daykeeper.core.ui.component.ConfirmationDialog
@@ -37,6 +36,7 @@ import com.jsamuelsen11.daykeeper.core.ui.component.EmptyStateView
 import com.jsamuelsen11.daykeeper.core.ui.component.LoadingIndicator
 import com.jsamuelsen11.daykeeper.core.ui.component.SwipeableListItem
 import com.jsamuelsen11.daykeeper.core.ui.icon.DayKeeperIcons
+import com.jsamuelsen11.daykeeper.feature.calendar.component.parseHexColor
 import org.koin.compose.viewmodel.koinViewModel
 
 private val ContentPadding = 16.dp
@@ -49,9 +49,6 @@ private const val LABEL_DELETE_TITLE = "Delete Calendar"
 private const val LABEL_DELETE_MESSAGE = "Are you sure you want to delete this calendar?"
 private const val LABEL_EVENTS_SUFFIX = " events"
 private const val LABEL_DEFAULT = "Default"
-private const val HEX_RADIX = 16
-private const val HEX_RGB_LENGTH = 6
-private const val HEX_ARGB_LENGTH = 8
 
 @Composable
 fun CalendarManagementScreen(
@@ -175,16 +172,3 @@ private fun CalendarListRow(
     }
   }
 }
-
-private fun parseHexColor(hex: String): Color? =
-  runCatching {
-      val cleaned = hex.trimStart('#')
-      val argb =
-        when (cleaned.length) {
-          HEX_RGB_LENGTH -> "FF$cleaned".toLong(radix = HEX_RADIX)
-          HEX_ARGB_LENGTH -> cleaned.toLong(radix = HEX_RADIX)
-          else -> return@runCatching null
-        }
-      Color(argb.toInt())
-    }
-    .getOrNull()

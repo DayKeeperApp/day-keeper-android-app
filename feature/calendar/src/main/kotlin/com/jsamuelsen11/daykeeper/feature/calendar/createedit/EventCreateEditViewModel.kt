@@ -20,6 +20,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -232,7 +233,7 @@ class EventCreateEditViewModel(
 
   /** Updates the location field. */
   fun onLocationChanged(location: String) {
-    updateForm { it.copy(location = location.trim().ifBlank { null } ?: location) }
+    updateForm { it.copy(location = location.trim().ifBlank { null }) }
   }
 
   /** Updates the recurrence rule. Pass null to remove recurrence. */
@@ -381,14 +382,7 @@ class EventCreateEditViewModel(
     now: Long,
   ) {
     val existingReminders =
-      eventReminderRepository.observeByEvent(eventId).let { flow ->
-        // Collect a single snapshot by fetching directly; flow is used reactively elsewhere.
-        var snapshot: List<EventReminder> = emptyList()
-        val job = viewModelScope.launch { flow.collect { snapshot = it } }
-        kotlinx.coroutines.delay(0)
-        job.cancel()
-        snapshot
-      }
+      eventReminderRepository.observeByEvent(eventId).first().filter { it.deletedAt == null }
 
     val existingById = existingReminders.associateBy { it.reminderId }
     val desiredIds = desiredReminders.map { it.id }.toSet()

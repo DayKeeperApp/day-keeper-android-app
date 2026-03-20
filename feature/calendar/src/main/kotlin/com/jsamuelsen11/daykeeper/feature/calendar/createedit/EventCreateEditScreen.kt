@@ -2,8 +2,6 @@ package com.jsamuelsen11.daykeeper.feature.calendar.createedit
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -70,8 +68,7 @@ fun EventCreateEditScreen(
               onRemoveReminder = viewModel::onRemoveReminder,
               onSave = viewModel::onSave,
             ),
-          modifier =
-            Modifier.fillMaxSize().padding(innerPadding).verticalScroll(rememberScrollState()),
+          modifier = Modifier.fillMaxSize().padding(innerPadding),
         )
     }
   }

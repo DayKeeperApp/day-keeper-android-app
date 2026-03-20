@@ -56,7 +56,6 @@ private const val LABEL_NEXT_MONTH = "Next month"
 private const val LABEL_CREATE_EVENT = "Create event"
 private const val MONTH_DELTA_BACK = -1
 private const val MONTH_DELTA_FORWARD = 1
-private const val MILLIS_PER_DAY = 86_400_000L
 private val MONTH_YEAR_FORMATTER: DateTimeFormatter = DateTimeFormatter.ofPattern("MMMM yyyy")
 
 // endregion
@@ -105,7 +104,19 @@ fun CalendarScreen(
     },
     floatingActionButton = {
       DayKeeperFloatingActionButton(
-        onClick = onCreateEvent,
+        onClick = {
+          val state = uiState
+          if (state is CalendarUiState.Success) {
+            val millis =
+              state.selectedDate
+                .atStartOfDay(java.time.ZoneId.systemDefault())
+                .toInstant()
+                .toEpochMilli()
+            onCreateEventOnDate(millis)
+          } else {
+            onCreateEvent()
+          }
+        },
         icon = DayKeeperIcons.Add,
         contentDescription = LABEL_CREATE_EVENT,
       )
@@ -117,7 +128,6 @@ fun CalendarScreen(
       onCalendarToggle = viewModel::toggleCalendarVisibility,
       onDateClick = viewModel::selectDate,
       onEventClick = onEventClick,
-      onCreateEventOnDate = onCreateEventOnDate,
       modifier = Modifier.padding(innerPadding),
     )
   }
@@ -173,7 +183,6 @@ private fun CalendarScreenContent(
   onCalendarToggle: (String) -> Unit,
   onDateClick: (LocalDate) -> Unit,
   onEventClick: (String) -> Unit,
-  onCreateEventOnDate: (Long) -> Unit,
   modifier: Modifier = Modifier,
 ) {
   when (val state = uiState) {
@@ -192,7 +201,6 @@ private fun CalendarScreenContent(
         onCalendarToggle = onCalendarToggle,
         onDateClick = onDateClick,
         onEventClick = onEventClick,
-        onCreateEventOnDate = onCreateEventOnDate,
         modifier = modifier,
       )
   }
@@ -206,7 +214,6 @@ private fun CalendarSuccessContent(
   onCalendarToggle: (String) -> Unit,
   onDateClick: (LocalDate) -> Unit,
   onEventClick: (String) -> Unit,
-  onCreateEventOnDate: (Long) -> Unit,
   modifier: Modifier = Modifier,
 ) {
   Column(
@@ -219,12 +226,7 @@ private fun CalendarSuccessContent(
 
     when (state.viewMode) {
       CalendarViewMode.MONTH ->
-        MonthViewContent(
-          state = state,
-          onDateClick = onDateClick,
-          onEventClick = onEventClick,
-          onCreateEventOnDate = onCreateEventOnDate,
-        )
+        MonthViewContent(state = state, onDateClick = onDateClick, onEventClick = onEventClick)
       CalendarViewMode.WEEK ->
         WeekViewContent(
           selectedDate = state.selectedDate,
@@ -306,17 +308,13 @@ private fun MonthViewContent(
   state: CalendarUiState.Success,
   onDateClick: (LocalDate) -> Unit,
   onEventClick: (String) -> Unit,
-  onCreateEventOnDate: (Long) -> Unit,
   modifier: Modifier = Modifier,
 ) {
   Column(modifier = modifier.fillMaxSize()) {
     CalendarMonthGrid(
       monthData = state.monthGrid,
       selectedDate = state.selectedDate,
-      onDateClick = { date ->
-        onDateClick(date)
-        onCreateEventOnDate(date.toEpochDay() * MILLIS_PER_DAY)
-      },
+      onDateClick = { date -> onDateClick(date) },
       modifier = Modifier.fillMaxWidth(),
     )
     Box(modifier = Modifier.weight(1f)) {

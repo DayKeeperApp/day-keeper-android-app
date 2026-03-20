@@ -27,7 +27,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.jsamuelsen11.daykeeper.core.ui.component.ConfirmationDialog
@@ -35,6 +34,7 @@ import com.jsamuelsen11.daykeeper.core.ui.component.DayKeeperTopAppBar
 import com.jsamuelsen11.daykeeper.core.ui.component.EmptyStateView
 import com.jsamuelsen11.daykeeper.core.ui.component.LoadingIndicator
 import com.jsamuelsen11.daykeeper.core.ui.icon.DayKeeperIcons
+import com.jsamuelsen11.daykeeper.feature.calendar.component.parseHexColor
 import org.koin.compose.viewmodel.koinViewModel
 
 private val ContentPadding = 16.dp
@@ -49,9 +49,6 @@ private const val LABEL_MORE_OPTIONS = "More options"
 private const val LABEL_DELETE_CONFIRM_TITLE = "Delete Event"
 private const val LABEL_DELETE_CONFIRM_MESSAGE = "Are you sure you want to delete this event?"
 private const val LABEL_REMINDERS = "Reminders"
-private const val HEX_RADIX = 16
-private const val HEX_RGB_LENGTH = 6
-private const val HEX_ARGB_LENGTH = 8
 
 @Composable
 fun EventDetailScreen(
@@ -197,16 +194,3 @@ private fun MetaRow(icon: @Composable () -> Unit, text: String, modifier: Modifi
     Text(text = text, style = MaterialTheme.typography.bodyMedium)
   }
 }
-
-private fun parseHexColor(hex: String): Color? =
-  runCatching {
-      val cleaned = hex.trimStart('#')
-      val argb =
-        when (cleaned.length) {
-          HEX_RGB_LENGTH -> "FF$cleaned".toLong(radix = HEX_RADIX)
-          HEX_ARGB_LENGTH -> cleaned.toLong(radix = HEX_RADIX)
-          else -> return@runCatching null
-        }
-      Color(argb.toInt())
-    }
-    .getOrNull()

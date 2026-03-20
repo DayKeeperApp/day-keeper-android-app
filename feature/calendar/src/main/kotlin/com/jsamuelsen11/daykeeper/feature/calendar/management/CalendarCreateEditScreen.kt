@@ -36,6 +36,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.jsamuelsen11.daykeeper.core.ui.component.ColorPickerDialog
 import com.jsamuelsen11.daykeeper.core.ui.component.DayKeeperTopAppBar
 import com.jsamuelsen11.daykeeper.core.ui.component.LoadingIndicator
+import com.jsamuelsen11.daykeeper.feature.calendar.component.parseHexColor
 import org.koin.compose.viewmodel.koinViewModel
 
 private val ContentPadding = 16.dp
@@ -49,9 +50,6 @@ private const val LABEL_COLOR = "Color"
 private const val LABEL_CHANGE_COLOR = "Change color"
 private const val LABEL_DEFAULT_CALENDAR = "Default calendar"
 private const val LABEL_SAVE = "Save"
-private const val HEX_RADIX = 16
-private const val HEX_RGB_LENGTH = 6
-private const val HEX_ARGB_LENGTH = 8
 private const val COLOR_CHANNEL_MAX = 255
 
 @Composable
@@ -172,19 +170,6 @@ private fun ColorPickerRow(color: String, onShowPicker: () -> Unit) {
     }
   }
 }
-
-private fun parseHexColor(hex: String): Color? =
-  runCatching {
-      val cleaned = hex.trimStart('#')
-      val argb =
-        when (cleaned.length) {
-          HEX_RGB_LENGTH -> "FF$cleaned".toLong(radix = HEX_RADIX)
-          HEX_ARGB_LENGTH -> cleaned.toLong(radix = HEX_RADIX)
-          else -> return@runCatching null
-        }
-      Color(argb.toInt())
-    }
-    .getOrNull()
 
 private fun colorToHex(color: Color): String {
   val red = (color.red * COLOR_CHANNEL_MAX).toInt()

@@ -34,7 +34,8 @@ class CalendarManagementViewModelTest {
   @BeforeEach
   fun setUp() {
     every { calendarRepository.observeBySpace(TEST_SPACE_ID) } returns flowOf(emptyList())
-    every { eventRepository.observeByCalendar(TEST_SPACE_ID) } returns flowOf(emptyList())
+    // Default: any calendar ID returns no events
+    every { eventRepository.observeByCalendar(any()) } returns flowOf(emptyList())
   }
 
   private fun createViewModel(): CalendarManagementViewModel =
@@ -58,7 +59,7 @@ class CalendarManagementViewModelTest {
     val calendar = makeCalendar(calendarId = TEST_CALENDAR_ID, name = "Work")
     val event = makeEvent(calendarId = TEST_CALENDAR_ID)
     every { calendarRepository.observeBySpace(TEST_SPACE_ID) } returns flowOf(listOf(calendar))
-    every { eventRepository.observeByCalendar(TEST_SPACE_ID) } returns flowOf(listOf(event))
+    every { eventRepository.observeByCalendar(TEST_CALENDAR_ID) } returns flowOf(listOf(event))
 
     val viewModel = createViewModel()
 
@@ -88,7 +89,8 @@ class CalendarManagementViewModelTest {
     val calendar = makeCalendar(calendarId = TEST_CALENDAR_ID)
     val deletedEvent = makeEvent(calendarId = TEST_CALENDAR_ID, deletedAt = 3_000L)
     every { calendarRepository.observeBySpace(TEST_SPACE_ID) } returns flowOf(listOf(calendar))
-    every { eventRepository.observeByCalendar(TEST_SPACE_ID) } returns flowOf(listOf(deletedEvent))
+    every { eventRepository.observeByCalendar(TEST_CALENDAR_ID) } returns
+      flowOf(listOf(deletedEvent))
 
     val viewModel = createViewModel()
 
@@ -105,7 +107,6 @@ class CalendarManagementViewModelTest {
       makeCalendar(calendarId = TEST_CALENDAR_ID_2, name = "Alpha", isDefault = false)
     every { calendarRepository.observeBySpace(TEST_SPACE_ID) } returns
       flowOf(listOf(regularCal, defaultCal))
-    every { eventRepository.observeByCalendar(TEST_SPACE_ID) } returns flowOf(emptyList())
 
     val viewModel = createViewModel()
 
@@ -120,7 +121,6 @@ class CalendarManagementViewModelTest {
     val calB = makeCalendar(calendarId = TEST_CALENDAR_ID, name = "Zeta", isDefault = false)
     val calA = makeCalendar(calendarId = TEST_CALENDAR_ID_2, name = "Alpha", isDefault = false)
     every { calendarRepository.observeBySpace(TEST_SPACE_ID) } returns flowOf(listOf(calB, calA))
-    every { eventRepository.observeByCalendar(TEST_SPACE_ID) } returns flowOf(emptyList())
 
     val viewModel = createViewModel()
 
