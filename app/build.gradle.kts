@@ -23,6 +23,7 @@ dependencies {
   implementation(project(":core:database"))
   implementation(project(":core:data"))
 
+  implementation(project(":feature:calendar"))
   implementation(project(":feature:lists"))
   implementation(project(":feature:people"))
   implementation(project(":feature:tasks"))

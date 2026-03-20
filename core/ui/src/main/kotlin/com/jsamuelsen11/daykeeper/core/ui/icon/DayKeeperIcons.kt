@@ -2,6 +2,7 @@ package com.jsamuelsen11.daykeeper.core.ui.icon
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.ArrowBack
+import androidx.compose.material.icons.automirrored.outlined.KeyboardArrowLeft
 import androidx.compose.material.icons.automirrored.outlined.KeyboardArrowRight
 import androidx.compose.material.icons.automirrored.outlined.Label
 import androidx.compose.material.icons.automirrored.outlined.Sort
@@ -43,6 +44,7 @@ import androidx.compose.material.icons.outlined.ShoppingCart
 import androidx.compose.material.icons.outlined.Storage
 import androidx.compose.material.icons.outlined.Sync
 import androidx.compose.material.icons.outlined.Task
+import androidx.compose.material.icons.outlined.Today
 import androidx.compose.material.icons.outlined.Visibility
 import androidx.compose.ui.graphics.vector.ImageVector
 
@@ -79,7 +81,9 @@ object DayKeeperIcons {
 
   // region Navigation chrome
   val ArrowBack: ImageVector = Icons.AutoMirrored.Outlined.ArrowBack
+  val ChevronLeft: ImageVector = Icons.AutoMirrored.Outlined.KeyboardArrowLeft
   val ChevronRight: ImageVector = Icons.AutoMirrored.Outlined.KeyboardArrowRight
+  val Today: ImageVector = Icons.Outlined.Today
   val ExpandMore: ImageVector = Icons.Outlined.ExpandMore
   val ExpandLess: ImageVector = Icons.Outlined.ExpandLess
   val Menu: ImageVector = Icons.Outlined.Menu
