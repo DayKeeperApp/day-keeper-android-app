@@ -34,4 +34,7 @@ public interface ShoppingListItemDao {
     "UPDATE shopping_list_items SET is_checked = :isChecked, updated_at = :updatedAt WHERE item_id = :itemId"
   )
   public suspend fun toggleChecked(itemId: String, isChecked: Boolean, updatedAt: Long)
+
+  @Query("SELECT * FROM shopping_list_items WHERE updated_at > :since")
+  public suspend fun getModifiedSince(since: Long): List<ShoppingListItemEntity>
 }

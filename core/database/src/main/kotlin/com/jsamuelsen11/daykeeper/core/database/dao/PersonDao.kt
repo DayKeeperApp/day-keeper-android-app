@@ -29,4 +29,7 @@ public interface PersonDao {
 
   @Query("DELETE FROM persons WHERE person_id = :personId")
   public suspend fun hardDelete(personId: String)
+
+  @Query("SELECT * FROM persons WHERE updated_at > :since")
+  public suspend fun getModifiedSince(since: Long): List<PersonEntity>
 }

@@ -3,7 +3,7 @@ package com.jsamuelsen11.daykeeper.core.network.auth
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.security.crypto.EncryptedSharedPreferences
-import androidx.security.crypto.MasterKeys
+import androidx.security.crypto.MasterKey
 
 private const val PREFS_FILE_NAME = "daykeeper_auth_prefs"
 private const val KEY_ACCESS_TOKEN = "access_token"
@@ -13,11 +13,11 @@ private const val KEY_REFRESH_TOKEN = "refresh_token"
 class EncryptedTokenStore(context: Context) : TokenStore {
 
   private val prefs: SharedPreferences by lazy {
-    val masterKeyAlias = MasterKeys.getOrCreate(MasterKeys.AES256_GCM_SPEC)
+    val masterKey = MasterKey.Builder(context).setKeyScheme(MasterKey.KeyScheme.AES256_GCM).build()
     EncryptedSharedPreferences.create(
-      PREFS_FILE_NAME,
-      masterKeyAlias,
       context,
+      PREFS_FILE_NAME,
+      masterKey,
       EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
       EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM,
     )

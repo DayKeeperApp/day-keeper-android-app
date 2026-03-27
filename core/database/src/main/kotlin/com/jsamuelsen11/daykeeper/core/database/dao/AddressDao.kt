@@ -26,4 +26,7 @@ public interface AddressDao {
 
   @Query("DELETE FROM addresses WHERE address_id = :addressId")
   public suspend fun hardDelete(addressId: String)
+
+  @Query("SELECT * FROM addresses WHERE updated_at > :since")
+  public suspend fun getModifiedSince(since: Long): List<AddressEntity>
 }

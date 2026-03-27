@@ -27,4 +27,7 @@ public interface ContactMethodDao {
 
   @Query("DELETE FROM contact_methods WHERE contact_method_id = :contactMethodId")
   public suspend fun hardDelete(contactMethodId: String)
+
+  @Query("SELECT * FROM contact_methods WHERE updated_at > :since")
+  public suspend fun getModifiedSince(since: Long): List<ContactMethodEntity>
 }

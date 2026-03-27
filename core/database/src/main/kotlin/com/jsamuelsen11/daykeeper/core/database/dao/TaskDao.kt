@@ -39,4 +39,7 @@ public interface TaskDao {
   public suspend fun softDelete(taskId: String, deletedAt: Long, updatedAt: Long)
 
   @Query("DELETE FROM tasks WHERE task_id = :taskId") public suspend fun hardDelete(taskId: String)
+
+  @Query("SELECT * FROM tasks WHERE updated_at > :since")
+  public suspend fun getModifiedSince(since: Long): List<TaskEntity>
 }

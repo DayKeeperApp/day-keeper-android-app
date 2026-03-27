@@ -29,4 +29,7 @@ public interface AccountDao {
 
   @Query("DELETE FROM accounts WHERE tenant_id = :tenantId")
   public suspend fun hardDelete(tenantId: String)
+
+  @Query("SELECT * FROM accounts WHERE updated_at > :since")
+  public suspend fun getModifiedSince(since: Long): List<AccountEntity>
 }

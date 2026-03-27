@@ -29,4 +29,7 @@ public interface CalendarDao {
 
   @Query("DELETE FROM calendars WHERE calendar_id = :calendarId")
   public suspend fun hardDelete(calendarId: String)
+
+  @Query("SELECT * FROM calendars WHERE updated_at > :since")
+  public suspend fun getModifiedSince(since: Long): List<CalendarEntity>
 }

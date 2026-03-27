@@ -20,4 +20,7 @@ public interface EventTypeDao {
 
   @Query("DELETE FROM event_types WHERE event_type_id = :eventTypeId")
   public suspend fun hardDelete(eventTypeId: String)
+
+  @Query("SELECT * FROM event_types WHERE updated_at > :since")
+  public suspend fun getModifiedSince(since: Long): List<EventTypeEntity>
 }

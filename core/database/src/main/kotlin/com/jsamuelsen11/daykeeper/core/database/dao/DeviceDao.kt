@@ -24,4 +24,7 @@ public interface DeviceDao {
 
   @Query("DELETE FROM devices WHERE device_id = :deviceId")
   public suspend fun hardDelete(deviceId: String)
+
+  @Query("SELECT * FROM devices WHERE updated_at > :since")
+  public suspend fun getModifiedSince(since: Long): List<DeviceEntity>
 }
