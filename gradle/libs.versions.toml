@@ -28,6 +28,9 @@ koin-bom = "4.1.1"
 # Networking (Ktor)
 ktor = "3.4.1"
 
+# Security
+androidx-security-crypto = "1.1.0-alpha06"
+
 # Serialization
 kotlinx-serialization-json = "1.8.1"
 
@@ -119,6 +122,16 @@ ktor-client-core = { group = "io.ktor", name = "ktor-client-core", version.ref =
 ktor-client-okhttp = { group = "io.ktor", name = "ktor-client-okhttp", version.ref = "ktor" }
 ktor-client-content-negotiation = { group = "io.ktor", name = "ktor-client-content-negotiation", version.ref = "ktor" }
 ktor-serialization-kotlinx-json = { group = "io.ktor", name = "ktor-serialization-kotlinx-json", version.ref = "ktor" }
+ktor-client-auth = { group = "io.ktor", name = "ktor-client-auth", version.ref = "ktor" }
+ktor-client-logging = { group = "io.ktor", name = "ktor-client-logging", version.ref = "ktor" }
+ktor-client-mock = { group = "io.ktor", name = "ktor-client-mock", version.ref = "ktor" }
+
+# Security
+androidx-security-crypto = { group = "androidx.security", name = "security-crypto", version.ref = "androidx-security-crypto" }
+
+# WorkManager (Koin integration)
+koin-androidx-workmanager = { group = "io.insert-koin", name = "koin-androidx-workmanager" }
+androidx-work-testing = { group = "androidx.work", name = "work-testing", version.ref = "androidx-work" }
 
 # Serialization
 kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinx-serialization-json" }
@@ -174,6 +187,14 @@ testing-android = [
   "androidx-test-ext-junit",
   "androidx-test-espresso-core",
   "androidx-compose-ui-test-junit4",
+]
+ktor-client = [
+  "ktor-client-core",
+  "ktor-client-okhttp",
+  "ktor-client-content-negotiation",
+  "ktor-serialization-kotlinx-json",
+  "ktor-client-auth",
+  "ktor-client-logging",
 ]
 
 [plugins]
