@@ -9,6 +9,7 @@ dependencies {
 
   implementation(libs.kotlinx.coroutines.core)
   implementation(libs.androidx.datastore.preferences)
+  implementation(libs.androidx.work.runtime.ktx)
 
   implementation(platform(libs.koin.bom))
   implementation(libs.koin.core)

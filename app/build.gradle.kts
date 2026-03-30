@@ -13,7 +13,15 @@ android {
     versionName = "1.0.2"
   }
 
-  buildFeatures { compose = true }
+  buildFeatures {
+    compose = true
+    buildConfig = true
+  }
+
+  buildTypes {
+    debug { buildConfigField("String", "SYNC_BASE_URL", "\"https://api.daykeeper.local/\"") }
+    release { buildConfigField("String", "SYNC_BASE_URL", "\"https://api.daykeeper.local/\"") }
+  }
 }
 
 dependencies {
@@ -22,6 +30,7 @@ dependencies {
   implementation(project(":core:ui"))
   implementation(project(":core:database"))
   implementation(project(":core:data"))
+  implementation(project(":core:network"))
 
   implementation(project(":feature:calendar"))
   implementation(project(":feature:lists"))
@@ -37,9 +46,12 @@ dependencies {
   implementation(libs.androidx.navigation.compose)
   implementation(libs.kotlinx.serialization.json)
 
+  implementation(libs.androidx.work.runtime.ktx)
+
   implementation(platform(libs.koin.bom))
   implementation(libs.koin.core)
   implementation(libs.koin.android)
+  implementation(libs.koin.androidx.workmanager)
 
   testImplementation(platform(libs.koin.bom))
   testImplementation(libs.koin.test)
