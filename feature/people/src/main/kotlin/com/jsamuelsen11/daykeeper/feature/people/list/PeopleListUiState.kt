@@ -10,6 +10,7 @@ sealed interface PeopleListUiState {
     val people: List<PersonSummary>,
     val searchQuery: String = "",
     val sortOrder: PeopleSortOrder = PeopleSortOrder.FIRST_NAME_ASC,
+    val isRefreshing: Boolean = false,
   ) : PeopleListUiState
 
   data class Error(val message: String) : PeopleListUiState

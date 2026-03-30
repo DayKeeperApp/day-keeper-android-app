@@ -7,7 +7,7 @@ import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 
 val listsModule = module {
-  viewModel { ListsOverviewViewModel(get(), get()) }
+  viewModel { ListsOverviewViewModel(get(), get(), get()) }
   viewModel { ShoppingListViewModel(get(), get(), get()) }
   viewModel { ListCreateEditViewModel(get(), get()) }
 }
