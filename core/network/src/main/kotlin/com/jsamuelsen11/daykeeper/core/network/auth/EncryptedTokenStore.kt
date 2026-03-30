@@ -2,6 +2,7 @@ package com.jsamuelsen11.daykeeper.core.network.auth
 
 import android.content.Context
 import android.content.SharedPreferences
+import androidx.core.content.edit
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
 
@@ -28,14 +29,16 @@ class EncryptedTokenStore(context: Context) : TokenStore {
   override suspend fun getRefreshToken(): String? = prefs.getString(KEY_REFRESH_TOKEN, null)
 
   override suspend fun saveTokens(accessToken: String, refreshToken: String) {
-    prefs
-      .edit()
-      .putString(KEY_ACCESS_TOKEN, accessToken)
-      .putString(KEY_REFRESH_TOKEN, refreshToken)
-      .apply()
+    prefs.edit {
+      putString(KEY_ACCESS_TOKEN, accessToken)
+      putString(KEY_REFRESH_TOKEN, refreshToken)
+    }
   }
 
   override suspend fun clear() {
-    prefs.edit().remove(KEY_ACCESS_TOKEN).remove(KEY_REFRESH_TOKEN).apply()
+    prefs.edit {
+      remove(KEY_ACCESS_TOKEN)
+      remove(KEY_REFRESH_TOKEN)
+    }
   }
 }
