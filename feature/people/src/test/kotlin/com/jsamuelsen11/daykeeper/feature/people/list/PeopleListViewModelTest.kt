@@ -5,6 +5,8 @@ import com.jsamuelsen11.daykeeper.core.data.repository.AddressRepository
 import com.jsamuelsen11.daykeeper.core.data.repository.ContactMethodRepository
 import com.jsamuelsen11.daykeeper.core.data.repository.ImportantDateRepository
 import com.jsamuelsen11.daykeeper.core.data.repository.PersonRepository
+import com.jsamuelsen11.daykeeper.core.data.sync.SyncStatus
+import com.jsamuelsen11.daykeeper.core.data.sync.SyncStatusProvider
 import com.jsamuelsen11.daykeeper.feature.people.MainDispatcherExtension
 import com.jsamuelsen11.daykeeper.feature.people.TEST_PERSON_ID
 import com.jsamuelsen11.daykeeper.feature.people.TEST_PERSON_ID_2
@@ -36,6 +38,10 @@ class PeopleListViewModelTest {
   private val contactMethodRepository = mockk<ContactMethodRepository>()
   private val addressRepository = mockk<AddressRepository>()
   private val importantDateRepository = mockk<ImportantDateRepository>()
+  private val syncStatusProvider =
+    mockk<SyncStatusProvider> {
+      every { syncStatus } returns kotlinx.coroutines.flow.MutableStateFlow(SyncStatus.Idle)
+    }
 
   @BeforeEach
   fun setUp() {
@@ -51,6 +57,7 @@ class PeopleListViewModelTest {
       contactMethodRepository = contactMethodRepository,
       addressRepository = addressRepository,
       importantDateRepository = importantDateRepository,
+      syncStatusProvider = syncStatusProvider,
     )
 
   // --- UiState shape ---

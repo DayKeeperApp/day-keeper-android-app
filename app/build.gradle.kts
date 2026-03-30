@@ -56,6 +56,7 @@ dependencies {
   testImplementation(platform(libs.koin.bom))
   testImplementation(libs.koin.test)
   testImplementation(libs.koin.test.junit5)
+  testImplementation(libs.ktor.client.core)
 
   androidTestImplementation(platform(libs.androidx.compose.bom))
   debugImplementation(libs.bundles.compose.debug)

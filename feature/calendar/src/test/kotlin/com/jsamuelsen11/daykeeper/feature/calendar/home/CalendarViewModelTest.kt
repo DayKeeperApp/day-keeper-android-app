@@ -4,6 +4,8 @@ import app.cash.turbine.test
 import com.jsamuelsen11.daykeeper.core.data.repository.CalendarRepository
 import com.jsamuelsen11.daykeeper.core.data.repository.EventRepository
 import com.jsamuelsen11.daykeeper.core.data.repository.EventTypeRepository
+import com.jsamuelsen11.daykeeper.core.data.sync.SyncStatus
+import com.jsamuelsen11.daykeeper.core.data.sync.SyncStatusProvider
 import com.jsamuelsen11.daykeeper.feature.calendar.MainDispatcherExtension
 import com.jsamuelsen11.daykeeper.feature.calendar.TEST_CALENDAR_ID
 import com.jsamuelsen11.daykeeper.feature.calendar.TEST_CALENDAR_ID_2
@@ -30,6 +32,10 @@ class CalendarViewModelTest {
   private val eventRepository = mockk<EventRepository>()
   private val calendarRepository = mockk<CalendarRepository>()
   private val eventTypeRepository = mockk<EventTypeRepository>()
+  private val syncStatusProvider =
+    mockk<SyncStatusProvider> {
+      every { syncStatus } returns kotlinx.coroutines.flow.MutableStateFlow(SyncStatus.Idle)
+    }
 
   @BeforeEach
   fun setUp() {
@@ -42,6 +48,7 @@ class CalendarViewModelTest {
       eventRepository = eventRepository,
       calendarRepository = calendarRepository,
       eventTypeRepository = eventTypeRepository,
+      syncStatusProvider = syncStatusProvider,
     )
 
   @Test

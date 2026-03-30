@@ -4,6 +4,8 @@ import app.cash.turbine.test
 import com.jsamuelsen11.daykeeper.core.data.repository.ProjectRepository
 import com.jsamuelsen11.daykeeper.core.data.repository.TaskCategoryRepository
 import com.jsamuelsen11.daykeeper.core.data.repository.TaskRepository
+import com.jsamuelsen11.daykeeper.core.data.sync.SyncStatus
+import com.jsamuelsen11.daykeeper.core.data.sync.SyncStatusProvider
 import com.jsamuelsen11.daykeeper.core.model.task.Priority
 import com.jsamuelsen11.daykeeper.core.model.task.TaskStatus
 import com.jsamuelsen11.daykeeper.feature.tasks.MainDispatcherExtension
@@ -38,6 +40,10 @@ class TaskListViewModelTest {
   private val taskRepository = mockk<TaskRepository>()
   private val projectRepository = mockk<ProjectRepository>()
   private val categoryRepository = mockk<TaskCategoryRepository>()
+  private val syncStatusProvider =
+    mockk<SyncStatusProvider> {
+      every { syncStatus } returns kotlinx.coroutines.flow.MutableStateFlow(SyncStatus.Idle)
+    }
 
   @BeforeEach
   fun setUp() {
@@ -51,6 +57,7 @@ class TaskListViewModelTest {
       taskRepository = taskRepository,
       projectRepository = projectRepository,
       taskCategoryRepository = categoryRepository,
+      syncStatusProvider = syncStatusProvider,
     )
 
   @Test

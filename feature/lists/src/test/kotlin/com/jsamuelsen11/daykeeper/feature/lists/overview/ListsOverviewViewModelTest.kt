@@ -3,6 +3,8 @@ package com.jsamuelsen11.daykeeper.feature.lists.overview
 import app.cash.turbine.test
 import com.jsamuelsen11.daykeeper.core.data.repository.ShoppingListItemRepository
 import com.jsamuelsen11.daykeeper.core.data.repository.ShoppingListRepository
+import com.jsamuelsen11.daykeeper.core.data.sync.SyncStatus
+import com.jsamuelsen11.daykeeper.core.data.sync.SyncStatusProvider
 import com.jsamuelsen11.daykeeper.feature.lists.MainDispatcherExtension
 import com.jsamuelsen11.daykeeper.feature.lists.TEST_ITEM_ID_2
 import com.jsamuelsen11.daykeeper.feature.lists.TEST_LIST_ID
@@ -31,6 +33,10 @@ class ListsOverviewViewModelTest {
 
   private val listRepository = mockk<ShoppingListRepository>()
   private val itemRepository = mockk<ShoppingListItemRepository>()
+  private val syncStatusProvider =
+    mockk<SyncStatusProvider> {
+      every { syncStatus } returns kotlinx.coroutines.flow.MutableStateFlow(SyncStatus.Idle)
+    }
 
   private lateinit var viewModel: ListsOverviewViewModel
 
@@ -41,7 +47,11 @@ class ListsOverviewViewModelTest {
   }
 
   private fun createViewModel(): ListsOverviewViewModel =
-    ListsOverviewViewModel(listRepository = listRepository, itemRepository = itemRepository)
+    ListsOverviewViewModel(
+      listRepository = listRepository,
+      itemRepository = itemRepository,
+      syncStatusProvider = syncStatusProvider,
+    )
 
   @Test
   fun `initial state is Loading before any emission`() = runTest {
