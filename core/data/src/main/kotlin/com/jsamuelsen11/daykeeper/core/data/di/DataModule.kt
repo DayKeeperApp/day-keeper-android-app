@@ -44,6 +44,11 @@ import com.jsamuelsen11.daykeeper.core.data.repository.TaskCategoryRepository
 import com.jsamuelsen11.daykeeper.core.data.repository.TaskCategoryRepositoryImpl
 import com.jsamuelsen11.daykeeper.core.data.repository.TaskRepository
 import com.jsamuelsen11.daykeeper.core.data.repository.TaskRepositoryImpl
+import com.jsamuelsen11.daykeeper.core.data.sync.SyncManager
+import com.jsamuelsen11.daykeeper.core.data.sync.SyncStatusProvider
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.bind
 import org.koin.dsl.module
@@ -74,4 +79,7 @@ public val dataModule = module {
   single { ShoppingListItemRepositoryImpl(get()) } bind ShoppingListItemRepository::class
   single { AttachmentRepositoryImpl(get()) } bind AttachmentRepository::class
   single { SyncCursorRepositoryImpl(get()) } bind SyncCursorRepository::class
+
+  single { CoroutineScope(SupervisorJob() + Dispatchers.IO) }
+  single { SyncManager(get(), get(), get(), get()) } bind SyncStatusProvider::class
 }
