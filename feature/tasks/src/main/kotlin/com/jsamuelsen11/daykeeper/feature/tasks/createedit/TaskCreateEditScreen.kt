@@ -1,5 +1,6 @@
 package com.jsamuelsen11.daykeeper.feature.tasks.createedit
 
+import android.net.Uri
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
@@ -37,8 +38,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.jsamuelsen11.daykeeper.core.model.attachment.AttachmentUiItem
 import com.jsamuelsen11.daykeeper.core.model.task.Priority
 import com.jsamuelsen11.daykeeper.core.model.task.Project
+import com.jsamuelsen11.daykeeper.core.ui.component.AttachmentPicker
+import com.jsamuelsen11.daykeeper.core.ui.component.AttachmentRow
 import com.jsamuelsen11.daykeeper.core.ui.component.CategoryChip
 import com.jsamuelsen11.daykeeper.core.ui.component.DayKeeperDatePicker
 import com.jsamuelsen11.daykeeper.core.ui.component.DayKeeperTimePicker
@@ -133,6 +137,8 @@ fun TaskCreateEditScreen(
               onReminderChanged = viewModel::onReminderChanged,
               onManageCategories = onManageCategories,
             ),
+          onDownloadAttachment = viewModel::downloadAttachment,
+          onDeleteAttachment = viewModel::deleteAttachment,
           modifier = Modifier.padding(innerPadding),
         )
     }
@@ -144,50 +150,36 @@ fun TaskCreateEditScreen(
 private fun TaskCreateEditContent(
   state: TaskCreateEditUiState.Ready,
   callbacks: TaskCreateEditCallbacks,
+  onDownloadAttachment: (AttachmentUiItem) -> Unit,
+  onDeleteAttachment: (String) -> Unit,
   modifier: Modifier = Modifier,
 ) {
   var showDatePicker by remember { mutableStateOf(false) }
   var showTimePicker by remember { mutableStateOf(false) }
   var showRecurrencePicker by remember { mutableStateOf(false) }
   var showReminderConfigurator by remember { mutableStateOf(false) }
+  var showAttachmentPicker by remember { mutableStateOf(false) }
 
-  if (showDatePicker) {
-    DayKeeperDatePicker(
-      onDateSelected = { epochMillis ->
-        callbacks.onDueDateSelected(formatEpochToDate(epochMillis))
-        showDatePicker = false
-      },
-      onDismiss = { showDatePicker = false },
-    )
-  }
-  if (showTimePicker) {
-    DayKeeperTimePicker(
-      onTimeSelected = { hour, minute ->
-        val combinedMillis = buildDueAtMillis(state.dueDate, hour, minute)
-        if (combinedMillis != null) callbacks.onDueTimeSelected(combinedMillis)
-        showTimePicker = false
-      },
-      onDismiss = { showTimePicker = false },
-    )
-  }
-  if (showRecurrencePicker) {
-    RecurrencePicker(
-      onRecurrenceSelected = { rule ->
-        callbacks.onRecurrenceChanged(rule)
-        showRecurrencePicker = false
-      },
-      onDismiss = { showRecurrencePicker = false },
-      initialRule = state.recurrenceRule,
-    )
-  }
-  if (showReminderConfigurator) {
-    ReminderConfigurator(
-      onReminderSelected = { minutes ->
-        callbacks.onReminderChanged(minutes)
-        showReminderConfigurator = false
-      },
-      onDismiss = { showReminderConfigurator = false },
-      initialMinutesBefore = state.reminderMinutesBefore,
+  TaskCreateEditPickers(
+    state = state,
+    callbacks = callbacks,
+    showDatePicker = showDatePicker,
+    showTimePicker = showTimePicker,
+    showRecurrencePicker = showRecurrencePicker,
+    showReminderConfigurator = showReminderConfigurator,
+    onDismiss = {
+      showDatePicker = false
+      showTimePicker = false
+      showRecurrencePicker = false
+      showReminderConfigurator = false
+    },
+  )
+
+  if (showAttachmentPicker) {
+    AttachmentPicker(
+      onDismiss = { showAttachmentPicker = false },
+      onImageCaptured = { _: Uri -> showAttachmentPicker = false },
+      onFileSelected = { _: Uri -> showAttachmentPicker = false },
     )
   }
 
@@ -205,7 +197,66 @@ private fun TaskCreateEditContent(
       onPickReminder = { showReminderConfigurator = true },
     )
 
+    AttachmentRow(
+      attachments = state.attachments,
+      onAddClick = { showAttachmentPicker = true },
+      onAttachmentClick = { item -> onDownloadAttachment(item) },
+      onDeleteAttachment = onDeleteAttachment,
+    )
+
     Spacer(modifier = Modifier.height(SectionSpacing))
+  }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun TaskCreateEditPickers(
+  state: TaskCreateEditUiState.Ready,
+  callbacks: TaskCreateEditCallbacks,
+  showDatePicker: Boolean,
+  showTimePicker: Boolean,
+  showRecurrencePicker: Boolean,
+  showReminderConfigurator: Boolean,
+  onDismiss: () -> Unit,
+) {
+  if (showDatePicker) {
+    DayKeeperDatePicker(
+      onDateSelected = { epochMillis ->
+        callbacks.onDueDateSelected(formatEpochToDate(epochMillis))
+        onDismiss()
+      },
+      onDismiss = onDismiss,
+    )
+  }
+  if (showTimePicker) {
+    DayKeeperTimePicker(
+      onTimeSelected = { hour, minute ->
+        val combinedMillis = buildDueAtMillis(state.dueDate, hour, minute)
+        if (combinedMillis != null) callbacks.onDueTimeSelected(combinedMillis)
+        onDismiss()
+      },
+      onDismiss = onDismiss,
+    )
+  }
+  if (showRecurrencePicker) {
+    RecurrencePicker(
+      onRecurrenceSelected = { rule ->
+        callbacks.onRecurrenceChanged(rule)
+        onDismiss()
+      },
+      onDismiss = onDismiss,
+      initialRule = state.recurrenceRule,
+    )
+  }
+  if (showReminderConfigurator) {
+    ReminderConfigurator(
+      onReminderSelected = { minutes ->
+        callbacks.onReminderChanged(minutes)
+        onDismiss()
+      },
+      onDismiss = onDismiss,
+      initialMinutesBefore = state.reminderMinutesBefore,
+    )
   }
 }
 

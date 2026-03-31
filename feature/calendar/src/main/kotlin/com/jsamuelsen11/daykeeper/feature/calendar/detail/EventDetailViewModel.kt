@@ -3,10 +3,15 @@ package com.jsamuelsen11.daykeeper.feature.calendar.detail
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.jsamuelsen11.daykeeper.core.data.attachment.AttachmentManager
+import com.jsamuelsen11.daykeeper.core.data.repository.AttachmentRepository
 import com.jsamuelsen11.daykeeper.core.data.repository.CalendarRepository
 import com.jsamuelsen11.daykeeper.core.data.repository.EventReminderRepository
 import com.jsamuelsen11.daykeeper.core.data.repository.EventRepository
 import com.jsamuelsen11.daykeeper.core.data.repository.EventTypeRepository
+import com.jsamuelsen11.daykeeper.core.model.attachment.AttachableEntityType
+import com.jsamuelsen11.daykeeper.core.model.attachment.Attachment
+import com.jsamuelsen11.daykeeper.core.model.attachment.AttachmentUiItem
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -32,6 +37,8 @@ private const val STOP_TIMEOUT_MILLIS = 5_000L
  * @param calendarRepository Source of truth for calendar data.
  * @param eventTypeRepository Source of truth for event type data.
  * @param eventReminderRepository Source of truth for reminder data.
+ * @param attachmentRepository Source of truth for attachment data.
+ * @param attachmentManager Manages download, upload, and local cache of attachments.
  */
 @OptIn(ExperimentalCoroutinesApi::class)
 class EventDetailViewModel(
@@ -40,6 +47,8 @@ class EventDetailViewModel(
   private val calendarRepository: CalendarRepository,
   private val eventTypeRepository: EventTypeRepository,
   private val eventReminderRepository: EventReminderRepository,
+  private val attachmentRepository: AttachmentRepository,
+  private val attachmentManager: AttachmentManager,
 ) : ViewModel() {
 
   private val eventId: String = checkNotNull(savedStateHandle["eventId"])
@@ -65,13 +74,20 @@ class EventDetailViewModel(
             eventReminderRepository.observeByEvent(eventId).flatMapLatest { reminders ->
               flowOf(reminders.filter { it.deletedAt == null })
             }
+          val attachmentsFlow =
+            attachmentRepository.observeByEntity(AttachableEntityType.EVENT, eventId)
 
-          combine(calendarFlow, eventTypeFlow, remindersFlow) { calendar, eventType, reminders ->
+          combine(calendarFlow, eventTypeFlow, remindersFlow, attachmentsFlow) {
+            calendar,
+            eventType,
+            reminders,
+            attachments ->
             EventDetailUiState.Success(
               event = event,
               calendar = calendar?.takeIf { it.deletedAt == null },
               eventType = eventType,
               reminders = reminders,
+              attachments = attachments.map { it.toUiItem() },
             )
           }
         }
@@ -87,4 +103,26 @@ class EventDetailViewModel(
   fun deleteEvent() {
     viewModelScope.launch { eventRepository.delete(eventId) }
   }
+
+  fun downloadAttachment(item: AttachmentUiItem) {
+    viewModelScope.launch {
+      val attachment = attachmentRepository.getById(item.attachmentId) ?: return@launch
+      attachmentManager.download(attachment)
+    }
+  }
+
+  fun deleteAttachment(attachmentId: String) {
+    viewModelScope.launch { attachmentRepository.delete(attachmentId) }
+  }
+
+  private fun Attachment.toUiItem(): AttachmentUiItem =
+    AttachmentUiItem(
+      attachmentId = attachmentId,
+      fileName = fileName,
+      mimeType = mimeType,
+      fileSize = fileSize,
+      downloadState = attachmentManager.observeDownloadState(attachmentId).value,
+      remoteUrl = remoteUrl,
+      localPath = localPath,
+    )
 }

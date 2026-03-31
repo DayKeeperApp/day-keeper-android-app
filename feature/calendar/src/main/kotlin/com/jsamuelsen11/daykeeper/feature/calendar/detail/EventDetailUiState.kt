@@ -1,5 +1,6 @@
 package com.jsamuelsen11.daykeeper.feature.calendar.detail
 
+import com.jsamuelsen11.daykeeper.core.model.attachment.AttachmentUiItem
 import com.jsamuelsen11.daykeeper.core.model.calendar.Calendar
 import com.jsamuelsen11.daykeeper.core.model.calendar.Event
 import com.jsamuelsen11.daykeeper.core.model.calendar.EventReminder
@@ -17,12 +18,14 @@ sealed interface EventDetailUiState {
    * @property calendar The calendar this event belongs to, or null if it cannot be resolved.
    * @property eventType The event type for this event, or null if no type is assigned.
    * @property reminders All non-deleted reminders associated with this event.
+   * @property attachments Attachments associated with this event.
    */
   data class Success(
     val event: Event,
     val calendar: Calendar?,
     val eventType: EventType?,
     val reminders: List<EventReminder>,
+    val attachments: List<AttachmentUiItem> = emptyList(),
   ) : EventDetailUiState
 
   /**

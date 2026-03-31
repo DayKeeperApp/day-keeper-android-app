@@ -1,5 +1,6 @@
 package com.jsamuelsen11.daykeeper.feature.calendar.createedit
 
+import com.jsamuelsen11.daykeeper.core.model.attachment.AttachmentUiItem
 import com.jsamuelsen11.daykeeper.core.model.calendar.Calendar
 import com.jsamuelsen11.daykeeper.core.model.calendar.EventType
 import com.jsamuelsen11.daykeeper.core.model.calendar.RecurrenceRule
@@ -17,12 +18,14 @@ sealed interface EventCreateEditUiState {
    * @property isEditing Whether the screen is editing an existing event.
    * @property calendars Available calendars the user can assign the event to.
    * @property eventTypes Available event types the user can assign to the event.
+   * @property attachments Attachments associated with this event when editing.
    */
   data class Ready(
     val formState: EventFormState,
     val isEditing: Boolean = false,
     val calendars: List<Calendar> = emptyList(),
     val eventTypes: List<EventType> = emptyList(),
+    val attachments: List<AttachmentUiItem> = emptyList(),
   ) : EventCreateEditUiState
 }
 

@@ -4,6 +4,7 @@ build:
 complexity:
   LongParameterList:
     functionThreshold: 10
+    constructorThreshold: 10
     ignoreDefaultParameters: true
   ComplexCondition:
     threshold: 5

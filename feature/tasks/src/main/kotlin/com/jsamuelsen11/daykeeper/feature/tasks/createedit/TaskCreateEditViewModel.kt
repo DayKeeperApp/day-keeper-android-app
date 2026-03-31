@@ -3,9 +3,13 @@ package com.jsamuelsen11.daykeeper.feature.tasks.createedit
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.jsamuelsen11.daykeeper.core.data.attachment.AttachmentManager
+import com.jsamuelsen11.daykeeper.core.data.repository.AttachmentRepository
 import com.jsamuelsen11.daykeeper.core.data.repository.ProjectRepository
 import com.jsamuelsen11.daykeeper.core.data.repository.TaskCategoryRepository
 import com.jsamuelsen11.daykeeper.core.data.repository.TaskRepository
+import com.jsamuelsen11.daykeeper.core.model.attachment.AttachableEntityType
+import com.jsamuelsen11.daykeeper.core.model.attachment.AttachmentUiItem
 import com.jsamuelsen11.daykeeper.core.model.calendar.RecurrenceRule
 import com.jsamuelsen11.daykeeper.core.model.task.Priority
 import com.jsamuelsen11.daykeeper.core.model.task.Task
@@ -16,6 +20,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -25,13 +31,16 @@ import kotlinx.coroutines.launch
  *
  * Loads an existing task when [SavedStateHandle] contains a `taskId`, and pre-selects a project
  * when `projectId` is provided. Projects and categories are loaded reactively via [Flow] and kept
- * in sync for the lifetime of the ViewModel.
+ * in sync for the lifetime of the ViewModel. When editing, attachments are observed and included in
+ * the state.
  */
 class TaskCreateEditViewModel(
   savedStateHandle: SavedStateHandle,
   private val taskRepository: TaskRepository,
   private val projectRepository: ProjectRepository,
   private val taskCategoryRepository: TaskCategoryRepository,
+  private val attachmentRepository: AttachmentRepository,
+  private val attachmentManager: AttachmentManager,
 ) : ViewModel() {
 
   private val taskId: String? = savedStateHandle[KEY_TASK_ID]
@@ -52,10 +61,32 @@ class TaskCreateEditViewModel(
     viewModelScope.launch {
       val existingTask = if (isEditing) taskRepository.getById(taskId!!) else null
 
+      val attachmentsFlow =
+        if (isEditing && taskId != null) {
+          attachmentRepository.observeByEntity(AttachableEntityType.TASK, taskId).map { attachments
+            ->
+            attachments.map { attachment ->
+              AttachmentUiItem(
+                attachmentId = attachment.attachmentId,
+                fileName = attachment.fileName,
+                mimeType = attachment.mimeType,
+                fileSize = attachment.fileSize,
+                downloadState =
+                  attachmentManager.observeDownloadState(attachment.attachmentId).value,
+                remoteUrl = attachment.remoteUrl,
+                localPath = attachment.localPath,
+              )
+            }
+          }
+        } else {
+          flowOf(emptyList())
+        }
+
       combine(
           projectRepository.observeBySpace(DEFAULT_SPACE_ID),
           taskCategoryRepository.observeAll(),
-        ) { projects, categories ->
+          attachmentsFlow,
+        ) { projects, categories, attachments ->
           val current = _uiState.value
           when {
             current is TaskCreateEditUiState.Loading -> {
@@ -73,6 +104,7 @@ class TaskCreateEditViewModel(
                   isEditing = true,
                   projects = projects,
                   categories = categories,
+                  attachments = attachments,
                 )
               } else {
                 TaskCreateEditUiState.Ready(
@@ -83,7 +115,7 @@ class TaskCreateEditViewModel(
               }
             }
             current is TaskCreateEditUiState.Ready ->
-              current.copy(projects = projects, categories = categories)
+              current.copy(projects = projects, categories = categories, attachments = attachments)
             else -> current
           }
         }
@@ -270,6 +302,31 @@ class TaskCreateEditViewModel(
   private fun resetSaving() {
     _uiState.update { current ->
       if (current is TaskCreateEditUiState.Ready) current.copy(isSaving = false) else current
+    }
+  }
+
+  /**
+   * Initiates a download for the given attachment if it is not already cached locally.
+   *
+   * @param item The attachment to download.
+   */
+  fun downloadAttachment(item: AttachmentUiItem) {
+    viewModelScope.launch {
+      val attachment = attachmentRepository.getById(item.attachmentId) ?: return@launch
+      attachmentManager.download(attachment)
+    }
+  }
+
+  /**
+   * Removes the locally cached file for the given attachment and deletes its metadata from the
+   * repository.
+   *
+   * @param attachmentId The ID of the attachment to delete.
+   */
+  fun deleteAttachment(attachmentId: String) {
+    viewModelScope.launch {
+      attachmentManager.deleteLocal(attachmentId)
+      attachmentRepository.delete(attachmentId)
     }
   }
 

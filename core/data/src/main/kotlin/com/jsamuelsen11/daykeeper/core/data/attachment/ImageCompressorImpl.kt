@@ -2,6 +2,7 @@ package com.jsamuelsen11.daykeeper.core.data.attachment
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import androidx.core.graphics.scale
 import java.io.ByteArrayOutputStream
 import kotlin.math.max
 import kotlin.math.roundToInt
@@ -72,5 +73,5 @@ private fun scaleIfNeeded(bitmap: Bitmap, maxDimension: Int): Bitmap {
   val ratio = maxDimension.toFloat() / longerSide
   val newWidth = (bitmap.width * ratio).roundToInt()
   val newHeight = (bitmap.height * ratio).roundToInt()
-  return Bitmap.createScaledBitmap(bitmap, newWidth, newHeight, true)
+  return bitmap.scale(newWidth, newHeight)
 }

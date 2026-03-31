@@ -1,5 +1,6 @@
 package com.jsamuelsen11.daykeeper.feature.people.detail
 
+import com.jsamuelsen11.daykeeper.core.model.attachment.AttachmentUiItem
 import com.jsamuelsen11.daykeeper.core.model.people.Address
 import com.jsamuelsen11.daykeeper.core.model.people.ContactMethod
 import com.jsamuelsen11.daykeeper.core.model.people.ImportantDate
@@ -13,6 +14,7 @@ sealed interface PersonDetailUiState {
     val contactMethods: List<ContactMethod>,
     val addresses: List<Address>,
     val importantDates: List<ImportantDate>,
+    val attachments: List<AttachmentUiItem> = emptyList(),
   ) : PersonDetailUiState
 
   data class Error(val message: String) : PersonDetailUiState

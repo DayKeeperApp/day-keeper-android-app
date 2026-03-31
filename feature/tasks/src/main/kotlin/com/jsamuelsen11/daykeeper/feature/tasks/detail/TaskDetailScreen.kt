@@ -29,15 +29,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.jsamuelsen11.daykeeper.core.model.attachment.AttachmentUiItem
+import com.jsamuelsen11.daykeeper.core.model.attachment.DownloadState
 import com.jsamuelsen11.daykeeper.core.model.calendar.RecurrenceRule
 import com.jsamuelsen11.daykeeper.core.model.task.Project
 import com.jsamuelsen11.daykeeper.core.model.task.Task
 import com.jsamuelsen11.daykeeper.core.model.task.TaskCategory
 import com.jsamuelsen11.daykeeper.core.model.task.TaskStatus
+import com.jsamuelsen11.daykeeper.core.ui.component.AttachmentRow
 import com.jsamuelsen11.daykeeper.core.ui.component.CategoryChip
 import com.jsamuelsen11.daykeeper.core.ui.component.ConfirmationDialog
 import com.jsamuelsen11.daykeeper.core.ui.component.DayKeeperTopAppBar
 import com.jsamuelsen11.daykeeper.core.ui.component.EmptyStateView
+import com.jsamuelsen11.daykeeper.core.ui.component.ImagePreview
 import com.jsamuelsen11.daykeeper.core.ui.component.LoadingIndicator
 import com.jsamuelsen11.daykeeper.core.ui.component.PriorityIndicator
 import com.jsamuelsen11.daykeeper.core.ui.icon.DayKeeperIcons
@@ -92,6 +96,8 @@ fun TaskDetailScreen(
       uiState = uiState,
       onToggleComplete = viewModel::toggleComplete,
       onProjectClick = onProjectClick,
+      onDownloadAttachment = viewModel::downloadAttachment,
+      onDeleteAttachment = viewModel::deleteAttachment,
       innerPadding = innerPadding,
     )
   }
@@ -153,6 +159,8 @@ private fun TaskDetailStateContent(
   uiState: TaskDetailUiState,
   onToggleComplete: () -> Unit,
   onProjectClick: (String) -> Unit,
+  onDownloadAttachment: (AttachmentUiItem) -> Unit,
+  onDeleteAttachment: (String) -> Unit,
   innerPadding: PaddingValues,
 ) {
   when (val state = uiState) {
@@ -170,16 +178,22 @@ private fun TaskDetailStateContent(
         state = state,
         onToggleComplete = onToggleComplete,
         onProjectClick = onProjectClick,
+        onDownloadAttachment = onDownloadAttachment,
+        onDeleteAttachment = onDeleteAttachment,
         modifier = Modifier.padding(innerPadding),
       )
   }
 }
+
+private const val MIME_TYPE_IMAGE_PREFIX = "image/"
 
 @Composable
 private fun TaskDetailContent(
   state: TaskDetailUiState.Success,
   onToggleComplete: () -> Unit,
   onProjectClick: (String) -> Unit,
+  onDownloadAttachment: (AttachmentUiItem) -> Unit,
+  onDeleteAttachment: (String) -> Unit,
   modifier: Modifier = Modifier,
 ) {
   Column(
@@ -213,7 +227,44 @@ private fun TaskDetailContent(
     if (!description.isNullOrBlank()) {
       DescriptionSection(description = description)
     }
+    AttachmentSection(
+      attachments = state.attachments,
+      onDownload = onDownloadAttachment,
+      onDelete = onDeleteAttachment,
+    )
   }
+}
+
+@Composable
+private fun AttachmentSection(
+  attachments: List<AttachmentUiItem>,
+  onDownload: (AttachmentUiItem) -> Unit,
+  onDelete: (String) -> Unit,
+) {
+  var previewItem by remember { mutableStateOf<AttachmentUiItem?>(null) }
+
+  val currentPreviewItem = previewItem
+  if (currentPreviewItem != null) {
+    val imageModel: Any? =
+      when (val ds = currentPreviewItem.downloadState) {
+        is DownloadState.Downloaded -> ds.localPath
+        else -> currentPreviewItem.remoteUrl
+      }
+    ImagePreview(
+      imageModel = imageModel,
+      fileName = currentPreviewItem.fileName,
+      onDismiss = { previewItem = null },
+    )
+  }
+
+  AttachmentRow(
+    attachments = attachments,
+    onAddClick = {},
+    onAttachmentClick = { item ->
+      if (item.mimeType.startsWith(MIME_TYPE_IMAGE_PREFIX)) previewItem = item else onDownload(item)
+    },
+    onDeleteAttachment = onDelete,
+  )
 }
 
 @Composable

@@ -3,9 +3,13 @@ package com.jsamuelsen11.daykeeper.feature.tasks.detail
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.jsamuelsen11.daykeeper.core.data.attachment.AttachmentManager
+import com.jsamuelsen11.daykeeper.core.data.repository.AttachmentRepository
 import com.jsamuelsen11.daykeeper.core.data.repository.ProjectRepository
 import com.jsamuelsen11.daykeeper.core.data.repository.TaskCategoryRepository
 import com.jsamuelsen11.daykeeper.core.data.repository.TaskRepository
+import com.jsamuelsen11.daykeeper.core.model.attachment.AttachableEntityType
+import com.jsamuelsen11.daykeeper.core.model.attachment.AttachmentUiItem
 import com.jsamuelsen11.daykeeper.core.model.task.TaskStatus
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.SharingStarted
@@ -32,6 +36,8 @@ private const val STOP_TIMEOUT_MILLIS = 5_000L
  * @param taskRepository Source of truth for task data.
  * @param projectRepository Source of truth for project data.
  * @param taskCategoryRepository Source of truth for task-category data.
+ * @param attachmentRepository Source of truth for attachment metadata.
+ * @param attachmentManager Manages local caching and downloading of attachments.
  */
 @OptIn(ExperimentalCoroutinesApi::class)
 class TaskDetailViewModel(
@@ -39,6 +45,8 @@ class TaskDetailViewModel(
   private val taskRepository: TaskRepository,
   private val projectRepository: ProjectRepository,
   private val taskCategoryRepository: TaskCategoryRepository,
+  private val attachmentRepository: AttachmentRepository,
+  private val attachmentManager: AttachmentManager,
 ) : ViewModel() {
 
   private val taskId: String = checkNotNull(savedStateHandle["taskId"])
@@ -64,8 +72,40 @@ class TaskDetailViewModel(
               categories.find { it.categoryId == task.categoryId }
             }
 
-          combine(projectFlow, categoryFlow) { project, category ->
-            TaskDetailUiState.Success(task = task, project = project, category = category)
+          val attachmentsFlow =
+            attachmentRepository.observeByEntity(AttachableEntityType.TASK, taskId).flatMapLatest {
+              attachments ->
+              if (attachments.isEmpty()) {
+                flowOf(emptyList())
+              } else {
+                combine(
+                  attachments.map { attachment ->
+                    attachmentManager.observeDownloadState(attachment.attachmentId).map {
+                      downloadState ->
+                      AttachmentUiItem(
+                        attachmentId = attachment.attachmentId,
+                        fileName = attachment.fileName,
+                        mimeType = attachment.mimeType,
+                        fileSize = attachment.fileSize,
+                        downloadState = downloadState,
+                        remoteUrl = attachment.remoteUrl,
+                        localPath = attachment.localPath,
+                      )
+                    }
+                  }
+                ) { items ->
+                  items.toList()
+                }
+              }
+            }
+
+          combine(projectFlow, categoryFlow, attachmentsFlow) { project, category, attachments ->
+            TaskDetailUiState.Success(
+              task = task,
+              project = project,
+              category = category,
+              attachments = attachments,
+            )
           }
         }
       }
@@ -93,5 +133,30 @@ class TaskDetailViewModel(
   /** Permanently deletes the current task from the repository. */
   fun deleteTask() {
     viewModelScope.launch { taskRepository.delete(taskId) }
+  }
+
+  /**
+   * Initiates a download for the given attachment if it is not already cached locally.
+   *
+   * @param item The attachment to download.
+   */
+  fun downloadAttachment(item: AttachmentUiItem) {
+    viewModelScope.launch {
+      val attachment = attachmentRepository.getById(item.attachmentId) ?: return@launch
+      attachmentManager.download(attachment)
+    }
+  }
+
+  /**
+   * Removes the locally cached file for the given attachment and deletes its metadata from the
+   * repository.
+   *
+   * @param attachmentId The ID of the attachment to delete.
+   */
+  fun deleteAttachment(attachmentId: String) {
+    viewModelScope.launch {
+      attachmentManager.deleteLocal(attachmentId)
+      attachmentRepository.delete(attachmentId)
+    }
   }
 }
