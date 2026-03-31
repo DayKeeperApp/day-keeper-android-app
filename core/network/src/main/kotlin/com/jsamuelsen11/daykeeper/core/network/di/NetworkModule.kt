@@ -1,5 +1,7 @@
 package com.jsamuelsen11.daykeeper.core.network.di
 
+import com.jsamuelsen11.daykeeper.core.network.api.AttachmentApi
+import com.jsamuelsen11.daykeeper.core.network.api.AttachmentApiImpl
 import com.jsamuelsen11.daykeeper.core.network.api.SyncApi
 import com.jsamuelsen11.daykeeper.core.network.api.SyncApiImpl
 import com.jsamuelsen11.daykeeper.core.network.auth.EncryptedTokenStore
@@ -13,4 +15,5 @@ val networkModule = module {
   single<TokenStore> { EncryptedTokenStore(androidContext()) }
   single { HttpClientFactory.create(config = get(), tokenStore = get()) }
   single { SyncApiImpl(get()) } bind SyncApi::class
+  single { AttachmentApiImpl(get()) } bind AttachmentApi::class
 }
