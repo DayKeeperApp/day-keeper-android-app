@@ -28,6 +28,9 @@ koin-bom = "4.1.1"
 # Networking (Ktor)
 ktor = "3.4.1"
 
+# Image Loading (Coil)
+coil = "3.1.0"
+
 # Security
 androidx-security-crypto = "1.1.0-alpha06"
 
@@ -126,6 +129,10 @@ ktor-client-auth = { group = "io.ktor", name = "ktor-client-auth", version.ref =
 ktor-client-logging = { group = "io.ktor", name = "ktor-client-logging", version.ref = "ktor" }
 ktor-client-mock = { group = "io.ktor", name = "ktor-client-mock", version.ref = "ktor" }
 
+# Image Loading (Coil)
+coil-compose = { group = "io.coil-kt.coil3", name = "coil-compose", version.ref = "coil" }
+coil-network-ktor3 = { group = "io.coil-kt.coil3", name = "coil-network-ktor3", version.ref = "coil" }
+
 # Security
 androidx-security-crypto = { group = "androidx.security", name = "security-crypto", version.ref = "androidx-security-crypto" }
 
@@ -188,6 +195,7 @@ testing-android = [
   "androidx-test-espresso-core",
   "androidx-compose-ui-test-junit4",
 ]
+coil = ["coil-compose", "coil-network-ktor3"]
 ktor-client = [
   "ktor-client-core",
   "ktor-client-okhttp",

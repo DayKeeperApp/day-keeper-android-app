@@ -8,4 +8,5 @@ android { namespace = "com.jsamuelsen11.daykeeper.core.ui" }
 dependencies {
   implementation(project(":core:model"))
   implementation(libs.androidx.compose.material.icons.extended)
+  implementation(libs.bundles.coil)
 }
