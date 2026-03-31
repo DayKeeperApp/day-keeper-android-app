@@ -49,4 +49,7 @@ public interface EventDao {
 
   @Query("DELETE FROM events WHERE event_id = :eventId")
   public suspend fun hardDelete(eventId: String)
+
+  @Query("SELECT * FROM events WHERE updated_at > :since")
+  public suspend fun getModifiedSince(since: Long): List<EventEntity>
 }

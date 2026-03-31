@@ -20,4 +20,7 @@ public interface TaskCategoryDao {
 
   @Query("DELETE FROM task_categories WHERE category_id = :categoryId")
   public suspend fun hardDelete(categoryId: String)
+
+  @Query("SELECT * FROM task_categories WHERE updated_at > :since")
+  public suspend fun getModifiedSince(since: Long): List<TaskCategoryEntity>
 }

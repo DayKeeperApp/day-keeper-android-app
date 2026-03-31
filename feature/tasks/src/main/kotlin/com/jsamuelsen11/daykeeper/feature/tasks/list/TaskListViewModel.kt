@@ -5,6 +5,8 @@ import androidx.lifecycle.viewModelScope
 import com.jsamuelsen11.daykeeper.core.data.repository.ProjectRepository
 import com.jsamuelsen11.daykeeper.core.data.repository.TaskCategoryRepository
 import com.jsamuelsen11.daykeeper.core.data.repository.TaskRepository
+import com.jsamuelsen11.daykeeper.core.data.sync.SyncStatus
+import com.jsamuelsen11.daykeeper.core.data.sync.SyncStatusProvider
 import com.jsamuelsen11.daykeeper.core.model.task.Priority
 import com.jsamuelsen11.daykeeper.core.model.task.Project
 import com.jsamuelsen11.daykeeper.core.model.task.Task
@@ -26,6 +28,7 @@ class TaskListViewModel(
   private val taskRepository: TaskRepository,
   private val projectRepository: ProjectRepository,
   private val taskCategoryRepository: TaskCategoryRepository,
+  private val syncStatusProvider: SyncStatusProvider,
 ) : ViewModel() {
 
   private val viewMode = MutableStateFlow(ViewMode.ALL_TASKS)
@@ -52,8 +55,17 @@ class TaskListViewModel(
         order ->
         FilterState(mode, statuses, priorities, catId, order)
       }
-    combine(dataFlow, filterFlow) { (tasks, projects, categories), filters ->
-        buildUiState(tasks, projects, categories, filters)
+    combine(dataFlow, filterFlow, syncStatusProvider.syncStatus) {
+        (tasks, projects, categories),
+        filters,
+        syncStatus ->
+        buildUiState(tasks, projects, categories, filters).let { state ->
+          if (state is TaskListUiState.Success) {
+            state.copy(isRefreshing = syncStatus is SyncStatus.Syncing)
+          } else {
+            state
+          }
+        }
       }
       .catch { e -> emit(TaskListUiState.Error(e.message ?: "Unknown error")) }
       .stateIn(
@@ -61,6 +73,10 @@ class TaskListViewModel(
         SharingStarted.WhileSubscribed(STOP_TIMEOUT_MILLIS),
         TaskListUiState.Loading,
       )
+  }
+
+  fun onRefresh() {
+    syncStatusProvider.requestSync()
   }
 
   fun setViewMode(mode: ViewMode) {

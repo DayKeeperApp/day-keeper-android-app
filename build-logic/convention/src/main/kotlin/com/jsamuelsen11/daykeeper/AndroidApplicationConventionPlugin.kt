@@ -41,6 +41,7 @@ class AndroidApplicationConventionPlugin : Plugin<Project> {
           baseline = project.file("lint-baseline.xml")
           disable += "NewerVersionAvailable"
           disable += "GradleDependency"
+          disable += "AndroidGradlePluginVersion"
         }
       }
     }

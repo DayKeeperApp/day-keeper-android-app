@@ -29,6 +29,7 @@ sealed interface CalendarUiState {
     val monthGrid: MonthGridData,
     val selectedDateEvents: List<CalendarEventItem>,
     val calendars: List<CalendarToggle>,
+    val isRefreshing: Boolean = false,
   ) : CalendarUiState
 
   /**

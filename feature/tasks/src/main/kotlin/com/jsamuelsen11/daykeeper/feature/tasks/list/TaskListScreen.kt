@@ -24,6 +24,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SmallFloatingActionButton
 import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -112,22 +113,28 @@ fun TaskListScreen(
       )
     },
   ) { innerPadding ->
-    TaskListContent(
-      uiState = uiState,
-      callbacks =
-        TaskListCallbacks(
-          onTaskClick = onTaskClick,
-          onProjectClick = onProjectClick,
-          onToggleComplete = viewModel::toggleComplete,
-          onDeleteTask = { deleteTarget = it },
-        ),
-      onViewModeChange = viewModel::setViewMode,
-      onStatusFilterChanged = viewModel::setStatusFilter,
-      onPriorityFilterChanged = viewModel::setPriorityFilter,
-      onCategoryFilterChanged = viewModel::setCategoryFilter,
-      onSortOrderChanged = viewModel::setSortOrder,
+    val isRefreshing = (uiState as? TaskListUiState.Success)?.isRefreshing ?: false
+    PullToRefreshBox(
+      isRefreshing = isRefreshing,
+      onRefresh = viewModel::onRefresh,
       modifier = Modifier.padding(innerPadding),
-    )
+    ) {
+      TaskListContent(
+        uiState = uiState,
+        callbacks =
+          TaskListCallbacks(
+            onTaskClick = onTaskClick,
+            onProjectClick = onProjectClick,
+            onToggleComplete = viewModel::toggleComplete,
+            onDeleteTask = { deleteTarget = it },
+          ),
+        onViewModeChange = viewModel::setViewMode,
+        onStatusFilterChanged = viewModel::setStatusFilter,
+        onPriorityFilterChanged = viewModel::setPriorityFilter,
+        onCategoryFilterChanged = viewModel::setCategoryFilter,
+        onSortOrderChanged = viewModel::setSortOrder,
+      )
+    }
   }
 }
 

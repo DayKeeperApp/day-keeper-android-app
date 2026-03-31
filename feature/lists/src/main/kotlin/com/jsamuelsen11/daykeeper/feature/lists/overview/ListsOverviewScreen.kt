@@ -11,9 +11,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Card
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -36,6 +38,7 @@ private val CardPadding = 16.dp
 private val ListSpacing = 8.dp
 private val ListContentPadding = 16.dp
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ListsOverviewScreen(
   onListClick: (String) -> Unit,
@@ -61,12 +64,18 @@ fun ListsOverviewScreen(
       )
     },
   ) { innerPadding ->
-    ListsOverviewContent(
-      uiState = uiState,
-      onListClick = onListClick,
-      onDeleteList = { deleteTarget = it },
+    val isRefreshing = (uiState as? ListsOverviewUiState.Success)?.isRefreshing ?: false
+    PullToRefreshBox(
+      isRefreshing = isRefreshing,
+      onRefresh = viewModel::onRefresh,
       modifier = Modifier.padding(innerPadding),
-    )
+    ) {
+      ListsOverviewContent(
+        uiState = uiState,
+        onListClick = onListClick,
+        onDeleteList = { deleteTarget = it },
+      )
+    }
   }
 }
 

@@ -28,4 +28,7 @@ public interface AttachmentDao {
 
   @Query("DELETE FROM attachments WHERE attachment_id = :attachmentId")
   public suspend fun hardDelete(attachmentId: String)
+
+  @Query("SELECT * FROM attachments WHERE updated_at > :since")
+  public suspend fun getModifiedSince(since: Long): List<AttachmentEntity>
 }

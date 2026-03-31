@@ -6,6 +6,8 @@ import com.jsamuelsen11.daykeeper.core.data.repository.AddressRepository
 import com.jsamuelsen11.daykeeper.core.data.repository.ContactMethodRepository
 import com.jsamuelsen11.daykeeper.core.data.repository.ImportantDateRepository
 import com.jsamuelsen11.daykeeper.core.data.repository.PersonRepository
+import com.jsamuelsen11.daykeeper.core.data.sync.SyncStatus
+import com.jsamuelsen11.daykeeper.core.data.sync.SyncStatusProvider
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -26,6 +28,7 @@ class PeopleListViewModel(
   private val contactMethodRepository: ContactMethodRepository,
   private val addressRepository: AddressRepository,
   private val importantDateRepository: ImportantDateRepository,
+  private val syncStatusProvider: SyncStatusProvider,
 ) : ViewModel() {
 
   private val searchQuery = MutableStateFlow("")
@@ -73,12 +76,23 @@ class PeopleListViewModel(
           }
         }
       }
+      .combine(syncStatusProvider.syncStatus) { state, syncStatus ->
+        if (state is PeopleListUiState.Success) {
+          state.copy(isRefreshing = syncStatus is SyncStatus.Syncing)
+        } else {
+          state
+        }
+      }
       .catch { e -> emit(PeopleListUiState.Error(e.message ?: "Unknown error")) }
       .stateIn(
         viewModelScope,
         SharingStarted.WhileSubscribed(STOP_TIMEOUT_MILLIS),
         PeopleListUiState.Loading,
       )
+
+  fun onRefresh() {
+    syncStatusProvider.requestSync()
+  }
 
   fun onSearchQueryChanged(query: String) {
     searchQuery.value = query

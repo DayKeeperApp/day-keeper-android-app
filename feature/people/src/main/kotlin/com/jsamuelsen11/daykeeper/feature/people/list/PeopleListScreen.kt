@@ -13,11 +13,13 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -45,6 +47,7 @@ private val ListContentPadding = 8.dp
 private val FastScrollWidth = 24.dp
 private const val FAST_SCROLL_LETTER_SIZE = 12
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PeopleListScreen(
   onPersonClick: (String) -> Unit,
@@ -78,13 +81,19 @@ fun PeopleListScreen(
       )
     },
   ) { innerPadding ->
-    PeopleListContent(
-      uiState = uiState,
-      onPersonClick = onPersonClick,
-      onDeletePerson = { deleteTarget = it },
-      onSearchQueryChanged = viewModel::onSearchQueryChanged,
+    val isRefreshing = (uiState as? PeopleListUiState.Success)?.isRefreshing ?: false
+    PullToRefreshBox(
+      isRefreshing = isRefreshing,
+      onRefresh = viewModel::onRefresh,
       modifier = Modifier.padding(innerPadding),
-    )
+    ) {
+      PeopleListContent(
+        uiState = uiState,
+        onPersonClick = onPersonClick,
+        onDeletePerson = { deleteTarget = it },
+        onSearchQueryChanged = viewModel::onSearchQueryChanged,
+      )
+    }
   }
 }
 

@@ -47,6 +47,8 @@ include(":core:database")
 
 include(":core:data")
 
+include(":core:network")
+
 include(":core:ui")
 
 include(":feature:lists")

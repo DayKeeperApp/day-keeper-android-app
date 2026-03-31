@@ -29,4 +29,7 @@ public interface ProjectDao {
 
   @Query("DELETE FROM projects WHERE project_id = :projectId")
   public suspend fun hardDelete(projectId: String)
+
+  @Query("SELECT * FROM projects WHERE updated_at > :since")
+  public suspend fun getModifiedSince(since: Long): List<ProjectEntity>
 }

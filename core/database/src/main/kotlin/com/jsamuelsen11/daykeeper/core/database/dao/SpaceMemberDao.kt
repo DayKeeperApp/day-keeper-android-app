@@ -26,4 +26,7 @@ public interface SpaceMemberDao {
 
   @Query("DELETE FROM space_members WHERE space_id = :spaceId AND tenant_id = :tenantId")
   public suspend fun hardDelete(spaceId: String, tenantId: String)
+
+  @Query("SELECT * FROM space_members WHERE updated_at > :since")
+  public suspend fun getModifiedSince(since: Long): List<SpaceMemberEntity>
 }

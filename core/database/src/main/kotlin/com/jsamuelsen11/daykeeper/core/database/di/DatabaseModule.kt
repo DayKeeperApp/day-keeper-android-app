@@ -2,6 +2,7 @@ package com.jsamuelsen11.daykeeper.core.database.di
 
 import androidx.room.Room
 import com.jsamuelsen11.daykeeper.core.database.DayKeeperDatabase
+import com.jsamuelsen11.daykeeper.core.database.sync.SyncDao
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
 
@@ -35,4 +36,5 @@ public val databaseModule = module {
   single { get<DayKeeperDatabase>().shoppingListItemDao() }
   single { get<DayKeeperDatabase>().attachmentDao() }
   single { get<DayKeeperDatabase>().syncCursorDao() }
+  single { SyncDao(get()) }
 }

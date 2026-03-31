@@ -32,4 +32,7 @@ public interface ShoppingListDao {
 
   @Query("DELETE FROM shopping_lists WHERE list_id = :listId")
   public suspend fun hardDelete(listId: String)
+
+  @Query("SELECT * FROM shopping_lists WHERE updated_at > :since")
+  public suspend fun getModifiedSince(since: Long): List<ShoppingListEntity>
 }

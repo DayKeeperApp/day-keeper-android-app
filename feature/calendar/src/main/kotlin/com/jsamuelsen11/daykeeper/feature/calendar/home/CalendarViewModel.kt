@@ -5,6 +5,8 @@ import androidx.lifecycle.viewModelScope
 import com.jsamuelsen11.daykeeper.core.data.repository.CalendarRepository
 import com.jsamuelsen11.daykeeper.core.data.repository.EventRepository
 import com.jsamuelsen11.daykeeper.core.data.repository.EventTypeRepository
+import com.jsamuelsen11.daykeeper.core.data.sync.SyncStatus
+import com.jsamuelsen11.daykeeper.core.data.sync.SyncStatusProvider
 import com.jsamuelsen11.daykeeper.core.model.calendar.Calendar
 import com.jsamuelsen11.daykeeper.core.model.calendar.Event
 import com.jsamuelsen11.daykeeper.core.model.calendar.EventType
@@ -46,6 +48,7 @@ class CalendarViewModel(
   private val eventRepository: EventRepository,
   private val calendarRepository: CalendarRepository,
   private val eventTypeRepository: EventTypeRepository,
+  private val syncStatusProvider: SyncStatusProvider,
 ) : ViewModel() {
 
   private val currentMonth = MutableStateFlow(YearMonth.now())
@@ -81,12 +84,23 @@ class CalendarViewModel(
           buildEventsPipeline(calendars, eventTypes)
         }
       }
+      .combine(syncStatusProvider.syncStatus) { state, syncStatus ->
+        if (state is CalendarUiState.Success) {
+          state.copy(isRefreshing = syncStatus is SyncStatus.Syncing)
+        } else {
+          state
+        }
+      }
       .catch { e -> emit(CalendarUiState.Error(e.message ?: "Unknown error")) }
       .stateIn(
         viewModelScope,
         SharingStarted.WhileSubscribed(STOP_TIMEOUT_MILLIS),
         CalendarUiState.Loading,
       )
+
+  fun onRefresh() {
+    syncStatusProvider.requestSync()
+  }
 
   /** Advances or rewinds the displayed month by [delta] months (negative = backwards). */
   fun navigateMonth(delta: Int) {

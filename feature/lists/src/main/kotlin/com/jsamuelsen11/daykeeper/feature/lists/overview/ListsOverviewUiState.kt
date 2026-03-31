@@ -5,7 +5,8 @@ import com.jsamuelsen11.daykeeper.core.model.list.ShoppingList
 sealed interface ListsOverviewUiState {
   data object Loading : ListsOverviewUiState
 
-  data class Success(val lists: List<ShoppingListSummary>) : ListsOverviewUiState
+  data class Success(val lists: List<ShoppingListSummary>, val isRefreshing: Boolean = false) :
+    ListsOverviewUiState
 
   data class Error(val message: String) : ListsOverviewUiState
 }

@@ -20,6 +20,7 @@ import androidx.compose.material3.SegmentedButton
 import androidx.compose.material3.SegmentedButtonDefaults
 import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Text
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -122,14 +123,20 @@ fun CalendarScreen(
       )
     },
   ) { innerPadding ->
-    CalendarScreenContent(
-      uiState = uiState,
-      onViewModeChange = viewModel::setViewMode,
-      onCalendarToggle = viewModel::toggleCalendarVisibility,
-      onDateClick = viewModel::selectDate,
-      onEventClick = onEventClick,
+    val isRefreshing = (uiState as? CalendarUiState.Success)?.isRefreshing ?: false
+    PullToRefreshBox(
+      isRefreshing = isRefreshing,
+      onRefresh = viewModel::onRefresh,
       modifier = Modifier.padding(innerPadding),
-    )
+    ) {
+      CalendarScreenContent(
+        uiState = uiState,
+        onViewModeChange = viewModel::setViewMode,
+        onCalendarToggle = viewModel::toggleCalendarVisibility,
+        onDateClick = viewModel::selectDate,
+        onEventClick = onEventClick,
+      )
+    }
   }
 }
 

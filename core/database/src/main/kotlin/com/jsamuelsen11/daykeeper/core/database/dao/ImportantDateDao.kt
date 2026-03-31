@@ -27,4 +27,7 @@ public interface ImportantDateDao {
 
   @Query("DELETE FROM important_dates WHERE important_date_id = :importantDateId")
   public suspend fun hardDelete(importantDateId: String)
+
+  @Query("SELECT * FROM important_dates WHERE updated_at > :since")
+  public suspend fun getModifiedSince(since: Long): List<ImportantDateEntity>
 }

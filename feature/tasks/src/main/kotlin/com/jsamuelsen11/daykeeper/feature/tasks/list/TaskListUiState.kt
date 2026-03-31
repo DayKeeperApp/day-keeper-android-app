@@ -18,6 +18,7 @@ sealed interface TaskListUiState {
     val viewMode: ViewMode,
     val filters: TaskFilters,
     val categories: List<CategoryOption>,
+    val isRefreshing: Boolean = false,
   ) : TaskListUiState
 
   /** An unrecoverable error occurred while loading tasks. */

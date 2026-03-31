@@ -26,4 +26,7 @@ public interface EventReminderDao {
 
   @Query("DELETE FROM event_reminders WHERE reminder_id = :reminderId")
   public suspend fun hardDelete(reminderId: String)
+
+  @Query("SELECT * FROM event_reminders WHERE updated_at > :since")
+  public suspend fun getModifiedSince(since: Long): List<EventReminderEntity>
 }
