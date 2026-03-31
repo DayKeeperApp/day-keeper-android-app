@@ -2,6 +2,8 @@ package com.jsamuelsen11.daykeeper.feature.tasks.createedit
 
 import androidx.lifecycle.SavedStateHandle
 import app.cash.turbine.test
+import com.jsamuelsen11.daykeeper.core.data.attachment.AttachmentManager
+import com.jsamuelsen11.daykeeper.core.data.repository.AttachmentRepository
 import com.jsamuelsen11.daykeeper.core.data.repository.ProjectRepository
 import com.jsamuelsen11.daykeeper.core.data.repository.TaskCategoryRepository
 import com.jsamuelsen11.daykeeper.core.data.repository.TaskRepository
@@ -37,11 +39,14 @@ class TaskCreateEditViewModelTest {
   private val taskRepository = mockk<TaskRepository>()
   private val projectRepository = mockk<ProjectRepository>()
   private val categoryRepository = mockk<TaskCategoryRepository>()
+  private val attachmentRepository: AttachmentRepository = mockk(relaxed = true)
+  private val attachmentManager: AttachmentManager = mockk(relaxed = true)
 
   @BeforeEach
   fun setUp() {
     every { projectRepository.observeBySpace(TEST_SPACE_ID) } returns flowOf(emptyList())
     every { categoryRepository.observeAll() } returns flowOf(emptyList())
+    every { attachmentRepository.observeByEntity(any(), any()) } returns flowOf(emptyList())
   }
 
   private fun createModeViewModel(): TaskCreateEditViewModel =
@@ -50,6 +55,8 @@ class TaskCreateEditViewModelTest {
       taskRepository = taskRepository,
       projectRepository = projectRepository,
       taskCategoryRepository = categoryRepository,
+      attachmentRepository = attachmentRepository,
+      attachmentManager = attachmentManager,
     )
 
   private fun editModeViewModel(taskId: String = TEST_TASK_ID): TaskCreateEditViewModel =
@@ -58,6 +65,8 @@ class TaskCreateEditViewModelTest {
       taskRepository = taskRepository,
       projectRepository = projectRepository,
       taskCategoryRepository = categoryRepository,
+      attachmentRepository = attachmentRepository,
+      attachmentManager = attachmentManager,
     )
 
   private fun createModeWithProject(projectId: String = TEST_PROJECT_ID): TaskCreateEditViewModel =
@@ -66,6 +75,8 @@ class TaskCreateEditViewModelTest {
       taskRepository = taskRepository,
       projectRepository = projectRepository,
       taskCategoryRepository = categoryRepository,
+      attachmentRepository = attachmentRepository,
+      attachmentManager = attachmentManager,
     )
 
   // --- Create mode ---

@@ -2,6 +2,8 @@ package com.jsamuelsen11.daykeeper.feature.tasks.detail
 
 import androidx.lifecycle.SavedStateHandle
 import app.cash.turbine.test
+import com.jsamuelsen11.daykeeper.core.data.attachment.AttachmentManager
+import com.jsamuelsen11.daykeeper.core.data.repository.AttachmentRepository
 import com.jsamuelsen11.daykeeper.core.data.repository.ProjectRepository
 import com.jsamuelsen11.daykeeper.core.data.repository.TaskCategoryRepository
 import com.jsamuelsen11.daykeeper.core.data.repository.TaskRepository
@@ -36,6 +38,8 @@ class TaskDetailViewModelTest {
   private val taskRepository = mockk<TaskRepository>()
   private val projectRepository = mockk<ProjectRepository>()
   private val categoryRepository = mockk<TaskCategoryRepository>()
+  private val attachmentRepository: AttachmentRepository = mockk(relaxed = true)
+  private val attachmentManager: AttachmentManager = mockk(relaxed = true)
 
   private val savedStateHandle = SavedStateHandle(mapOf("taskId" to TEST_TASK_ID))
 
@@ -43,6 +47,7 @@ class TaskDetailViewModelTest {
   fun setUp() {
     every { taskRepository.observeById(TEST_TASK_ID) } returns flowOf(makeTask())
     every { categoryRepository.observeAll() } returns flowOf(emptyList())
+    every { attachmentRepository.observeByEntity(any(), any()) } returns flowOf(emptyList())
   }
 
   private fun createViewModel(): TaskDetailViewModel =
@@ -51,6 +56,8 @@ class TaskDetailViewModelTest {
       taskRepository = taskRepository,
       projectRepository = projectRepository,
       taskCategoryRepository = categoryRepository,
+      attachmentRepository = attachmentRepository,
+      attachmentManager = attachmentManager,
     )
 
   @Test

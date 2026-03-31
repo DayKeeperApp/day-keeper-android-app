@@ -2,7 +2,9 @@ package com.jsamuelsen11.daykeeper.feature.people.createedit
 
 import androidx.lifecycle.SavedStateHandle
 import app.cash.turbine.test
+import com.jsamuelsen11.daykeeper.core.data.attachment.AttachmentManager
 import com.jsamuelsen11.daykeeper.core.data.repository.AddressRepository
+import com.jsamuelsen11.daykeeper.core.data.repository.AttachmentRepository
 import com.jsamuelsen11.daykeeper.core.data.repository.ContactMethodRepository
 import com.jsamuelsen11.daykeeper.core.data.repository.ImportantDateRepository
 import com.jsamuelsen11.daykeeper.core.data.repository.PersonRepository
@@ -39,6 +41,8 @@ class PersonCreateEditViewModelTest {
   private val contactMethodRepository = mockk<ContactMethodRepository>()
   private val addressRepository = mockk<AddressRepository>()
   private val importantDateRepository = mockk<ImportantDateRepository>()
+  private val attachmentRepository: AttachmentRepository = mockk(relaxed = true)
+  private val attachmentManager: AttachmentManager = mockk(relaxed = true)
 
   @BeforeEach
   fun setUp() {
@@ -55,6 +59,7 @@ class PersonCreateEditViewModelTest {
     coEvery { importantDateRepository.upsert(any()) } just runs
     coEvery { contactMethodRepository.delete(any()) } just runs
     coEvery { addressRepository.delete(any()) } just runs
+    every { attachmentRepository.observeByEntity(any(), any()) } returns flowOf(emptyList())
     coEvery { importantDateRepository.delete(any()) } just runs
   }
 
@@ -65,6 +70,8 @@ class PersonCreateEditViewModelTest {
       contactMethodRepository = contactMethodRepository,
       addressRepository = addressRepository,
       importantDateRepository = importantDateRepository,
+      attachmentRepository = attachmentRepository,
+      attachmentManager = attachmentManager,
     )
 
   private fun editModeViewModel(personId: String = TEST_PERSON_ID): PersonCreateEditViewModel =
@@ -74,6 +81,8 @@ class PersonCreateEditViewModelTest {
       contactMethodRepository = contactMethodRepository,
       addressRepository = addressRepository,
       importantDateRepository = importantDateRepository,
+      attachmentRepository = attachmentRepository,
+      attachmentManager = attachmentManager,
     )
 
   // --- Create mode ---

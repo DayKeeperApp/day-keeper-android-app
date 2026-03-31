@@ -2,6 +2,8 @@ package com.jsamuelsen11.daykeeper.feature.calendar.createedit
 
 import androidx.lifecycle.SavedStateHandle
 import app.cash.turbine.test
+import com.jsamuelsen11.daykeeper.core.data.attachment.AttachmentManager
+import com.jsamuelsen11.daykeeper.core.data.repository.AttachmentRepository
 import com.jsamuelsen11.daykeeper.core.data.repository.CalendarRepository
 import com.jsamuelsen11.daykeeper.core.data.repository.EventReminderRepository
 import com.jsamuelsen11.daykeeper.core.data.repository.EventRepository
@@ -38,6 +40,8 @@ class EventCreateEditViewModelTest {
   private val calendarRepository = mockk<CalendarRepository>()
   private val eventTypeRepository = mockk<EventTypeRepository>()
   private val eventReminderRepository = mockk<EventReminderRepository>()
+  private val attachmentRepository: AttachmentRepository = mockk(relaxed = true)
+  private val attachmentManager: AttachmentManager = mockk(relaxed = true)
 
   @BeforeEach
   fun setUp() {
@@ -46,6 +50,7 @@ class EventCreateEditViewModelTest {
     every { eventReminderRepository.observeByEvent(any()) } returns flowOf(emptyList())
     // getById is called during init in edit mode to load reminders.
     coEvery { eventReminderRepository.getById(any()) } returns null
+    every { attachmentRepository.observeByEntity(any(), any()) } returns flowOf(emptyList())
   }
 
   private fun createModeViewModel(): EventCreateEditViewModel =
@@ -55,6 +60,8 @@ class EventCreateEditViewModelTest {
       calendarRepository = calendarRepository,
       eventTypeRepository = eventTypeRepository,
       eventReminderRepository = eventReminderRepository,
+      attachmentRepository = attachmentRepository,
+      attachmentManager = attachmentManager,
     )
 
   private fun editModeViewModel(eventId: String = TEST_EVENT_ID): EventCreateEditViewModel =
@@ -64,6 +71,8 @@ class EventCreateEditViewModelTest {
       calendarRepository = calendarRepository,
       eventTypeRepository = eventTypeRepository,
       eventReminderRepository = eventReminderRepository,
+      attachmentRepository = attachmentRepository,
+      attachmentManager = attachmentManager,
     )
 
   // --- Create mode ---
