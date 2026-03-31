@@ -35,4 +35,6 @@ public interface UserPreferencesRepository {
   public suspend fun setNotifyLists(enabled: Boolean)
 
   public suspend fun setNotifyPeople(enabled: Boolean)
+
+  public suspend fun setAttachmentCacheSizeMb(sizeMb: Int)
 }

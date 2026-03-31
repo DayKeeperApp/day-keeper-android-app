@@ -16,4 +16,9 @@ public data class UserPreferences(
   val notifyTasks: Boolean = true,
   val notifyLists: Boolean = true,
   val notifyPeople: Boolean = false,
-)
+  val attachmentCacheSizeMb: Int = DEFAULT_ATTACHMENT_CACHE_SIZE_MB,
+) {
+  public companion object {
+    public const val DEFAULT_ATTACHMENT_CACHE_SIZE_MB: Int = 100
+  }
+}

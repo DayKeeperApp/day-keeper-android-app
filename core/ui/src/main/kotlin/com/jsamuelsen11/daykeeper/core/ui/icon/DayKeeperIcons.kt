@@ -15,6 +15,8 @@ import androidx.compose.material.icons.outlined.CheckCircle
 import androidx.compose.material.icons.outlined.Checklist
 import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material.icons.outlined.Delete
+import androidx.compose.material.icons.outlined.Description
+import androidx.compose.material.icons.outlined.Download
 import androidx.compose.material.icons.outlined.DragHandle
 import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material.icons.outlined.Email
@@ -25,6 +27,7 @@ import androidx.compose.material.icons.outlined.FilterList
 import androidx.compose.material.icons.outlined.Flag
 import androidx.compose.material.icons.outlined.Folder
 import androidx.compose.material.icons.outlined.Home
+import androidx.compose.material.icons.outlined.Image
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.LocationOn
 import androidx.compose.material.icons.outlined.Map
@@ -119,6 +122,9 @@ object DayKeeperIcons {
   // region Media & Attachments
   val Camera: ImageVector = Icons.Outlined.PhotoCamera
   val Attachment: ImageVector = Icons.Outlined.AttachFile
+  val Gallery: ImageVector = Icons.Outlined.Image
+  val PdfDocument: ImageVector = Icons.Outlined.Description
+  val Download: ImageVector = Icons.Outlined.Download
   // endregion
 
   // region Settings & System

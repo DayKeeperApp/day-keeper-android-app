@@ -29,12 +29,16 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.jsamuelsen11.daykeeper.core.model.attachment.AttachmentUiItem
+import com.jsamuelsen11.daykeeper.core.model.attachment.DownloadState
 import com.jsamuelsen11.daykeeper.core.model.people.Address
 import com.jsamuelsen11.daykeeper.core.model.people.ContactMethod
 import com.jsamuelsen11.daykeeper.core.model.people.ContactMethodType
+import com.jsamuelsen11.daykeeper.core.ui.component.AttachmentRow
 import com.jsamuelsen11.daykeeper.core.ui.component.ConfirmationDialog
 import com.jsamuelsen11.daykeeper.core.ui.component.DayKeeperTopAppBar
 import com.jsamuelsen11.daykeeper.core.ui.component.EmptyStateView
+import com.jsamuelsen11.daykeeper.core.ui.component.ImagePreview
 import com.jsamuelsen11.daykeeper.core.ui.component.LoadingIndicator
 import com.jsamuelsen11.daykeeper.core.ui.icon.DayKeeperIcons
 import com.jsamuelsen11.daykeeper.feature.people.component.AddressCard
@@ -46,6 +50,7 @@ import org.koin.compose.viewmodel.koinViewModel
 
 private val LargeAvatarSize = 80.dp
 private val SectionSpacing = 16.dp
+private const val MIME_TYPE_IMAGE_PREFIX = "image/"
 
 @Composable
 fun PersonDetailScreen(
@@ -93,7 +98,12 @@ fun PersonDetailScreen(
       }
     },
   ) { innerPadding ->
-    PersonDetailContent(uiState = uiState, modifier = Modifier.padding(innerPadding))
+    PersonDetailContent(
+      uiState = uiState,
+      onDownloadAttachment = viewModel::downloadAttachment,
+      onDeleteAttachment = viewModel::deleteAttachment,
+      modifier = Modifier.padding(innerPadding),
+    )
   }
 }
 
@@ -116,7 +126,12 @@ private fun OverflowMenu(onDelete: () -> Unit) {
 }
 
 @Composable
-private fun PersonDetailContent(uiState: PersonDetailUiState, modifier: Modifier = Modifier) {
+private fun PersonDetailContent(
+  uiState: PersonDetailUiState,
+  onDownloadAttachment: (AttachmentUiItem) -> Unit,
+  onDeleteAttachment: (String) -> Unit,
+  modifier: Modifier = Modifier,
+) {
   when (uiState) {
     is PersonDetailUiState.Loading -> LoadingIndicator(modifier = modifier.fillMaxSize())
     is PersonDetailUiState.Error ->
@@ -126,51 +141,115 @@ private fun PersonDetailContent(uiState: PersonDetailUiState, modifier: Modifier
         body = uiState.message,
         modifier = modifier,
       )
-    is PersonDetailUiState.Success -> {
-      val context = LocalContext.current
-      Column(modifier = modifier.fillMaxSize().verticalScroll(rememberScrollState())) {
-        PersonHeader(
-          firstName = uiState.person.firstName,
-          lastName = uiState.person.lastName,
-          nickname = uiState.person.nickname,
-        )
+    is PersonDetailUiState.Success ->
+      PersonDetailSuccessContent(
+        uiState = uiState,
+        onDownloadAttachment = onDownloadAttachment,
+        onDeleteAttachment = onDeleteAttachment,
+        modifier = modifier,
+      )
+  }
+}
 
-        uiState.person.notes?.let { notes ->
-          if (notes.isNotBlank()) {
-            SectionHeader("Notes")
-            Text(
-              text = notes,
-              style = MaterialTheme.typography.bodyMedium,
-              modifier = Modifier.padding(horizontal = 16.dp),
-            )
-            Spacer(modifier = Modifier.height(SectionSpacing))
-          }
-        }
+@Composable
+private fun PersonDetailSuccessContent(
+  uiState: PersonDetailUiState.Success,
+  onDownloadAttachment: (AttachmentUiItem) -> Unit,
+  onDeleteAttachment: (String) -> Unit,
+  modifier: Modifier = Modifier,
+) {
+  val context = LocalContext.current
+  var previewItem by remember { mutableStateOf<AttachmentUiItem?>(null) }
 
-        if (uiState.contactMethods.isNotEmpty()) {
-          SectionHeader("Contact Methods")
-          uiState.contactMethods.forEach { cm ->
-            ContactMethodRow(contactMethod = cm, onTap = { launchContactIntent(context, cm) })
-          }
-          Spacer(modifier = Modifier.height(SectionSpacing))
-        }
-
-        if (uiState.addresses.isNotEmpty()) {
-          SectionHeader("Addresses")
-          uiState.addresses.forEach { address ->
-            AddressCard(address = address, onTap = { launchMapIntent(context, address) })
-          }
-          Spacer(modifier = Modifier.height(SectionSpacing))
-        }
-
-        if (uiState.importantDates.isNotEmpty()) {
-          SectionHeader("Important Dates")
-          uiState.importantDates.forEach { date -> ImportantDateRow(importantDate = date) }
-          Spacer(modifier = Modifier.height(SectionSpacing))
-        }
+  val currentPreviewItem = previewItem
+  if (currentPreviewItem != null) {
+    val imageModel: Any? =
+      when (val ds = currentPreviewItem.downloadState) {
+        is DownloadState.Downloaded -> ds.localPath
+        else -> currentPreviewItem.remoteUrl
       }
+    ImagePreview(
+      imageModel = imageModel,
+      fileName = currentPreviewItem.fileName,
+      onDismiss = { previewItem = null },
+    )
+  }
+
+  Column(modifier = modifier.fillMaxSize().verticalScroll(rememberScrollState())) {
+    PersonHeader(
+      firstName = uiState.person.firstName,
+      lastName = uiState.person.lastName,
+      nickname = uiState.person.nickname,
+    )
+
+    PersonDetailSections(uiState = uiState, context = context)
+
+    PersonAttachmentSection(
+      attachments = uiState.attachments,
+      onPreview = { previewItem = it },
+      onDownload = onDownloadAttachment,
+      onDelete = onDeleteAttachment,
+    )
+    Spacer(modifier = Modifier.height(SectionSpacing))
+  }
+}
+
+@Composable
+private fun PersonDetailSections(
+  uiState: PersonDetailUiState.Success,
+  context: android.content.Context,
+) {
+  uiState.person.notes?.let { notes ->
+    if (notes.isNotBlank()) {
+      SectionHeader("Notes")
+      Text(
+        text = notes,
+        style = MaterialTheme.typography.bodyMedium,
+        modifier = Modifier.padding(horizontal = 16.dp),
+      )
+      Spacer(modifier = Modifier.height(SectionSpacing))
     }
   }
+
+  if (uiState.contactMethods.isNotEmpty()) {
+    SectionHeader("Contact Methods")
+    uiState.contactMethods.forEach { cm ->
+      ContactMethodRow(contactMethod = cm, onTap = { launchContactIntent(context, cm) })
+    }
+    Spacer(modifier = Modifier.height(SectionSpacing))
+  }
+
+  if (uiState.addresses.isNotEmpty()) {
+    SectionHeader("Addresses")
+    uiState.addresses.forEach { address ->
+      AddressCard(address = address, onTap = { launchMapIntent(context, address) })
+    }
+    Spacer(modifier = Modifier.height(SectionSpacing))
+  }
+
+  if (uiState.importantDates.isNotEmpty()) {
+    SectionHeader("Important Dates")
+    uiState.importantDates.forEach { date -> ImportantDateRow(importantDate = date) }
+    Spacer(modifier = Modifier.height(SectionSpacing))
+  }
+}
+
+@Composable
+private fun PersonAttachmentSection(
+  attachments: List<AttachmentUiItem>,
+  onPreview: (AttachmentUiItem) -> Unit,
+  onDownload: (AttachmentUiItem) -> Unit,
+  onDelete: (String) -> Unit,
+) {
+  SectionHeader("Attachments")
+  AttachmentRow(
+    attachments = attachments,
+    onAddClick = {},
+    onAttachmentClick = { item ->
+      if (item.mimeType.startsWith(MIME_TYPE_IMAGE_PREFIX)) onPreview(item) else onDownload(item)
+    },
+    onDeleteAttachment = onDelete,
+  )
 }
 
 @Composable

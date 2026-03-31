@@ -8,6 +8,6 @@ import org.koin.dsl.module
 
 val peopleModule = module {
   viewModel { PeopleListViewModel(get(), get(), get(), get(), get()) }
-  viewModel { PersonDetailViewModel(get(), get(), get(), get(), get()) }
-  viewModel { PersonCreateEditViewModel(get(), get(), get(), get(), get()) }
+  viewModel { PersonDetailViewModel(get(), get(), get(), get(), get(), get(), get()) }
+  viewModel { PersonCreateEditViewModel(get(), get(), get(), get(), get(), get(), get()) }
 }

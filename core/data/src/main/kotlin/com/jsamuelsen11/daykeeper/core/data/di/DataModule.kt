@@ -4,6 +4,11 @@ import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
+import com.jsamuelsen11.daykeeper.core.data.attachment.AttachmentManager
+import com.jsamuelsen11.daykeeper.core.data.attachment.AttachmentManagerImpl
+import com.jsamuelsen11.daykeeper.core.data.attachment.FileCache
+import com.jsamuelsen11.daykeeper.core.data.attachment.ImageCompressor
+import com.jsamuelsen11.daykeeper.core.data.attachment.ImageCompressorImpl
 import com.jsamuelsen11.daykeeper.core.data.preferences.UserPreferencesRepository
 import com.jsamuelsen11.daykeeper.core.data.preferences.UserPreferencesRepositoryImpl
 import com.jsamuelsen11.daykeeper.core.data.repository.AccountRepository
@@ -46,6 +51,7 @@ import com.jsamuelsen11.daykeeper.core.data.repository.TaskRepository
 import com.jsamuelsen11.daykeeper.core.data.repository.TaskRepositoryImpl
 import com.jsamuelsen11.daykeeper.core.data.sync.SyncManager
 import com.jsamuelsen11.daykeeper.core.data.sync.SyncStatusProvider
+import java.io.File
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -79,6 +85,10 @@ public val dataModule = module {
   single { ShoppingListItemRepositoryImpl(get()) } bind ShoppingListItemRepository::class
   single { AttachmentRepositoryImpl(get()) } bind AttachmentRepository::class
   single { SyncCursorRepositoryImpl(get()) } bind SyncCursorRepository::class
+
+  single { FileCache(File(androidContext().filesDir, "attachment_cache")) }
+  single { ImageCompressorImpl() } bind ImageCompressor::class
+  single { AttachmentManagerImpl(get(), get(), get()) } bind AttachmentManager::class
 
   single { CoroutineScope(SupervisorJob() + Dispatchers.IO) }
   single { SyncManager(get(), get(), get(), get()) } bind SyncStatusProvider::class

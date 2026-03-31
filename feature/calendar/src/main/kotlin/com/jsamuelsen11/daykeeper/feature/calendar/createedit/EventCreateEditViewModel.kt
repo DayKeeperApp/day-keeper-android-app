@@ -3,10 +3,15 @@ package com.jsamuelsen11.daykeeper.feature.calendar.createedit
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.jsamuelsen11.daykeeper.core.data.attachment.AttachmentManager
+import com.jsamuelsen11.daykeeper.core.data.repository.AttachmentRepository
 import com.jsamuelsen11.daykeeper.core.data.repository.CalendarRepository
 import com.jsamuelsen11.daykeeper.core.data.repository.EventReminderRepository
 import com.jsamuelsen11.daykeeper.core.data.repository.EventRepository
 import com.jsamuelsen11.daykeeper.core.data.repository.EventTypeRepository
+import com.jsamuelsen11.daykeeper.core.model.attachment.AttachableEntityType
+import com.jsamuelsen11.daykeeper.core.model.attachment.Attachment
+import com.jsamuelsen11.daykeeper.core.model.attachment.AttachmentUiItem
 import com.jsamuelsen11.daykeeper.core.model.calendar.Event
 import com.jsamuelsen11.daykeeper.core.model.calendar.EventReminder
 import com.jsamuelsen11.daykeeper.core.model.calendar.RecurrenceRule
@@ -42,6 +47,8 @@ private const val DEFAULT_EVENT_DURATION_HOURS = 1L
  * @param calendarRepository Source of truth for calendar data.
  * @param eventTypeRepository Source of truth for event type data.
  * @param eventReminderRepository Source of truth for reminder data.
+ * @param attachmentRepository Source of truth for attachment data.
+ * @param attachmentManager Manages download, upload, and local cache of attachments.
  */
 class EventCreateEditViewModel(
   savedStateHandle: SavedStateHandle,
@@ -49,6 +56,8 @@ class EventCreateEditViewModel(
   private val calendarRepository: CalendarRepository,
   private val eventTypeRepository: EventTypeRepository,
   private val eventReminderRepository: EventReminderRepository,
+  private val attachmentRepository: AttachmentRepository,
+  private val attachmentManager: AttachmentManager,
 ) : ViewModel() {
 
   private val eventId: String? = savedStateHandle[KEY_EVENT_ID]
@@ -124,6 +133,21 @@ class EventCreateEditViewModel(
           }
         }
         .collect { newState -> _uiState.value = newState }
+    }
+
+    if (isEditing) {
+      viewModelScope.launch {
+        attachmentRepository.observeByEntity(AttachableEntityType.EVENT, eventId!!).collect {
+          attachments ->
+          _uiState.update { state ->
+            if (state is EventCreateEditUiState.Ready) {
+              state.copy(attachments = attachments.map { it.toUiItem() })
+            } else {
+              state
+            }
+          }
+        }
+      }
     }
   }
 
@@ -409,6 +433,28 @@ class EventCreateEditViewModel(
       }
     }
   }
+
+  fun downloadAttachment(item: AttachmentUiItem) {
+    viewModelScope.launch {
+      val attachment = attachmentRepository.getById(item.attachmentId) ?: return@launch
+      attachmentManager.download(attachment)
+    }
+  }
+
+  fun deleteAttachment(attachmentId: String) {
+    viewModelScope.launch { attachmentRepository.delete(attachmentId) }
+  }
+
+  private fun Attachment.toUiItem(): AttachmentUiItem =
+    AttachmentUiItem(
+      attachmentId = attachmentId,
+      fileName = fileName,
+      mimeType = mimeType,
+      fileSize = fileSize,
+      downloadState = attachmentManager.observeDownloadState(attachmentId).value,
+      remoteUrl = remoteUrl,
+      localPath = localPath,
+    )
 
   private fun updateForm(transform: (EventFormState) -> EventFormState) {
     _uiState.update { state ->

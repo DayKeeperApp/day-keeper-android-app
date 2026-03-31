@@ -14,4 +14,8 @@ dependencies {
   implementation(platform(libs.koin.bom))
   implementation(libs.koin.core)
   implementation(libs.koin.android)
+
+  testImplementation(libs.robolectric)
+  testImplementation(libs.androidx.test.ext.junit)
+  testRuntimeOnly(libs.junit4.vintage.engine)
 }

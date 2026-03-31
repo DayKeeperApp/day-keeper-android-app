@@ -34,9 +34,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.jsamuelsen11.daykeeper.core.model.attachment.AttachmentUiItem
 import com.jsamuelsen11.daykeeper.core.model.people.ContactMethodType
+import com.jsamuelsen11.daykeeper.core.ui.component.AttachmentPicker
+import com.jsamuelsen11.daykeeper.core.ui.component.AttachmentRow
 import com.jsamuelsen11.daykeeper.core.ui.component.DayKeeperTopAppBar
 import com.jsamuelsen11.daykeeper.core.ui.component.LoadingIndicator
 import com.jsamuelsen11.daykeeper.core.ui.icon.DayKeeperIcons
@@ -94,62 +98,102 @@ private fun PersonFormContent(
   Column(
     modifier = modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(SectionSpacing)
   ) {
-    NameSection(
-      firstName = state.firstName,
-      lastName = state.lastName,
-      nickname = state.nickname,
-      firstNameError = state.firstNameError,
-      lastNameError = state.lastNameError,
-      onFirstNameChanged = viewModel::onFirstNameChanged,
-      onLastNameChanged = viewModel::onLastNameChanged,
-      onNicknameChanged = viewModel::onNicknameChanged,
+    PersonFormFields(state = state, viewModel = viewModel)
+    PersonFormAttachmentsAndSave(state = state, viewModel = viewModel)
+  }
+}
+
+@Composable
+private fun PersonFormFields(
+  state: PersonCreateEditUiState.Ready,
+  viewModel: PersonCreateEditViewModel,
+) {
+  NameSection(
+    firstName = state.firstName,
+    lastName = state.lastName,
+    nickname = state.nickname,
+    firstNameError = state.firstNameError,
+    lastNameError = state.lastNameError,
+    onFirstNameChanged = viewModel::onFirstNameChanged,
+    onLastNameChanged = viewModel::onLastNameChanged,
+    onNicknameChanged = viewModel::onNicknameChanged,
+  )
+
+  Spacer(modifier = Modifier.height(SectionSpacing))
+  OutlinedTextField(
+    value = state.notes,
+    onValueChange = viewModel::onNotesChanged,
+    label = { Text("Notes") },
+    modifier = Modifier.fillMaxWidth(),
+    minLines = 2,
+  )
+
+  Spacer(modifier = Modifier.height(SectionSpacing))
+  HorizontalDivider()
+
+  ContactMethodsSection(
+    entries = state.contactMethods,
+    onAdd = viewModel::addContactMethod,
+    onRemove = viewModel::removeContactMethod,
+    onUpdate = viewModel::updateContactMethod,
+  )
+
+  HorizontalDivider()
+
+  AddressesSection(
+    entries = state.addresses,
+    onAdd = viewModel::addAddress,
+    onRemove = viewModel::removeAddress,
+    onUpdate = viewModel::updateAddress,
+  )
+
+  HorizontalDivider()
+
+  ImportantDatesSection(
+    entries = state.importantDates,
+    onAdd = viewModel::addImportantDate,
+    onRemove = viewModel::removeImportantDate,
+    onUpdate = viewModel::updateImportantDate,
+  )
+
+  HorizontalDivider()
+}
+
+@Composable
+private fun PersonFormAttachmentsAndSave(
+  state: PersonCreateEditUiState.Ready,
+  viewModel: PersonCreateEditViewModel,
+) {
+  val context = LocalContext.current
+  var showAttachmentPicker by remember { mutableStateOf(false) }
+
+  if (showAttachmentPicker) {
+    AttachmentPicker(
+      onDismiss = { showAttachmentPicker = false },
+      onImageCaptured = { uri ->
+        showAttachmentPicker = false
+        viewModel.uploadAttachment(context, uri)
+      },
+      onFileSelected = { uri ->
+        showAttachmentPicker = false
+        viewModel.uploadAttachment(context, uri)
+      },
     )
+  }
 
-    Spacer(modifier = Modifier.height(SectionSpacing))
-    OutlinedTextField(
-      value = state.notes,
-      onValueChange = viewModel::onNotesChanged,
-      label = { Text("Notes") },
-      modifier = Modifier.fillMaxWidth(),
-      minLines = 2,
-    )
+  AttachmentsSection(
+    attachments = state.attachments,
+    onAddClick = { showAttachmentPicker = true },
+    onDeleteAttachment = viewModel::deleteAttachment,
+  )
 
-    Spacer(modifier = Modifier.height(SectionSpacing))
-    HorizontalDivider()
-
-    ContactMethodsSection(
-      entries = state.contactMethods,
-      onAdd = viewModel::addContactMethod,
-      onRemove = viewModel::removeContactMethod,
-      onUpdate = viewModel::updateContactMethod,
-    )
-
-    HorizontalDivider()
-
-    AddressesSection(
-      entries = state.addresses,
-      onAdd = viewModel::addAddress,
-      onRemove = viewModel::removeAddress,
-      onUpdate = viewModel::updateAddress,
-    )
-
-    HorizontalDivider()
-
-    ImportantDatesSection(
-      entries = state.importantDates,
-      onAdd = viewModel::addImportantDate,
-      onRemove = viewModel::removeImportantDate,
-      onUpdate = viewModel::updateImportantDate,
-    )
-
-    Spacer(modifier = Modifier.height(SectionSpacing))
-    Button(
-      onClick = viewModel::onSave,
-      modifier = Modifier.fillMaxWidth(),
-      enabled = !state.isSaving,
-    ) {
-      Text(if (state.isEditing) "Save" else "Create")
-    }
+  Spacer(modifier = Modifier.height(SectionSpacing))
+  Button(
+    onClick = viewModel::onSave,
+    modifier = Modifier.fillMaxWidth(),
+    enabled = !state.isSaving,
+  ) {
+    Text(if (state.isEditing) "Save" else "Create")
   }
 }
 
@@ -394,6 +438,22 @@ private fun RemoveButton(onClick: () -> Unit) {
       tint = MaterialTheme.colorScheme.error,
     )
   }
+}
+
+@Composable
+private fun AttachmentsSection(
+  attachments: List<AttachmentUiItem>,
+  onAddClick: () -> Unit,
+  onDeleteAttachment: (String) -> Unit,
+) {
+  FormSectionHeader(title = "Attachments", onAdd = onAddClick)
+  AttachmentRow(
+    attachments = attachments,
+    onAddClick = onAddClick,
+    onAttachmentClick = {},
+    onDeleteAttachment = onDeleteAttachment,
+  )
+  Spacer(modifier = Modifier.height(FieldSpacing))
 }
 
 @Composable

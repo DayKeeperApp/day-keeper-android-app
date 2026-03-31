@@ -4,6 +4,7 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -73,6 +74,10 @@ internal class UserPreferencesRepositoryImpl(private val dataStore: DataStore<Pr
   override suspend fun setNotifyPeople(enabled: Boolean) {
     dataStore.edit { it[KEY_NOTIFY_PEOPLE] = enabled }
   }
+
+  override suspend fun setAttachmentCacheSizeMb(sizeMb: Int) {
+    dataStore.edit { it[KEY_ATTACHMENT_CACHE_SIZE_MB] = sizeMb }
+  }
 }
 
 private val KEY_THEME_MODE = stringPreferencesKey("theme_mode")
@@ -90,6 +95,7 @@ private val KEY_NOTIFY_EVENTS = booleanPreferencesKey("notify_events")
 private val KEY_NOTIFY_TASKS = booleanPreferencesKey("notify_tasks")
 private val KEY_NOTIFY_LISTS = booleanPreferencesKey("notify_lists")
 private val KEY_NOTIFY_PEOPLE = booleanPreferencesKey("notify_people")
+private val KEY_ATTACHMENT_CACHE_SIZE_MB = intPreferencesKey("attachment_cache_size_mb")
 
 private fun Preferences.toUserPreferences(): UserPreferences {
   val defaults = UserPreferences()
@@ -110,6 +116,7 @@ private fun Preferences.toUserPreferences(): UserPreferences {
     notifyTasks = this[KEY_NOTIFY_TASKS] ?: defaults.notifyTasks,
     notifyLists = this[KEY_NOTIFY_LISTS] ?: defaults.notifyLists,
     notifyPeople = this[KEY_NOTIFY_PEOPLE] ?: defaults.notifyPeople,
+    attachmentCacheSizeMb = this[KEY_ATTACHMENT_CACHE_SIZE_MB] ?: defaults.attachmentCacheSizeMb,
   )
 }
 

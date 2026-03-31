@@ -1,5 +1,6 @@
 package com.jsamuelsen11.daykeeper.feature.tasks.createedit
 
+import com.jsamuelsen11.daykeeper.core.model.attachment.AttachmentUiItem
 import com.jsamuelsen11.daykeeper.core.model.calendar.RecurrenceRule
 import com.jsamuelsen11.daykeeper.core.model.task.Priority
 import com.jsamuelsen11.daykeeper.core.model.task.Project
@@ -27,6 +28,7 @@ sealed interface TaskCreateEditUiState {
    * @property titleError Validation error message for the title field, or null if valid.
    * @property projects Available projects to assign the task to.
    * @property categories Available categories to tag the task with.
+   * @property attachments Attachments associated with this task when editing.
    */
   data class Ready(
     val title: String = "",
@@ -43,6 +45,7 @@ sealed interface TaskCreateEditUiState {
     val titleError: String? = null,
     val projects: List<Project> = emptyList(),
     val categories: List<TaskCategory> = emptyList(),
+    val attachments: List<AttachmentUiItem> = emptyList(),
   ) : TaskCreateEditUiState
 }
 

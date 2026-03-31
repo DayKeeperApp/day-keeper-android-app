@@ -1,5 +1,6 @@
 package com.jsamuelsen11.daykeeper.feature.people.createedit
 
+import com.jsamuelsen11.daykeeper.core.model.attachment.AttachmentUiItem
 import com.jsamuelsen11.daykeeper.core.model.people.ContactMethodType
 import java.util.UUID
 
@@ -19,6 +20,7 @@ sealed interface PersonCreateEditUiState {
     val firstNameError: String? = null,
     val lastNameError: String? = null,
     val saveError: String? = null,
+    val attachments: List<AttachmentUiItem> = emptyList(),
   ) : PersonCreateEditUiState
 }
 

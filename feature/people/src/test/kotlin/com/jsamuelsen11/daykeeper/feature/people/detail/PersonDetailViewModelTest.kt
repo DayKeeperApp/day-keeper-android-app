@@ -2,7 +2,9 @@ package com.jsamuelsen11.daykeeper.feature.people.detail
 
 import androidx.lifecycle.SavedStateHandle
 import app.cash.turbine.test
+import com.jsamuelsen11.daykeeper.core.data.attachment.AttachmentManager
 import com.jsamuelsen11.daykeeper.core.data.repository.AddressRepository
+import com.jsamuelsen11.daykeeper.core.data.repository.AttachmentRepository
 import com.jsamuelsen11.daykeeper.core.data.repository.ContactMethodRepository
 import com.jsamuelsen11.daykeeper.core.data.repository.ImportantDateRepository
 import com.jsamuelsen11.daykeeper.core.data.repository.PersonRepository
@@ -38,6 +40,8 @@ class PersonDetailViewModelTest {
   private val contactMethodRepository = mockk<ContactMethodRepository>()
   private val addressRepository = mockk<AddressRepository>()
   private val importantDateRepository = mockk<ImportantDateRepository>()
+  private val attachmentRepository: AttachmentRepository = mockk(relaxed = true)
+  private val attachmentManager: AttachmentManager = mockk(relaxed = true)
 
   private val savedStateHandle = SavedStateHandle(mapOf("personId" to TEST_PERSON_ID))
 
@@ -47,6 +51,7 @@ class PersonDetailViewModelTest {
     every { contactMethodRepository.observeByPerson(TEST_PERSON_ID) } returns flowOf(emptyList())
     every { addressRepository.observeByPerson(TEST_PERSON_ID) } returns flowOf(emptyList())
     every { importantDateRepository.observeByPerson(TEST_PERSON_ID) } returns flowOf(emptyList())
+    every { attachmentRepository.observeByEntity(any(), any()) } returns flowOf(emptyList())
   }
 
   private fun createViewModel(): PersonDetailViewModel =
@@ -56,6 +61,8 @@ class PersonDetailViewModelTest {
       contactMethodRepository = contactMethodRepository,
       addressRepository = addressRepository,
       importantDateRepository = importantDateRepository,
+      attachmentRepository = attachmentRepository,
+      attachmentManager = attachmentManager,
     )
 
   // --- UiState shape ---

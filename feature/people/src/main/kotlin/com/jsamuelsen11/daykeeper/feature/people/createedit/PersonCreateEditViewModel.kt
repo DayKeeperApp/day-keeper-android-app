@@ -1,32 +1,46 @@
 package com.jsamuelsen11.daykeeper.feature.people.createedit
 
+import android.content.Context
+import android.net.Uri
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.jsamuelsen11.daykeeper.core.data.attachment.AttachmentManager
 import com.jsamuelsen11.daykeeper.core.data.repository.AddressRepository
+import com.jsamuelsen11.daykeeper.core.data.repository.AttachmentRepository
 import com.jsamuelsen11.daykeeper.core.data.repository.ContactMethodRepository
 import com.jsamuelsen11.daykeeper.core.data.repository.ImportantDateRepository
 import com.jsamuelsen11.daykeeper.core.data.repository.PersonRepository
+import com.jsamuelsen11.daykeeper.core.model.attachment.AttachableEntityType
+import com.jsamuelsen11.daykeeper.core.model.attachment.AttachmentUiItem
 import com.jsamuelsen11.daykeeper.core.model.people.Address
 import com.jsamuelsen11.daykeeper.core.model.people.ContactMethod
 import com.jsamuelsen11.daykeeper.core.model.people.ImportantDate
 import com.jsamuelsen11.daykeeper.core.model.people.Person
 import java.util.UUID
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class PersonCreateEditViewModel(
   savedStateHandle: SavedStateHandle,
   private val personRepository: PersonRepository,
   private val contactMethodRepository: ContactMethodRepository,
   private val addressRepository: AddressRepository,
   private val importantDateRepository: ImportantDateRepository,
+  private val attachmentRepository: AttachmentRepository,
+  private val attachmentManager: AttachmentManager,
 ) : ViewModel() {
 
   private val personId: String? = savedStateHandle["personId"]
@@ -129,6 +143,34 @@ class PersonCreateEditViewModel(
       originalImportantDateIds = dates.map { it.importantDateId }.toSet()
 
       _uiState.value = buildEditState(person, contacts, addresses, dates)
+
+      attachmentRepository
+        .observeByEntity(AttachableEntityType.PERSON, personId)
+        .flatMapLatest { attachments ->
+          if (attachments.isEmpty()) {
+            flowOf(emptyList())
+          } else {
+            combine(
+              attachments.map { attachment ->
+                attachmentManager.observeDownloadState(attachment.attachmentId).map { downloadState
+                  ->
+                  AttachmentUiItem(
+                    attachmentId = attachment.attachmentId,
+                    fileName = attachment.fileName,
+                    mimeType = attachment.mimeType,
+                    fileSize = attachment.fileSize,
+                    downloadState = downloadState,
+                    remoteUrl = attachment.remoteUrl,
+                    localPath = attachment.localPath,
+                  )
+                }
+              }
+            ) { items ->
+              items.toList()
+            }
+          }
+        }
+        .collect { attachments -> updateReady { it.copy(attachments = attachments) } }
     } else {
       _uiState.value = PersonCreateEditUiState.Ready()
     }
@@ -304,6 +346,46 @@ class PersonCreateEditViewModel(
     }
   }
 
+  fun uploadAttachment(context: Context, uri: Uri) {
+    val pid = personId ?: return
+    viewModelScope.launch {
+      runCatching {
+          val mimeType = context.contentResolver.getType(uri) ?: FALLBACK_MIME_TYPE
+          val fileName = resolveFileName(context, uri)
+          val fileBytes =
+            checkNotNull(context.contentResolver.openInputStream(uri)).use { it.readBytes() }
+          attachmentManager.upload(
+            entityType = AttachableEntityType.PERSON,
+            entityId = pid,
+            tenantId = DEFAULT_TENANT_ID,
+            spaceId = DEFAULT_SPACE_ID,
+            fileName = fileName,
+            mimeType = mimeType,
+            fileBytes = fileBytes,
+          )
+        }
+        .onFailure { error ->
+          updateReady { it.copy(saveError = error.message ?: UPLOAD_FAILED_ERROR) }
+        }
+    }
+  }
+
+  fun deleteAttachment(attachmentId: String) {
+    viewModelScope.launch {
+      attachmentManager.deleteLocal(attachmentId)
+      attachmentRepository.delete(attachmentId)
+    }
+  }
+
+  private fun resolveFileName(context: Context, uri: Uri): String {
+    val cursor = context.contentResolver.query(uri, null, null, null, null)
+    return cursor?.use {
+      val index = it.getColumnIndex(android.provider.OpenableColumns.DISPLAY_NAME)
+      it.moveToFirst()
+      if (index >= 0) it.getString(index) else null
+    } ?: uri.lastPathSegment ?: FALLBACK_FILE_NAME
+  }
+
   private fun updateReady(
     transform: (PersonCreateEditUiState.Ready) -> PersonCreateEditUiState.Ready
   ) {
@@ -315,5 +397,8 @@ class PersonCreateEditViewModel(
   companion object {
     private const val DEFAULT_SPACE_ID = "default-space"
     private const val DEFAULT_TENANT_ID = "default-tenant"
+    private const val FALLBACK_MIME_TYPE = "application/octet-stream"
+    private const val FALLBACK_FILE_NAME = "attachment"
+    private const val UPLOAD_FAILED_ERROR = "Upload failed"
   }
 }
