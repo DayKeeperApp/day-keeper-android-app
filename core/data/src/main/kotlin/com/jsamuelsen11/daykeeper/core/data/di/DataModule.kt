@@ -7,6 +7,8 @@ import androidx.datastore.preferences.preferencesDataStore
 import com.jsamuelsen11.daykeeper.core.data.attachment.AttachmentManager
 import com.jsamuelsen11.daykeeper.core.data.attachment.AttachmentManagerImpl
 import com.jsamuelsen11.daykeeper.core.data.attachment.FileCache
+import com.jsamuelsen11.daykeeper.core.data.attachment.ImageCompressor
+import com.jsamuelsen11.daykeeper.core.data.attachment.ImageCompressorImpl
 import com.jsamuelsen11.daykeeper.core.data.preferences.UserPreferencesRepository
 import com.jsamuelsen11.daykeeper.core.data.preferences.UserPreferencesRepositoryImpl
 import com.jsamuelsen11.daykeeper.core.data.repository.AccountRepository
@@ -85,6 +87,7 @@ public val dataModule = module {
   single { SyncCursorRepositoryImpl(get()) } bind SyncCursorRepository::class
 
   single { FileCache(File(androidContext().filesDir, "attachment_cache")) }
+  single { ImageCompressorImpl() } bind ImageCompressor::class
   single { AttachmentManagerImpl(get(), get(), get()) } bind AttachmentManager::class
 
   single { CoroutineScope(SupervisorJob() + Dispatchers.IO) }
