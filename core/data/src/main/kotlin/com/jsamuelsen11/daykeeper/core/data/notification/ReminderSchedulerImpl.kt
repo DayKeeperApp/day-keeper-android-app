@@ -1,9 +1,11 @@
 package com.jsamuelsen11.daykeeper.core.data.notification
 
+import android.annotation.SuppressLint
 import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import com.jsamuelsen11.daykeeper.core.data.repository.EventReminderRepository
 import com.jsamuelsen11.daykeeper.core.data.repository.EventRepository
 import com.jsamuelsen11.daykeeper.core.data.repository.TaskRepository
@@ -21,8 +23,7 @@ public class ReminderSchedulerImpl(
   private val taskRepository: TaskRepository,
 ) : ReminderScheduler {
 
-  private val alarmManager: AlarmManager =
-    context.getSystemService(AlarmManager::class.java)
+  private val alarmManager: AlarmManager = context.getSystemService(AlarmManager::class.java)
 
   public override fun scheduleEventReminder(event: Event, reminder: EventReminder) {
     val startAt = event.startAt ?: return
@@ -38,7 +39,7 @@ public class ReminderSchedulerImpl(
         PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
       )
 
-    alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, triggerAt, pendingIntent)
+    scheduleExactAlarm(triggerAt, pendingIntent)
   }
 
   public override fun cancelEventReminder(reminderId: String) {
@@ -54,8 +55,10 @@ public class ReminderSchedulerImpl(
   }
 
   public override fun scheduleTaskReminder(task: Task) {
-    val dueAt = task.dueAt ?: return
-    val minutesBefore = task.reminderMinutesBefore ?: return
+    val dueAt = task.dueAt
+    val minutesBefore = task.reminderMinutesBefore
+    if (dueAt == null || minutesBefore == null) return
+
     val triggerAt = dueAt - (minutesBefore * MILLIS_PER_MINUTE)
     if (triggerAt <= System.currentTimeMillis()) return
 
@@ -68,7 +71,7 @@ public class ReminderSchedulerImpl(
         PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
       )
 
-    alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, triggerAt, pendingIntent)
+    scheduleExactAlarm(triggerAt, pendingIntent)
   }
 
   public override fun cancelTaskReminder(taskId: String) {
@@ -94,6 +97,14 @@ public class ReminderSchedulerImpl(
     for (task in tasks) {
       scheduleTaskReminder(task)
     }
+  }
+
+  @SuppressLint("MissingPermission") // Permission checked via canScheduleExactAlarms() above
+  private fun scheduleExactAlarm(triggerAt: Long, pendingIntent: PendingIntent) {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && !alarmManager.canScheduleExactAlarms()) {
+      return
+    }
+    alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, triggerAt, pendingIntent)
   }
 
   private fun createReminderIntent(entityId: String, reminderType: ReminderType): Intent =

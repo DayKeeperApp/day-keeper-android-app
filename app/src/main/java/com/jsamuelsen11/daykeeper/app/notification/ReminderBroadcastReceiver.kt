@@ -26,10 +26,11 @@ class ReminderBroadcastReceiver : BroadcastReceiver(), KoinComponent {
   override fun onReceive(context: Context, intent: Intent) {
     if (intent.action != ReminderSchedulerImpl.ACTION_REMINDER_FIRED) return
 
-    val entityId = intent.getStringExtra(ReminderSchedulerImpl.EXTRA_ENTITY_ID) ?: return
-    val typeName = intent.getStringExtra(ReminderSchedulerImpl.EXTRA_REMINDER_TYPE) ?: return
-    val reminderType = ReminderType.valueOf(typeName)
+    val entityId = intent.getStringExtra(ReminderSchedulerImpl.EXTRA_ENTITY_ID)
+    val typeName = intent.getStringExtra(ReminderSchedulerImpl.EXTRA_REMINDER_TYPE)
+    if (entityId == null || typeName == null) return
 
+    val reminderType = ReminderType.valueOf(typeName)
     val pendingResult = goAsync()
     CoroutineScope(Dispatchers.IO).launch {
       try {

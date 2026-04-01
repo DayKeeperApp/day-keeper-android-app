@@ -6,13 +6,13 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
 import com.jsamuelsen11.daykeeper.core.data.attachment.AttachmentManager
 import com.jsamuelsen11.daykeeper.core.data.attachment.AttachmentManagerImpl
+import com.jsamuelsen11.daykeeper.core.data.attachment.FileCache
+import com.jsamuelsen11.daykeeper.core.data.attachment.ImageCompressor
+import com.jsamuelsen11.daykeeper.core.data.attachment.ImageCompressorImpl
 import com.jsamuelsen11.daykeeper.core.data.notification.NotificationChannelManager
 import com.jsamuelsen11.daykeeper.core.data.notification.NotificationDisplayManager
 import com.jsamuelsen11.daykeeper.core.data.notification.ReminderScheduler
 import com.jsamuelsen11.daykeeper.core.data.notification.ReminderSchedulerImpl
-import com.jsamuelsen11.daykeeper.core.data.attachment.FileCache
-import com.jsamuelsen11.daykeeper.core.data.attachment.ImageCompressor
-import com.jsamuelsen11.daykeeper.core.data.attachment.ImageCompressorImpl
 import com.jsamuelsen11.daykeeper.core.data.preferences.UserPreferencesRepository
 import com.jsamuelsen11.daykeeper.core.data.preferences.UserPreferencesRepositoryImpl
 import com.jsamuelsen11.daykeeper.core.data.repository.AccountRepository

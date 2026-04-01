@@ -33,8 +33,7 @@ class NotificationActionReceiver : BroadcastReceiver(), KoinComponent {
 
   private fun handleMarkDone(context: Context, intent: Intent) {
     val taskId = intent.getStringExtra(NotificationDisplayManager.EXTRA_TASK_ID) ?: return
-    val notificationId =
-      intent.getIntExtra(NotificationDisplayManager.EXTRA_NOTIFICATION_ID, -1)
+    val notificationId = intent.getIntExtra(NotificationDisplayManager.EXTRA_NOTIFICATION_ID, -1)
 
     val pendingResult = goAsync()
     CoroutineScope(Dispatchers.IO).launch {
@@ -53,12 +52,10 @@ class NotificationActionReceiver : BroadcastReceiver(), KoinComponent {
   }
 
   private fun handleSnooze(context: Context, intent: Intent) {
-    val entityId = intent.getStringExtra(NotificationDisplayManager.EXTRA_ENTITY_ID) ?: return
-    val typeName =
-      intent.getStringExtra(NotificationDisplayManager.EXTRA_REMINDER_TYPE) ?: return
-    val snoozeMinutes =
-      intent.getIntExtra(NotificationDisplayManager.EXTRA_SNOOZE_MINUTES, 0)
-    if (snoozeMinutes <= 0) return
+    val entityId = intent.getStringExtra(NotificationDisplayManager.EXTRA_ENTITY_ID)
+    val typeName = intent.getStringExtra(NotificationDisplayManager.EXTRA_REMINDER_TYPE)
+    val snoozeMinutes = intent.getIntExtra(NotificationDisplayManager.EXTRA_SNOOZE_MINUTES, 0)
+    if (entityId == null || typeName == null || snoozeMinutes <= 0) return
 
     val triggerAt = System.currentTimeMillis() + (snoozeMinutes * MILLIS_PER_MINUTE)
     val reminderType = ReminderType.valueOf(typeName)

@@ -1,5 +1,7 @@
 package com.jsamuelsen11.daykeeper.core.data.notification
 
+import android.annotation.SuppressLint
+import android.app.Notification
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
@@ -38,7 +40,7 @@ public class NotificationDisplayManager(private val context: Context) {
         .setPriority(NotificationCompat.PRIORITY_HIGH)
         .build()
 
-    notificationManager.notify(notificationId, notification)
+    safeNotify(notificationId, notification)
   }
 
   public fun showTaskReminder(task: Task) {
@@ -63,7 +65,7 @@ public class NotificationDisplayManager(private val context: Context) {
         .setPriority(NotificationCompat.PRIORITY_HIGH)
         .build()
 
-    notificationManager.notify(notificationId, notification)
+    safeNotify(notificationId, notification)
   }
 
   public fun showSyncNotification(message: String) {
@@ -76,7 +78,7 @@ public class NotificationDisplayManager(private val context: Context) {
         .setPriority(NotificationCompat.PRIORITY_LOW)
         .build()
 
-    notificationManager.notify(SYNC_NOTIFICATION_ID, notification)
+    safeNotify(SYNC_NOTIFICATION_ID, notification)
   }
 
   public fun showGeneralNotification(title: String, body: String, notificationId: Int) {
@@ -88,11 +90,17 @@ public class NotificationDisplayManager(private val context: Context) {
         .setAutoCancel(true)
         .build()
 
-    notificationManager.notify(notificationId, notification)
+    safeNotify(notificationId, notification)
   }
 
   public fun cancel(notificationId: Int) {
     notificationManager.cancel(notificationId)
+  }
+
+  @SuppressLint("MissingPermission") // Permission checked via checkNotificationPermission() above
+  private fun safeNotify(notificationId: Int, notification: Notification) {
+    if (context.checkNotificationPermission() == NotificationPermissionState.DENIED) return
+    notificationManager.notify(notificationId, notification)
   }
 
   private fun createDeepLinkIntent(type: String, entityId: String): PendingIntent {
@@ -144,8 +152,7 @@ public class NotificationDisplayManager(private val context: Context) {
   public companion object {
     public const val ACTION_MARK_DONE: String =
       "com.jsamuelsen11.daykeeper.action.NOTIFICATION_MARK_DONE"
-    public const val ACTION_SNOOZE: String =
-      "com.jsamuelsen11.daykeeper.action.NOTIFICATION_SNOOZE"
+    public const val ACTION_SNOOZE: String = "com.jsamuelsen11.daykeeper.action.NOTIFICATION_SNOOZE"
     public const val EXTRA_TASK_ID: String = "task_id"
     public const val EXTRA_ENTITY_ID: String = "entity_id"
     public const val EXTRA_NOTIFICATION_ID: String = "notification_id"

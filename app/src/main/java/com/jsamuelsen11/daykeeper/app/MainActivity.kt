@@ -28,10 +28,10 @@ class MainActivity : ComponentActivity() {
     deepLinkRoute = parseDeepLink(intent)
   }
 
-  private fun parseDeepLink(intent: Intent): Any? {
-    val type = intent.getStringExtra(DeepLinkConstants.EXTRA_DEEP_LINK_TYPE) ?: return null
-    val entityId = intent.getStringExtra(DeepLinkConstants.EXTRA_ENTITY_ID) ?: return null
-    return DeepLinkRoute(type, entityId)
+  private fun parseDeepLink(intent: Intent): DeepLinkRoute? {
+    val type = intent.getStringExtra(DeepLinkConstants.EXTRA_DEEP_LINK_TYPE)
+    val entityId = intent.getStringExtra(DeepLinkConstants.EXTRA_ENTITY_ID)
+    return if (type != null && entityId != null) DeepLinkRoute(type, entityId) else null
   }
 }
 

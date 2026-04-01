@@ -12,23 +12,11 @@ public class NotificationChannelManager(private val context: Context) {
     val manager = context.getSystemService(NotificationManager::class.java)
     manager.createNotificationChannels(
       listOf(
-        NotificationChannel(
-            CHANNEL_REMINDERS,
-            "Reminders",
-            NotificationManager.IMPORTANCE_HIGH,
-          )
+        NotificationChannel(CHANNEL_REMINDERS, "Reminders", NotificationManager.IMPORTANCE_HIGH)
           .apply { description = "Event and task reminders" },
-        NotificationChannel(
-            CHANNEL_SYNC,
-            "Sync Updates",
-            NotificationManager.IMPORTANCE_LOW,
-          )
+        NotificationChannel(CHANNEL_SYNC, "Sync Updates", NotificationManager.IMPORTANCE_LOW)
           .apply { description = "Background sync status" },
-        NotificationChannel(
-            CHANNEL_GENERAL,
-            "General",
-            NotificationManager.IMPORTANCE_DEFAULT,
-          )
+        NotificationChannel(CHANNEL_GENERAL, "General", NotificationManager.IMPORTANCE_DEFAULT)
           .apply { description = "General notifications" },
       )
     )
