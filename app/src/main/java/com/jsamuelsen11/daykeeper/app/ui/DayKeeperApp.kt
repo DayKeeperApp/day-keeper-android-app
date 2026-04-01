@@ -8,6 +8,7 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -17,14 +18,40 @@ import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.jsamuelsen11.daykeeper.app.DeepLinkRoute
+import com.jsamuelsen11.daykeeper.app.navigation.CalendarRoute
 import com.jsamuelsen11.daykeeper.app.navigation.DayKeeperNavHost
+import com.jsamuelsen11.daykeeper.app.navigation.TasksRoute
 import com.jsamuelsen11.daykeeper.app.navigation.TopLevelDestination
+import com.jsamuelsen11.daykeeper.core.data.notification.DeepLinkConstants
+import com.jsamuelsen11.daykeeper.feature.calendar.navigation.EventDetailRoute
+import com.jsamuelsen11.daykeeper.feature.tasks.navigation.TaskDetailRoute
 
 @Composable
-fun DayKeeperApp(modifier: Modifier = Modifier) {
+fun DayKeeperApp(modifier: Modifier = Modifier, deepLinkRoute: Any? = null) {
   val navController = rememberNavController()
   val navBackStackEntry by navController.currentBackStackEntryAsState()
   val currentDestination = navBackStackEntry?.destination
+
+  LaunchedEffect(deepLinkRoute) {
+    val route = deepLinkRoute as? DeepLinkRoute ?: return@LaunchedEffect
+    when (route.type) {
+      DeepLinkConstants.TYPE_EVENT -> {
+        navController.navigate(CalendarRoute) {
+          popUpTo(navController.graph.findStartDestination().id) { saveState = true }
+          launchSingleTop = true
+        }
+        navController.navigate(EventDetailRoute(route.entityId))
+      }
+      DeepLinkConstants.TYPE_TASK -> {
+        navController.navigate(TasksRoute) {
+          popUpTo(navController.graph.findStartDestination().id) { saveState = true }
+          launchSingleTop = true
+        }
+        navController.navigate(TaskDetailRoute(route.entityId))
+      }
+    }
+  }
 
   Scaffold(
     modifier = modifier.fillMaxSize(),
