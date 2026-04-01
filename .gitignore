@@ -45,6 +45,7 @@ temp/
 keystore.properties
 .env
 .env.*
+google-services.json
 
 
 # --- Coverage & Reports ---

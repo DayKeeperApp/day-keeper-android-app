@@ -2,6 +2,11 @@ plugins {
   alias(libs.plugins.daykeeper.android.application)
   alias(libs.plugins.kotlin.compose)
   alias(libs.plugins.kotlin.serialization)
+  alias(libs.plugins.google.services) apply false
+}
+
+if (file("google-services.json").exists()) {
+  apply(plugin = libs.plugins.google.services.get().pluginId)
 }
 
 android {
@@ -47,6 +52,9 @@ dependencies {
   implementation(libs.kotlinx.serialization.json)
 
   implementation(libs.androidx.work.runtime.ktx)
+
+  implementation(platform(libs.firebase.bom))
+  implementation(libs.firebase.messaging)
 
   implementation(platform(libs.koin.bom))
   implementation(libs.koin.core)
