@@ -18,4 +18,6 @@ public interface TaskRepository {
   public suspend fun upsert(task: Task)
 
   public suspend fun delete(taskId: String)
+
+  public suspend fun getTasksWithReminders(): List<Task>
 }

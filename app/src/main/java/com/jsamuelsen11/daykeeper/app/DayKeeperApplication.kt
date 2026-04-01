@@ -3,6 +3,7 @@ package com.jsamuelsen11.daykeeper.app
 import android.app.Application
 import androidx.work.Configuration
 import com.jsamuelsen11.daykeeper.app.di.appModule
+import com.jsamuelsen11.daykeeper.core.data.notification.NotificationChannelManager
 import com.jsamuelsen11.daykeeper.core.data.sync.SyncScheduler
 import org.koin.android.ext.android.get
 import org.koin.android.ext.koin.androidContext
@@ -19,6 +20,7 @@ class DayKeeperApplication : Application(), Configuration.Provider {
       workManagerFactory()
       modules(appModule)
     }
+    get<NotificationChannelManager>().createChannels()
     get<SyncScheduler>().schedulePeriodicSync()
   }
 

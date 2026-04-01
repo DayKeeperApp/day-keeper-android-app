@@ -11,4 +11,6 @@ public interface EventReminderRepository {
   public suspend fun upsert(reminder: EventReminder)
 
   public suspend fun delete(reminderId: String)
+
+  public suspend fun getAllActive(): List<EventReminder>
 }

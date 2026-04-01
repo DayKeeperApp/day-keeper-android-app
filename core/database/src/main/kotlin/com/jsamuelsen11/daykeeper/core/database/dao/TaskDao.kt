@@ -42,4 +42,11 @@ public interface TaskDao {
 
   @Query("SELECT * FROM tasks WHERE updated_at > :since")
   public suspend fun getModifiedSince(since: Long): List<TaskEntity>
+
+  @Query(
+    "SELECT * FROM tasks WHERE reminder_minutes_before IS NOT NULL" +
+      " AND due_at IS NOT NULL AND deleted_at IS NULL" +
+      " AND status NOT IN ('DONE', 'CANCELLED')"
+  )
+  public suspend fun getTasksWithReminders(): List<TaskEntity>
 }
