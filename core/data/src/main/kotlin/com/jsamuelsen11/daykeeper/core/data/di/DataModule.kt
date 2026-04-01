@@ -6,6 +6,10 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
 import com.jsamuelsen11.daykeeper.core.data.attachment.AttachmentManager
 import com.jsamuelsen11.daykeeper.core.data.attachment.AttachmentManagerImpl
+import com.jsamuelsen11.daykeeper.core.data.notification.NotificationChannelManager
+import com.jsamuelsen11.daykeeper.core.data.notification.NotificationDisplayManager
+import com.jsamuelsen11.daykeeper.core.data.notification.ReminderScheduler
+import com.jsamuelsen11.daykeeper.core.data.notification.ReminderSchedulerImpl
 import com.jsamuelsen11.daykeeper.core.data.attachment.FileCache
 import com.jsamuelsen11.daykeeper.core.data.attachment.ImageCompressor
 import com.jsamuelsen11.daykeeper.core.data.attachment.ImageCompressorImpl
@@ -92,4 +96,9 @@ public val dataModule = module {
 
   single { CoroutineScope(SupervisorJob() + Dispatchers.IO) }
   single { SyncManager(get(), get(), get(), get()) } bind SyncStatusProvider::class
+
+  single { NotificationChannelManager(androidContext()) }
+  single { NotificationDisplayManager(androidContext()) }
+  single { ReminderSchedulerImpl(androidContext(), get(), get(), get()) } bind
+    ReminderScheduler::class
 }

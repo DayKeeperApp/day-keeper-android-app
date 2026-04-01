@@ -29,4 +29,7 @@ public interface EventReminderDao {
 
   @Query("SELECT * FROM event_reminders WHERE updated_at > :since")
   public suspend fun getModifiedSince(since: Long): List<EventReminderEntity>
+
+  @Query("SELECT * FROM event_reminders WHERE deleted_at IS NULL")
+  public suspend fun getAllActive(): List<EventReminderEntity>
 }

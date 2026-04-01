@@ -23,4 +23,7 @@ public class EventReminderRepositoryImpl(private val dao: EventReminderDao) :
     val now = System.currentTimeMillis()
     dao.softDelete(reminderId, deletedAt = now, updatedAt = now)
   }
+
+  public override suspend fun getAllActive(): List<EventReminder> =
+    dao.getAllActive().map { it.toDomain() }
 }

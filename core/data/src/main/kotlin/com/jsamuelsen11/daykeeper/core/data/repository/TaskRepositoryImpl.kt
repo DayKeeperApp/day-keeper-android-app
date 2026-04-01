@@ -36,4 +36,7 @@ public class TaskRepositoryImpl(private val dao: TaskDao) : TaskRepository {
     val now = System.currentTimeMillis()
     dao.softDelete(taskId, deletedAt = now, updatedAt = now)
   }
+
+  public override suspend fun getTasksWithReminders(): List<Task> =
+    dao.getTasksWithReminders().map { it.toDomain() }
 }
