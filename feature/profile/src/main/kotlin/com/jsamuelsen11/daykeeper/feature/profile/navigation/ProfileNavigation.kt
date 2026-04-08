@@ -10,6 +10,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import com.jsamuelsen11.daykeeper.feature.profile.overview.ProfileOverviewScreen
+import com.jsamuelsen11.daykeeper.feature.profile.settings.AccountSettingsScreen
 
 fun NavGraphBuilder.profileGraph(navController: NavHostController) {
   composable<ProfileOverviewRoute> {
@@ -23,7 +24,7 @@ fun NavGraphBuilder.profileGraph(navController: NavHostController) {
     )
   }
   composable<AccountSettingsRoute> {
-    PlaceholderScreen("Account Settings")
+    AccountSettingsScreen(onNavigateBack = { navController.popBackStack() })
   }
   composable<SpaceManagementRoute> {
     PlaceholderScreen("Space Management")
