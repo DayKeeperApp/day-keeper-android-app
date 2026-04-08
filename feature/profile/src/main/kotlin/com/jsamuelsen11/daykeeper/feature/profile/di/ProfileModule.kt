@@ -1,5 +1,6 @@
 package com.jsamuelsen11.daykeeper.feature.profile.di
 
+import com.jsamuelsen11.daykeeper.feature.profile.device.DeviceManagementViewModel
 import com.jsamuelsen11.daykeeper.feature.profile.overview.ProfileOverviewViewModel
 import com.jsamuelsen11.daykeeper.feature.profile.settings.AccountSettingsViewModel
 import com.jsamuelsen11.daykeeper.feature.profile.space.SpaceManagementViewModel
@@ -12,4 +13,5 @@ val profileModule = module {
   viewModelOf(::AccountSettingsViewModel)
   viewModelOf(::SpaceManagementViewModel)
   viewModelOf(::SpaceCreateEditViewModel)
+  viewModelOf(::DeviceManagementViewModel)
 }
