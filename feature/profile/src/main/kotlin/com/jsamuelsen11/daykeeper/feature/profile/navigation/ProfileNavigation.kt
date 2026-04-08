@@ -1,21 +1,21 @@
 package com.jsamuelsen11.daykeeper.feature.profile.navigation
 
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
+import com.jsamuelsen11.daykeeper.feature.profile.about.AboutScreen
+import com.jsamuelsen11.daykeeper.feature.profile.device.DeviceManagementScreen
 import com.jsamuelsen11.daykeeper.feature.profile.overview.ProfileOverviewScreen
 import com.jsamuelsen11.daykeeper.feature.profile.settings.AccountSettingsScreen
-import com.jsamuelsen11.daykeeper.feature.profile.device.DeviceManagementScreen
 import com.jsamuelsen11.daykeeper.feature.profile.space.SpaceManagementScreen
 import com.jsamuelsen11.daykeeper.feature.profile.space.createedit.SpaceCreateEditScreen
+import com.jsamuelsen11.daykeeper.feature.profile.storage.StorageScreen
+import com.jsamuelsen11.daykeeper.feature.profile.sync.SyncStatusScreen
 
-fun NavGraphBuilder.profileGraph(navController: NavHostController) {
+fun NavGraphBuilder.profileGraph(
+  navController: NavHostController,
+  onOpenLicenses: () -> Unit = {},
+) {
   composable<ProfileOverviewRoute> {
     ProfileOverviewScreen(
       onAccountSettingsClick = { navController.navigate(AccountSettingsRoute) },
@@ -43,19 +43,15 @@ fun NavGraphBuilder.profileGraph(navController: NavHostController) {
     DeviceManagementScreen(onNavigateBack = { navController.popBackStack() })
   }
   composable<SyncStatusRoute> {
-    PlaceholderScreen("Sync Status")
+    SyncStatusScreen(onNavigateBack = { navController.popBackStack() })
   }
   composable<StorageRoute> {
-    PlaceholderScreen("Storage")
+    StorageScreen(onNavigateBack = { navController.popBackStack() })
   }
   composable<AboutRoute> {
-    PlaceholderScreen("About")
-  }
-}
-
-@Composable
-private fun PlaceholderScreen(title: String) {
-  Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-    Text(text = title)
+    AboutScreen(
+      onNavigateBack = { navController.popBackStack() },
+      onOpenLicenses = onOpenLicenses,
+    )
   }
 }

@@ -1,7 +1,9 @@
 package com.jsamuelsen11.daykeeper.app.navigation
 
+import android.widget.Toast
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -19,13 +21,19 @@ import com.jsamuelsen11.daykeeper.feature.tasks.navigation.tasksGraph
 
 @Composable
 fun DayKeeperNavHost(navController: NavHostController, modifier: Modifier = Modifier) {
+  val context = LocalContext.current
   NavHost(navController = navController, startDestination = CalendarRoute, modifier = modifier) {
     navigation<CalendarRoute>(startDestination = CalendarHomeRoute) { calendarGraph(navController) }
     navigation<TasksRoute>(startDestination = TasksHomeRoute) { tasksGraph(navController) }
     navigation<ListsRoute>(startDestination = ListsHomeRoute) { listsGraph(navController) }
     navigation<PeopleRoute>(startDestination = PeopleListRoute) { peopleGraph(navController) }
     navigation<ProfileRoute>(startDestination = ProfileOverviewRoute) {
-      profileGraph(navController)
+      profileGraph(
+        navController = navController,
+        onOpenLicenses = {
+          Toast.makeText(context, "OSS Licenses coming soon", Toast.LENGTH_SHORT).show()
+        },
+      )
     }
     composable<GlobalSearchRoute> { GlobalSearchScreen() }
   }
