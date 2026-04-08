@@ -9,10 +9,18 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
+import com.jsamuelsen11.daykeeper.feature.profile.overview.ProfileOverviewScreen
 
 fun NavGraphBuilder.profileGraph(navController: NavHostController) {
   composable<ProfileOverviewRoute> {
-    PlaceholderScreen("Profile Overview")
+    ProfileOverviewScreen(
+      onAccountSettingsClick = { navController.navigate(AccountSettingsRoute) },
+      onSpacesClick = { navController.navigate(SpaceManagementRoute) },
+      onDevicesClick = { navController.navigate(DeviceManagementRoute) },
+      onSyncStatusClick = { navController.navigate(SyncStatusRoute) },
+      onStorageClick = { navController.navigate(StorageRoute) },
+      onAboutClick = { navController.navigate(AboutRoute) },
+    )
   }
   composable<AccountSettingsRoute> {
     PlaceholderScreen("Account Settings")
