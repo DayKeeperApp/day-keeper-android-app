@@ -16,5 +16,3 @@ import kotlinx.serialization.Serializable
 // Cross-cutting routes
 @Serializable object GlobalSearchRoute
 
-// Start destinations within each tab graph
-@Serializable object ProfileHomeRoute

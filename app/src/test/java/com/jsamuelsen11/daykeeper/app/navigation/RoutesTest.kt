@@ -3,6 +3,7 @@ package com.jsamuelsen11.daykeeper.app.navigation
 import com.jsamuelsen11.daykeeper.feature.calendar.navigation.CalendarHomeRoute
 import com.jsamuelsen11.daykeeper.feature.lists.navigation.ListsHomeRoute
 import com.jsamuelsen11.daykeeper.feature.people.navigation.PeopleListRoute
+import com.jsamuelsen11.daykeeper.feature.profile.navigation.ProfileOverviewRoute
 import com.jsamuelsen11.daykeeper.feature.tasks.navigation.TasksHomeRoute
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeInstanceOf
@@ -29,7 +30,7 @@ class RoutesTest {
   @Test
   fun `all home routes are distinct classes`() {
     val routes =
-      listOf(CalendarHomeRoute, TasksHomeRoute, ListsHomeRoute, PeopleListRoute, ProfileHomeRoute)
+      listOf(CalendarHomeRoute, TasksHomeRoute, ListsHomeRoute, PeopleListRoute, ProfileOverviewRoute)
     val classes = routes.map { it::class }.distinct()
     classes.size shouldBe routes.size
   }

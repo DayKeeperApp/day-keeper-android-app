@@ -12,6 +12,8 @@ import com.jsamuelsen11.daykeeper.feature.lists.navigation.ListsHomeRoute
 import com.jsamuelsen11.daykeeper.feature.lists.navigation.listsGraph
 import com.jsamuelsen11.daykeeper.feature.people.navigation.PeopleListRoute
 import com.jsamuelsen11.daykeeper.feature.people.navigation.peopleGraph
+import com.jsamuelsen11.daykeeper.feature.profile.navigation.ProfileOverviewRoute
+import com.jsamuelsen11.daykeeper.feature.profile.navigation.profileGraph
 import com.jsamuelsen11.daykeeper.feature.tasks.navigation.TasksHomeRoute
 import com.jsamuelsen11.daykeeper.feature.tasks.navigation.tasksGraph
 
@@ -22,8 +24,8 @@ fun DayKeeperNavHost(navController: NavHostController, modifier: Modifier = Modi
     navigation<TasksRoute>(startDestination = TasksHomeRoute) { tasksGraph(navController) }
     navigation<ListsRoute>(startDestination = ListsHomeRoute) { listsGraph(navController) }
     navigation<PeopleRoute>(startDestination = PeopleListRoute) { peopleGraph(navController) }
-    navigation<ProfileRoute>(startDestination = ProfileHomeRoute) {
-      composable<ProfileHomeRoute> { ComingSoonScreen(TopLevelDestination.PROFILE) }
+    navigation<ProfileRoute>(startDestination = ProfileOverviewRoute) {
+      profileGraph(navController)
     }
     composable<GlobalSearchRoute> { GlobalSearchScreen() }
   }

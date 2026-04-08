@@ -41,6 +41,7 @@ dependencies {
   implementation(project(":feature:lists"))
   implementation(project(":feature:people"))
   implementation(project(":feature:tasks"))
+  implementation(project(":feature:profile"))
 
   implementation(libs.androidx.core.ktx)
   implementation(libs.androidx.activity.compose)
