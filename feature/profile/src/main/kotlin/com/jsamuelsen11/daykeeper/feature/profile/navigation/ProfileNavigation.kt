@@ -11,6 +11,8 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import com.jsamuelsen11.daykeeper.feature.profile.overview.ProfileOverviewScreen
 import com.jsamuelsen11.daykeeper.feature.profile.settings.AccountSettingsScreen
+import com.jsamuelsen11.daykeeper.feature.profile.space.SpaceManagementScreen
+import com.jsamuelsen11.daykeeper.feature.profile.space.createedit.SpaceCreateEditScreen
 
 fun NavGraphBuilder.profileGraph(navController: NavHostController) {
   composable<ProfileOverviewRoute> {
@@ -27,10 +29,14 @@ fun NavGraphBuilder.profileGraph(navController: NavHostController) {
     AccountSettingsScreen(onNavigateBack = { navController.popBackStack() })
   }
   composable<SpaceManagementRoute> {
-    PlaceholderScreen("Space Management")
+    SpaceManagementScreen(
+      onNavigateBack = { navController.popBackStack() },
+      onSpaceClick = { spaceId -> navController.navigate(SpaceCreateEditRoute(spaceId)) },
+      onCreateSpace = { navController.navigate(SpaceCreateEditRoute()) },
+    )
   }
   composable<SpaceCreateEditRoute> {
-    PlaceholderScreen("Space Create/Edit")
+    SpaceCreateEditScreen(onNavigateBack = { navController.popBackStack() })
   }
   composable<DeviceManagementRoute> {
     PlaceholderScreen("Device Management")
