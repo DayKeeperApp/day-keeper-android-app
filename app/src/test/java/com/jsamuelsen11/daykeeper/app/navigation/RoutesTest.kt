@@ -30,7 +30,13 @@ class RoutesTest {
   @Test
   fun `all home routes are distinct classes`() {
     val routes =
-      listOf(CalendarHomeRoute, TasksHomeRoute, ListsHomeRoute, PeopleListRoute, ProfileOverviewRoute)
+      listOf(
+        CalendarHomeRoute,
+        TasksHomeRoute,
+        ListsHomeRoute,
+        PeopleListRoute,
+        ProfileOverviewRoute,
+      )
     val classes = routes.map { it::class }.distinct()
     classes.size shouldBe routes.size
   }

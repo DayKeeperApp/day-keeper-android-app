@@ -45,13 +45,8 @@ fun NavGraphBuilder.profileGraph(
   composable<SyncStatusRoute> {
     SyncStatusScreen(onNavigateBack = { navController.popBackStack() })
   }
-  composable<StorageRoute> {
-    StorageScreen(onNavigateBack = { navController.popBackStack() })
-  }
+  composable<StorageRoute> { StorageScreen(onNavigateBack = { navController.popBackStack() }) }
   composable<AboutRoute> {
-    AboutScreen(
-      onNavigateBack = { navController.popBackStack() },
-      onOpenLicenses = onOpenLicenses,
-    )
+    AboutScreen(onNavigateBack = { navController.popBackStack() }, onOpenLicenses = onOpenLicenses)
   }
 }

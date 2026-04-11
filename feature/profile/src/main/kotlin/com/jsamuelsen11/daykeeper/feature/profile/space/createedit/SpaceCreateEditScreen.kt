@@ -49,9 +49,7 @@ fun SpaceCreateEditScreen(
   val uiState by viewModel.uiState.collectAsStateWithLifecycle()
   val saveComplete by viewModel.saveComplete.collectAsStateWithLifecycle()
 
-  LaunchedEffect(saveComplete) {
-    if (saveComplete) onNavigateBack()
-  }
+  LaunchedEffect(saveComplete) { if (saveComplete) onNavigateBack() }
 
   val title =
     if ((uiState as? SpaceCreateEditUiState.Success)?.isEditMode == true) "Edit Space"
@@ -70,11 +68,7 @@ fun SpaceCreateEditScreen(
           color = MaterialTheme.colorScheme.error,
         )
       is SpaceCreateEditUiState.Success ->
-        SpaceForm(
-          state = state,
-          viewModel = viewModel,
-          modifier = Modifier.padding(padding),
-        )
+        SpaceForm(state = state, viewModel = viewModel, modifier = Modifier.padding(padding))
     }
   }
 }
@@ -101,8 +95,7 @@ private fun SpaceForm(
   }
 
   Column(
-    modifier =
-      modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(ContentPadding),
+    modifier = modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(ContentPadding)
   ) {
     OutlinedTextField(
       value = state.name,
@@ -117,24 +110,7 @@ private fun SpaceForm(
     SpaceTypeSelector(selected = state.type, onSelected = viewModel::updateType)
 
     if (state.members.isNotEmpty()) {
-      Spacer(modifier = Modifier.height(ItemSpacing))
-      HorizontalDivider()
-      Spacer(modifier = Modifier.height(ItemSpacing))
-      Text(text = "Members", style = MaterialTheme.typography.titleSmall)
-      Spacer(modifier = Modifier.height(8.dp))
-      state.members.forEach { member ->
-        Row(
-          modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
-          horizontalArrangement = Arrangement.SpaceBetween,
-        ) {
-          Text(text = member.tenantId, style = MaterialTheme.typography.bodyMedium)
-          Text(
-            text = memberRoleLabel(member.role),
-            style = MaterialTheme.typography.labelSmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-          )
-        }
-      }
+      MemberSection(members = state.members)
     }
 
     Spacer(modifier = Modifier.height(ContentPadding))
@@ -149,12 +125,31 @@ private fun SpaceForm(
 
     if (state.isEditMode) {
       Spacer(modifier = Modifier.height(ItemSpacing))
-      OutlinedButton(
-        onClick = { showDeleteDialog = true },
-        modifier = Modifier.fillMaxWidth(),
-      ) {
+      OutlinedButton(onClick = { showDeleteDialog = true }, modifier = Modifier.fillMaxWidth()) {
         Text("Delete Space", color = MaterialTheme.colorScheme.error)
       }
+    }
+  }
+}
+
+@Composable
+private fun MemberSection(members: List<com.jsamuelsen11.daykeeper.core.model.space.SpaceMember>) {
+  Spacer(modifier = Modifier.height(ItemSpacing))
+  HorizontalDivider()
+  Spacer(modifier = Modifier.height(ItemSpacing))
+  Text(text = "Members", style = MaterialTheme.typography.titleSmall)
+  Spacer(modifier = Modifier.height(8.dp))
+  members.forEach { member ->
+    Row(
+      modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
+      horizontalArrangement = Arrangement.SpaceBetween,
+    ) {
+      Text(text = member.tenantId, style = MaterialTheme.typography.bodyMedium)
+      Text(
+        text = memberRoleLabel(member.role),
+        style = MaterialTheme.typography.labelSmall,
+        color = MaterialTheme.colorScheme.onSurfaceVariant,
+      )
     }
   }
 }
@@ -169,9 +164,7 @@ private fun SpaceTypeSelector(selected: SpaceType, onSelected: (SpaceType) -> Un
       onValueChange = {},
       readOnly = true,
       modifier = Modifier.fillMaxWidth(),
-      trailingIcon = {
-        Text("v", modifier = Modifier.padding(end = 8.dp))
-      },
+      trailingIcon = { Text("v", modifier = Modifier.padding(end = 8.dp)) },
     )
     DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
       SpaceType.entries.forEach { type ->

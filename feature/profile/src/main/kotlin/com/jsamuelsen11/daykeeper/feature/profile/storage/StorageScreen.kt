@@ -79,10 +79,7 @@ private fun StorageContent(
   modifier: Modifier = Modifier,
 ) {
   Column(modifier = modifier.fillMaxSize().padding(ContentPadding)) {
-    Row(
-      modifier = Modifier.fillMaxWidth(),
-      horizontalArrangement = Arrangement.SpaceBetween,
-    ) {
+    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
       Text(text = "Current Cache Size", style = MaterialTheme.typography.bodyMedium)
       Text(text = "${state.currentCacheSizeMb} MB", style = MaterialTheme.typography.bodyLarge)
     }

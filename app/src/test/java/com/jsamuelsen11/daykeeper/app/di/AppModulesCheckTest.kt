@@ -1,5 +1,6 @@
 package com.jsamuelsen11.daykeeper.app.di
 
+import android.app.Application
 import android.content.Context
 import androidx.lifecycle.SavedStateHandle
 import io.ktor.client.engine.HttpClientEngine
@@ -15,7 +16,13 @@ class AppModulesCheckTest {
   fun `all Koin modules resolve without errors`() {
     appModule.verify(
       extraTypes =
-        listOf(Context::class, SavedStateHandle::class, HttpClientEngine::class, File::class)
+        listOf(
+          Application::class,
+          Context::class,
+          SavedStateHandle::class,
+          HttpClientEngine::class,
+          File::class,
+        )
     )
   }
 }

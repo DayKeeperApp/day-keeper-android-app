@@ -92,7 +92,10 @@ private fun SpaceList(
           )
         }
         items(spaces, key = { it.space.spaceId }) { spaceWithMeta ->
-          SpaceRow(spaceWithMeta = spaceWithMeta, onClick = { onSpaceClick(spaceWithMeta.space.spaceId) })
+          SpaceRow(
+            spaceWithMeta = spaceWithMeta,
+            onClick = { onSpaceClick(spaceWithMeta.space.spaceId) },
+          )
         }
         item { Spacer(modifier = Modifier.height(8.dp)) }
       }
@@ -101,18 +104,30 @@ private fun SpaceList(
 }
 
 @Composable
-private fun SpaceRow(spaceWithMeta: SpaceWithMeta, onClick: () -> Unit, modifier: Modifier = Modifier) {
+private fun SpaceRow(
+  spaceWithMeta: SpaceWithMeta,
+  onClick: () -> Unit,
+  modifier: Modifier = Modifier,
+) {
   Row(
-    modifier = modifier.fillMaxWidth().clickable(onClick = onClick).padding(horizontal = ContentPadding, vertical = ItemVerticalPadding),
+    modifier =
+      modifier
+        .fillMaxWidth()
+        .clickable(onClick = onClick)
+        .padding(horizontal = ContentPadding, vertical = ItemVerticalPadding),
     horizontalArrangement = Arrangement.SpaceBetween,
     verticalAlignment = Alignment.CenterVertically,
   ) {
     Column(modifier = Modifier.weight(1f)) {
       Text(text = spaceWithMeta.space.name, style = MaterialTheme.typography.bodyLarge)
-      Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
+      Row(
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        verticalAlignment = Alignment.CenterVertically,
+      ) {
         SpaceBadge(spaceName = spaceWithMeta.space.name, spaceType = spaceWithMeta.space.type)
         Text(
-          text = "${spaceWithMeta.memberCount} member${if (spaceWithMeta.memberCount != 1) "s" else ""}",
+          text =
+            "${spaceWithMeta.memberCount} member${if (spaceWithMeta.memberCount != 1) "s" else ""}",
           style = MaterialTheme.typography.bodySmall,
           color = MaterialTheme.colorScheme.onSurfaceVariant,
         )

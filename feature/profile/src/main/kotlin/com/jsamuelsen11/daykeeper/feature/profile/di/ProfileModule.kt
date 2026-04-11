@@ -7,6 +7,7 @@ import com.jsamuelsen11.daykeeper.feature.profile.space.SpaceManagementViewModel
 import com.jsamuelsen11.daykeeper.feature.profile.space.createedit.SpaceCreateEditViewModel
 import com.jsamuelsen11.daykeeper.feature.profile.storage.StorageViewModel
 import com.jsamuelsen11.daykeeper.feature.profile.sync.SyncStatusViewModel
+import org.koin.core.module.dsl.viewModel
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 
@@ -17,5 +18,5 @@ val profileModule = module {
   viewModelOf(::SpaceCreateEditViewModel)
   viewModelOf(::DeviceManagementViewModel)
   viewModelOf(::SyncStatusViewModel)
-  viewModelOf(::StorageViewModel)
+  viewModel { StorageViewModel(get<android.app.Application>(), get()) }
 }

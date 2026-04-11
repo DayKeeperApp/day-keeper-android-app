@@ -4,23 +4,21 @@ import android.os.Build
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jsamuelsen11.daykeeper.core.data.repository.DeviceRepository
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
 
 private const val STOP_TIMEOUT_MILLIS = 5_000L
 private const val DEFAULT_TENANT_ID = "default-tenant"
 private const val SYNC_TIME_FORMAT = "MMM d, yyyy h:mm a"
 
-class DeviceManagementViewModel(
-  private val deviceRepository: DeviceRepository,
-) : ViewModel() {
+class DeviceManagementViewModel(private val deviceRepository: DeviceRepository) : ViewModel() {
 
   private val currentDeviceName = Build.MODEL
 

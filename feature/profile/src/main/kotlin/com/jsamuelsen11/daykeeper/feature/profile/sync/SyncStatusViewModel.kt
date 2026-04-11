@@ -5,13 +5,13 @@ import androidx.lifecycle.viewModelScope
 import com.jsamuelsen11.daykeeper.core.data.repository.SyncCursorRepository
 import com.jsamuelsen11.daykeeper.core.data.sync.SyncStatus
 import com.jsamuelsen11.daykeeper.core.data.sync.SyncStatusProvider
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
 
 private const val STOP_TIMEOUT_MILLIS = 5_000L
 private const val SYNC_TIME_FORMAT = "MMM d, yyyy h:mm a"

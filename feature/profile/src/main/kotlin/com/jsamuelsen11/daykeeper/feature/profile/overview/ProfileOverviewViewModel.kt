@@ -12,19 +12,14 @@ import kotlinx.coroutines.flow.stateIn
 private const val STOP_TIMEOUT_MILLIS = 5_000L
 private const val DEFAULT_TENANT_ID = "default-tenant"
 
-class ProfileOverviewViewModel(
-  accountRepository: AccountRepository,
-) : ViewModel() {
+class ProfileOverviewViewModel(accountRepository: AccountRepository) : ViewModel() {
 
   val uiState: StateFlow<ProfileOverviewUiState> =
     accountRepository
       .observeById(DEFAULT_TENANT_ID)
       .map<_, ProfileOverviewUiState> { account ->
         if (account != null) {
-          ProfileOverviewUiState.Success(
-            displayName = account.displayName,
-            email = account.email,
-          )
+          ProfileOverviewUiState.Success(displayName = account.displayName, email = account.email)
         } else {
           ProfileOverviewUiState.Success(displayName = "User", email = "")
         }

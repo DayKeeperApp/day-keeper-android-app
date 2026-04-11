@@ -51,10 +51,7 @@ fun ProfileOverviewScreen(
 ) {
   val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-  Scaffold(
-    modifier = modifier,
-    topBar = { DayKeeperTopAppBar(title = "Profile") },
-  ) { padding ->
+  Scaffold(modifier = modifier, topBar = { DayKeeperTopAppBar(title = "Profile") }) { padding ->
     when (val state = uiState) {
       is ProfileOverviewUiState.Loading -> LoadingIndicator(modifier = Modifier.padding(padding))
       is ProfileOverviewUiState.Error ->
@@ -143,7 +140,10 @@ private fun AvatarCircle(displayName: String, modifier: Modifier = Modifier) {
 private fun ProfileMenuRow(item: ProfileMenuItem, modifier: Modifier = Modifier) {
   Row(
     modifier =
-      modifier.fillMaxWidth().clickable(onClick = item.onClick).padding(horizontal = ContentPadding, vertical = ItemVerticalPadding),
+      modifier
+        .fillMaxWidth()
+        .clickable(onClick = item.onClick)
+        .padding(horizontal = ContentPadding, vertical = ItemVerticalPadding),
     verticalAlignment = Alignment.CenterVertically,
   ) {
     Icon(

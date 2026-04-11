@@ -62,10 +62,7 @@ fun AboutScreen(
       HorizontalDivider()
       Spacer(modifier = Modifier.height(ContentPadding))
 
-      OutlinedButton(
-        onClick = onOpenLicenses,
-        modifier = Modifier.fillMaxWidth(),
-      ) {
+      OutlinedButton(onClick = onOpenLicenses, modifier = Modifier.fillMaxWidth()) {
         Text("Open Source Licenses")
       }
     }

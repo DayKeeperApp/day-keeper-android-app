@@ -88,11 +88,7 @@ private fun SyncContent(
 
     Spacer(modifier = Modifier.height(ContentPadding * 2))
 
-    Button(
-      onClick = onSyncNow,
-      modifier = Modifier.fillMaxWidth(),
-      enabled = !state.isSyncing,
-    ) {
+    Button(onClick = onSyncNow, modifier = Modifier.fillMaxWidth(), enabled = !state.isSyncing) {
       Text("Sync Now")
     }
   }

@@ -30,7 +30,8 @@ class SpaceManagementViewModel(
         if (spaces.isEmpty()) {
           flowOf(SpaceManagementUiState.Success(emptyMap()))
         } else {
-          val memberFlows = spaces.map { space -> spaceMemberRepository.observeBySpace(space.spaceId) }
+          val memberFlows =
+            spaces.map { space -> spaceMemberRepository.observeBySpace(space.spaceId) }
           combine(memberFlows) { memberArrays ->
             val spacesWithMeta =
               spaces.mapIndexed { index, space ->

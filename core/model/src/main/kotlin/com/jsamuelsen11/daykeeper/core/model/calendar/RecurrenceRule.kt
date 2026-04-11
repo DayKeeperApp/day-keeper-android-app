@@ -84,7 +84,7 @@ data class RecurrenceRule(
       val interval = parts["INTERVAL"]?.toIntOrNull() ?: DEFAULT_INTERVAL
 
       val daysOfWeek =
-        parts["BYDAY"]?.split(",")?.mapNotNull { dayLookup[it.trim()] }?.toSet() ?: emptySet()
+        parts["BYDAY"]?.split(",")?.mapNotNull { dayLookup[it.trim()] }?.toSet().orEmpty()
 
       val endCondition = parseEndCondition(parts, rrule)
 

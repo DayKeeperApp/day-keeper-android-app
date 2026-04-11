@@ -121,10 +121,7 @@ private fun AccountSection(account: Account, viewModel: AccountSettingsViewModel
 
   Spacer(modifier = Modifier.height(ItemSpacing))
 
-  TimezoneDropdown(
-    selected = account.timezone,
-    onTimezoneSelected = viewModel::updateTimezone,
-  )
+  TimezoneDropdown(selected = account.timezone, onTimezoneSelected = viewModel::updateTimezone)
 
   Spacer(modifier = Modifier.height(ItemSpacing))
 
@@ -148,10 +145,10 @@ private fun TimezoneDropdown(selected: String, onTimezoneSelected: (String) -> U
   var expanded by remember { mutableStateOf(false) }
   var query by remember { mutableStateOf("") }
   val allZones = remember { java.time.ZoneId.getAvailableZoneIds().sorted() }
-  val filtered = remember(query) {
-    if (query.isBlank()) allZones
-    else allZones.filter { it.contains(query, ignoreCase = true) }
-  }
+  val filtered =
+    remember(query) {
+      if (query.isBlank()) allZones else allZones.filter { it.contains(query, ignoreCase = true) }
+    }
 
   Column {
     OutlinedTextField(
@@ -198,7 +195,7 @@ private fun DisplaySection(preferences: UserPreferences, viewModel: AccountSetti
     selected = preferences.themeMode,
     entries = ThemeMode.entries,
     onSelected = viewModel::updateThemeMode,
-    displayName = ::themeModeLabel,
+    displayName = Labels::themeMode,
   )
 
   EnumSelector(
@@ -206,7 +203,7 @@ private fun DisplaySection(preferences: UserPreferences, viewModel: AccountSetti
     selected = preferences.defaultCalendarView,
     entries = DefaultCalendarView.entries,
     onSelected = viewModel::updateDefaultCalendarView,
-    displayName = ::calendarViewLabel,
+    displayName = Labels::calendarView,
   )
 
   EnumSelector(
@@ -214,7 +211,7 @@ private fun DisplaySection(preferences: UserPreferences, viewModel: AccountSetti
     selected = preferences.dateFormat,
     entries = DateFormat.entries,
     onSelected = viewModel::updateDateFormat,
-    displayName = ::dateFormatLabel,
+    displayName = Labels::dateFormat,
   )
 
   EnumSelector(
@@ -222,7 +219,7 @@ private fun DisplaySection(preferences: UserPreferences, viewModel: AccountSetti
     selected = preferences.timeFormat,
     entries = TimeFormat.entries,
     onSelected = viewModel::updateTimeFormat,
-    displayName = ::timeFormatLabel,
+    displayName = Labels::timeFormat,
   )
 
   EnumSelector(
@@ -230,7 +227,7 @@ private fun DisplaySection(preferences: UserPreferences, viewModel: AccountSetti
     selected = preferences.listSortOrder,
     entries = ListSortOrder.entries,
     onSelected = viewModel::updateListSortOrder,
-    displayName = ::sortOrderLabel,
+    displayName = Labels::sortOrder,
   )
 
   SwitchRow(
@@ -245,10 +242,7 @@ private fun DisplaySection(preferences: UserPreferences, viewModel: AccountSetti
 // region Notification Preferences (device-local)
 
 @Composable
-private fun NotificationSection(
-  preferences: UserPreferences,
-  viewModel: AccountSettingsViewModel,
-) {
+private fun NotificationSection(preferences: UserPreferences, viewModel: AccountSettingsViewModel) {
   SectionHeader(title = "Notifications")
 
   SwitchRow(
@@ -258,7 +252,10 @@ private fun NotificationSection(
   )
 
   if (preferences.dndEnabled) {
-    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(ItemSpacing)) {
+    Row(
+      modifier = Modifier.fillMaxWidth(),
+      horizontalArrangement = Arrangement.spacedBy(ItemSpacing),
+    ) {
       OutlinedTextField(
         value = preferences.dndStartTime,
         onValueChange = viewModel::updateDndStartTime,
@@ -282,7 +279,7 @@ private fun NotificationSection(
     selected = preferences.defaultReminderLeadTime,
     entries = ReminderLeadTime.entries,
     onSelected = viewModel::updateDefaultReminderLeadTime,
-    displayName = ::reminderLeadTimeLabel,
+    displayName = Labels::reminderLeadTime,
   )
 
   EnumSelector(
@@ -290,7 +287,7 @@ private fun NotificationSection(
     selected = preferences.notificationSound,
     entries = NotificationSound.entries,
     onSelected = viewModel::updateNotificationSound,
-    displayName = ::notificationSoundLabel,
+    displayName = Labels::notificationSound,
   )
 
   SwitchRow("Events", preferences.notifyEvents, viewModel::updateNotifyEvents)
@@ -338,10 +335,7 @@ private fun <T : Enum<T>> EnumSelector(
     Text(text = label, style = MaterialTheme.typography.bodyMedium)
     Text(
       text = displayName(selected),
-      modifier =
-        Modifier.fillMaxWidth()
-          .clickable { expanded = true }
-          .padding(vertical = 8.dp),
+      modifier = Modifier.fillMaxWidth().clickable { expanded = true }.padding(vertical = 8.dp),
       style = MaterialTheme.typography.bodyLarge,
       color = MaterialTheme.colorScheme.primary,
     )
@@ -365,56 +359,58 @@ private fun <T : Enum<T>> EnumSelector(
 
 private const val TIMEZONE_DROPDOWN_MAX_ITEMS = 10
 
-private fun themeModeLabel(mode: ThemeMode): String =
-  when (mode) {
-    ThemeMode.SYSTEM -> "System Default"
-    ThemeMode.LIGHT -> "Light"
-    ThemeMode.DARK -> "Dark"
-  }
+private object Labels {
+  fun themeMode(mode: ThemeMode): String =
+    when (mode) {
+      ThemeMode.SYSTEM -> "System Default"
+      ThemeMode.LIGHT -> "Light"
+      ThemeMode.DARK -> "Dark"
+    }
 
-private fun calendarViewLabel(view: DefaultCalendarView): String =
-  when (view) {
-    DefaultCalendarView.MONTH -> "Month"
-    DefaultCalendarView.WEEK -> "Week"
-    DefaultCalendarView.DAY -> "Day"
-  }
+  fun calendarView(view: DefaultCalendarView): String =
+    when (view) {
+      DefaultCalendarView.MONTH -> "Month"
+      DefaultCalendarView.WEEK -> "Week"
+      DefaultCalendarView.DAY -> "Day"
+    }
 
-private fun dateFormatLabel(format: DateFormat): String =
-  when (format) {
-    DateFormat.SYSTEM -> "System Default"
-    DateFormat.MM_DD_YYYY -> "MM/DD/YYYY"
-    DateFormat.DD_MM_YYYY -> "DD/MM/YYYY"
-  }
+  fun dateFormat(format: DateFormat): String =
+    when (format) {
+      DateFormat.SYSTEM -> "System Default"
+      DateFormat.MM_DD_YYYY -> "MM/DD/YYYY"
+      DateFormat.DD_MM_YYYY -> "DD/MM/YYYY"
+    }
 
-private fun timeFormatLabel(format: TimeFormat): String =
-  when (format) {
-    TimeFormat.TWELVE_HOUR -> "12-hour"
-    TimeFormat.TWENTY_FOUR_HOUR -> "24-hour"
-    TimeFormat.SYSTEM -> "System Default"
-  }
+  fun timeFormat(format: TimeFormat): String =
+    when (format) {
+      TimeFormat.TWELVE_HOUR -> "12-hour"
+      TimeFormat.TWENTY_FOUR_HOUR -> "24-hour"
+      TimeFormat.SYSTEM -> "System Default"
+    }
 
-private fun sortOrderLabel(order: ListSortOrder): String =
-  when (order) {
-    ListSortOrder.MANUAL -> "Manual"
-    ListSortOrder.ALPHABETICAL -> "Alphabetical"
-    ListSortOrder.DATE_ADDED -> "Date Added"
-  }
+  fun sortOrder(order: ListSortOrder): String =
+    when (order) {
+      ListSortOrder.MANUAL -> "Manual"
+      ListSortOrder.ALPHABETICAL -> "Alphabetical"
+      ListSortOrder.DATE_ADDED -> "Date Added"
+    }
 
-private fun reminderLeadTimeLabel(time: ReminderLeadTime): String =
-  when (time) {
-    ReminderLeadTime.NONE -> "None"
-    ReminderLeadTime.FIVE_MINUTES -> "5 minutes"
-    ReminderLeadTime.FIFTEEN_MINUTES -> "15 minutes"
-    ReminderLeadTime.THIRTY_MINUTES -> "30 minutes"
-    ReminderLeadTime.ONE_HOUR -> "1 hour"
-    ReminderLeadTime.ONE_DAY -> "1 day"
-  }
+  fun reminderLeadTime(time: ReminderLeadTime): String =
+    when (time) {
+      ReminderLeadTime.NONE -> "None"
+      ReminderLeadTime.FIVE_MINUTES -> "5 minutes"
+      ReminderLeadTime.FIFTEEN_MINUTES -> "15 minutes"
+      ReminderLeadTime.THIRTY_MINUTES -> "30 minutes"
+      ReminderLeadTime.ONE_HOUR -> "1 hour"
+      ReminderLeadTime.ONE_DAY -> "1 day"
+    }
 
-private fun notificationSoundLabel(sound: NotificationSound): String =
-  when (sound) {
-    NotificationSound.DEFAULT -> "Default"
-    NotificationSound.SILENT -> "Silent"
-    NotificationSound.CUSTOM -> "Custom"
-  }
+  fun notificationSound(sound: NotificationSound): String =
+    when (sound) {
+      NotificationSound.DEFAULT -> "Default"
+      NotificationSound.SILENT -> "Silent"
+      NotificationSound.CUSTOM -> "Custom"
+    }
+}
 
 // endregion

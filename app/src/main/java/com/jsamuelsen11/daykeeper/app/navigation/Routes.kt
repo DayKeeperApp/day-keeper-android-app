@@ -15,4 +15,3 @@ import kotlinx.serialization.Serializable
 
 // Cross-cutting routes
 @Serializable object GlobalSearchRoute
-

@@ -1,6 +1,6 @@
 package com.jsamuelsen11.daykeeper.feature.profile.storage
 
-import android.content.Context
+import android.app.Application
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jsamuelsen11.daykeeper.core.data.preferences.UserPreferencesRepository
@@ -16,7 +16,7 @@ private const val BYTES_PER_MB = 1_048_576L
 private const val CACHE_DIR_NAME = "attachments"
 
 class StorageViewModel(
-  private val context: Context,
+  private val application: Application,
   private val userPreferencesRepository: UserPreferencesRepository,
 ) : ViewModel() {
 
@@ -41,7 +41,7 @@ class StorageViewModel(
 
   fun clearCache() {
     viewModelScope.launch {
-      val cacheDir = context.cacheDir.resolve(CACHE_DIR_NAME)
+      val cacheDir = application.cacheDir.resolve(CACHE_DIR_NAME)
       if (cacheDir.exists()) {
         cacheDir.deleteRecursively()
       }
@@ -50,7 +50,7 @@ class StorageViewModel(
   }
 
   private fun calculateCacheSizeMb(): Long {
-    val cacheDir = context.cacheDir.resolve(CACHE_DIR_NAME)
+    val cacheDir = application.cacheDir.resolve(CACHE_DIR_NAME)
     if (!cacheDir.exists()) return 0L
     return cacheDir.walkTopDown().filter { it.isFile }.sumOf { it.length() } / BYTES_PER_MB
   }
