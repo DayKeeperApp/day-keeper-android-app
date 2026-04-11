@@ -16,6 +16,7 @@ import androidx.compose.material.icons.outlined.Checklist
 import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material.icons.outlined.Description
+import androidx.compose.material.icons.outlined.Devices
 import androidx.compose.material.icons.outlined.Download
 import androidx.compose.material.icons.outlined.DragHandle
 import androidx.compose.material.icons.outlined.Edit
@@ -133,5 +134,6 @@ object DayKeeperIcons {
   val StorageIcon: ImageVector = Icons.Outlined.Storage
   val Info: ImageVector = Icons.Outlined.Info
   val Visibility: ImageVector = Icons.Outlined.Visibility
+  val Devices: ImageVector = Icons.Outlined.Devices
   // endregion
 }

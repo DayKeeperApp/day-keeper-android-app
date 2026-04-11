@@ -68,6 +68,10 @@ dokka = "2.1.0"
 firebase-bom = "33.14.0"
 google-services = "4.4.2"
 
+# OSS Licenses
+oss-licenses-plugin = "0.10.6"
+oss-licenses = "17.1.0"
+
 # Build Scans
 develocity = "4.3.2"
 
@@ -168,6 +172,9 @@ kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-cor
 firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebase-bom" }
 firebase-messaging = { group = "com.google.firebase", name = "firebase-messaging" }
 
+# OSS Licenses
+oss-licenses = { group = "com.google.android.gms", name = "play-services-oss-licenses", version.ref = "oss-licenses" }
+
 # Build-logic classpath dependencies
 android-gradle-plugin = { group = "com.android.tools.build", name = "gradle", version.ref = "agp" }
 kotlin-gradle-plugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
@@ -226,6 +233,7 @@ develocity = { id = "com.gradle.develocity", version.ref = "develocity" }
 android-junit5 = { id = "de.mannodermaus.android-junit5", version.ref = "android-junit5-plugin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 google-services = { id = "com.google.gms.google-services", version.ref = "google-services" }
+oss-licenses-plugin = { id = "com.google.android.gms.oss-licenses-plugin", version.ref = "oss-licenses-plugin" }
 
 # Convention plugins (resolved from build-logic included build, no version needed)
 daykeeper-android-application = { id = "daykeeper.android.application" }

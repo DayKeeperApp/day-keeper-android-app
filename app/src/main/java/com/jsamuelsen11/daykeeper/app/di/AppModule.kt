@@ -10,6 +10,7 @@ import com.jsamuelsen11.daykeeper.core.network.di.networkModule
 import com.jsamuelsen11.daykeeper.feature.calendar.di.calendarModule
 import com.jsamuelsen11.daykeeper.feature.lists.di.listsModule
 import com.jsamuelsen11.daykeeper.feature.people.di.peopleModule
+import com.jsamuelsen11.daykeeper.feature.profile.di.profileModule
 import com.jsamuelsen11.daykeeper.feature.tasks.di.tasksModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
@@ -23,6 +24,7 @@ val appModule = module {
     listsModule,
     peopleModule,
     tasksModule,
+    profileModule,
   )
 
   single { SyncConfig(baseUrl = BuildConfig.SYNC_BASE_URL) }

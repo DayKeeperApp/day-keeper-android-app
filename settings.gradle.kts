@@ -58,3 +58,5 @@ include(":feature:people")
 include(":feature:tasks")
 
 include(":feature:calendar")
+
+include(":feature:profile")
