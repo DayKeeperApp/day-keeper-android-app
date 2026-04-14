@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.jsamuelsen11.daykeeper.core.data.repository.ProjectRepository
 import com.jsamuelsen11.daykeeper.core.data.repository.TaskCategoryRepository
 import com.jsamuelsen11.daykeeper.core.data.repository.TaskRepository
+import com.jsamuelsen11.daykeeper.core.data.session.CurrentSessionProvider
 import com.jsamuelsen11.daykeeper.core.data.sync.SyncStatus
 import com.jsamuelsen11.daykeeper.core.data.sync.SyncStatusProvider
 import com.jsamuelsen11.daykeeper.core.model.task.Priority
@@ -20,7 +21,6 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 private const val STOP_TIMEOUT_MILLIS = 5_000L
-private const val DEFAULT_SPACE_ID = "default-space"
 
 private val COMPLETED_STATUSES = setOf(TaskStatus.DONE, TaskStatus.CANCELLED)
 
@@ -29,6 +29,7 @@ class TaskListViewModel(
   private val projectRepository: ProjectRepository,
   private val taskCategoryRepository: TaskCategoryRepository,
   private val syncStatusProvider: SyncStatusProvider,
+  private val sessionProvider: CurrentSessionProvider,
 ) : ViewModel() {
 
   private val viewMode = MutableStateFlow(ViewMode.ALL_TASKS)
@@ -40,8 +41,8 @@ class TaskListViewModel(
   val uiState: StateFlow<TaskListUiState> = run {
     val dataFlow =
       combine(
-        taskRepository.observeBySpace(DEFAULT_SPACE_ID),
-        projectRepository.observeBySpace(DEFAULT_SPACE_ID),
+        taskRepository.observeBySpace(sessionProvider.spaceId),
+        projectRepository.observeBySpace(sessionProvider.spaceId),
         taskCategoryRepository.observeAll(),
       ) { tasks, projects, categories ->
         Triple(tasks, projects, categories)

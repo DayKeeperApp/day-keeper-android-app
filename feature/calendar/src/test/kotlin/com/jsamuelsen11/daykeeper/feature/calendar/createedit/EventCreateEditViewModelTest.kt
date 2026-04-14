@@ -8,11 +8,13 @@ import com.jsamuelsen11.daykeeper.core.data.repository.CalendarRepository
 import com.jsamuelsen11.daykeeper.core.data.repository.EventReminderRepository
 import com.jsamuelsen11.daykeeper.core.data.repository.EventRepository
 import com.jsamuelsen11.daykeeper.core.data.repository.EventTypeRepository
+import com.jsamuelsen11.daykeeper.core.data.session.CurrentSessionProvider
 import com.jsamuelsen11.daykeeper.feature.calendar.MainDispatcherExtension
 import com.jsamuelsen11.daykeeper.feature.calendar.TEST_CALENDAR_ID
 import com.jsamuelsen11.daykeeper.feature.calendar.TEST_EVENT_ID
 import com.jsamuelsen11.daykeeper.feature.calendar.TEST_REMINDER_ID
 import com.jsamuelsen11.daykeeper.feature.calendar.TEST_SPACE_ID
+import com.jsamuelsen11.daykeeper.feature.calendar.TEST_TENANT_ID
 import com.jsamuelsen11.daykeeper.feature.calendar.makeCalendar
 import com.jsamuelsen11.daykeeper.feature.calendar.makeEvent
 import com.jsamuelsen11.daykeeper.feature.calendar.makeEventReminder
@@ -42,6 +44,11 @@ class EventCreateEditViewModelTest {
   private val eventReminderRepository = mockk<EventReminderRepository>()
   private val attachmentRepository: AttachmentRepository = mockk(relaxed = true)
   private val attachmentManager: AttachmentManager = mockk(relaxed = true)
+  private val sessionProvider =
+    mockk<CurrentSessionProvider> {
+      every { spaceId } returns TEST_SPACE_ID
+      every { tenantId } returns TEST_TENANT_ID
+    }
 
   @BeforeEach
   fun setUp() {
@@ -62,6 +69,7 @@ class EventCreateEditViewModelTest {
       eventReminderRepository = eventReminderRepository,
       attachmentRepository = attachmentRepository,
       attachmentManager = attachmentManager,
+      sessionProvider = sessionProvider,
     )
 
   private fun editModeViewModel(eventId: String = TEST_EVENT_ID): EventCreateEditViewModel =
@@ -73,6 +81,7 @@ class EventCreateEditViewModelTest {
       eventReminderRepository = eventReminderRepository,
       attachmentRepository = attachmentRepository,
       attachmentManager = attachmentManager,
+      sessionProvider = sessionProvider,
     )
 
   // --- Create mode ---

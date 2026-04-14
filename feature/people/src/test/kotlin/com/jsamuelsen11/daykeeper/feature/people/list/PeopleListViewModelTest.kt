@@ -5,11 +5,13 @@ import com.jsamuelsen11.daykeeper.core.data.repository.AddressRepository
 import com.jsamuelsen11.daykeeper.core.data.repository.ContactMethodRepository
 import com.jsamuelsen11.daykeeper.core.data.repository.ImportantDateRepository
 import com.jsamuelsen11.daykeeper.core.data.repository.PersonRepository
+import com.jsamuelsen11.daykeeper.core.data.session.CurrentSessionProvider
 import com.jsamuelsen11.daykeeper.core.data.sync.SyncStatus
 import com.jsamuelsen11.daykeeper.core.data.sync.SyncStatusProvider
 import com.jsamuelsen11.daykeeper.feature.people.MainDispatcherExtension
 import com.jsamuelsen11.daykeeper.feature.people.TEST_PERSON_ID
 import com.jsamuelsen11.daykeeper.feature.people.TEST_PERSON_ID_2
+import com.jsamuelsen11.daykeeper.feature.people.TEST_SPACE_ID
 import com.jsamuelsen11.daykeeper.feature.people.makeAddress
 import com.jsamuelsen11.daykeeper.feature.people.makeContactMethod
 import com.jsamuelsen11.daykeeper.feature.people.makeImportantDate
@@ -42,9 +44,11 @@ class PeopleListViewModelTest {
     mockk<SyncStatusProvider> {
       every { syncStatus } returns kotlinx.coroutines.flow.MutableStateFlow(SyncStatus.Idle)
     }
+  private val sessionProvider = mockk<CurrentSessionProvider>()
 
   @BeforeEach
   fun setUp() {
+    every { sessionProvider.spaceId } returns TEST_SPACE_ID
     every { personRepository.observeBySpace(any()) } returns flowOf(emptyList())
     every { contactMethodRepository.observeByPerson(any()) } returns flowOf(emptyList())
     every { addressRepository.observeByPerson(any()) } returns flowOf(emptyList())
@@ -58,6 +62,7 @@ class PeopleListViewModelTest {
       addressRepository = addressRepository,
       importantDateRepository = importantDateRepository,
       syncStatusProvider = syncStatusProvider,
+      sessionProvider = sessionProvider,
     )
 
   // --- UiState shape ---

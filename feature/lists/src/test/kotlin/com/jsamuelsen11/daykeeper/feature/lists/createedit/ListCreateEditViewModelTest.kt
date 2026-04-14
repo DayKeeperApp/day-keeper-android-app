@@ -3,12 +3,16 @@ package com.jsamuelsen11.daykeeper.feature.lists.createedit
 import androidx.lifecycle.SavedStateHandle
 import app.cash.turbine.test
 import com.jsamuelsen11.daykeeper.core.data.repository.ShoppingListRepository
+import com.jsamuelsen11.daykeeper.core.data.session.CurrentSessionProvider
 import com.jsamuelsen11.daykeeper.feature.lists.MainDispatcherExtension
 import com.jsamuelsen11.daykeeper.feature.lists.TEST_LIST_ID
+import com.jsamuelsen11.daykeeper.feature.lists.TEST_SPACE_ID
+import com.jsamuelsen11.daykeeper.feature.lists.TEST_TENANT_ID
 import com.jsamuelsen11.daykeeper.feature.lists.makeList
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeInstanceOf
 import io.mockk.coEvery
+import io.mockk.every
 import io.mockk.coVerify
 import io.mockk.just
 import io.mockk.mockk
@@ -24,14 +28,24 @@ import org.junit.jupiter.api.extension.ExtendWith
 class ListCreateEditViewModelTest {
 
   private val listRepository = mockk<ShoppingListRepository>()
+  private val sessionProvider =
+    mockk<CurrentSessionProvider> {
+      every { spaceId } returns TEST_SPACE_ID
+      every { tenantId } returns TEST_TENANT_ID
+    }
 
   private fun createModeViewModel(): ListCreateEditViewModel =
-    ListCreateEditViewModel(savedStateHandle = SavedStateHandle(), listRepository = listRepository)
+    ListCreateEditViewModel(
+      savedStateHandle = SavedStateHandle(),
+      listRepository = listRepository,
+      sessionProvider = sessionProvider,
+    )
 
   private fun editModeViewModel(listId: String = TEST_LIST_ID): ListCreateEditViewModel =
     ListCreateEditViewModel(
       savedStateHandle = SavedStateHandle(mapOf("listId" to listId)),
       listRepository = listRepository,
+      sessionProvider = sessionProvider,
     )
 
   // --- Create mode ---

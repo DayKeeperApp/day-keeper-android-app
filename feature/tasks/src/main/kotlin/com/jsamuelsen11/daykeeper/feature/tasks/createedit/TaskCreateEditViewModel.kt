@@ -8,6 +8,7 @@ import com.jsamuelsen11.daykeeper.core.data.repository.AttachmentRepository
 import com.jsamuelsen11.daykeeper.core.data.repository.ProjectRepository
 import com.jsamuelsen11.daykeeper.core.data.repository.TaskCategoryRepository
 import com.jsamuelsen11.daykeeper.core.data.repository.TaskRepository
+import com.jsamuelsen11.daykeeper.core.data.session.CurrentSessionProvider
 import com.jsamuelsen11.daykeeper.core.model.attachment.AttachableEntityType
 import com.jsamuelsen11.daykeeper.core.model.attachment.AttachmentUiItem
 import com.jsamuelsen11.daykeeper.core.model.calendar.RecurrenceRule
@@ -41,6 +42,7 @@ class TaskCreateEditViewModel(
   private val taskCategoryRepository: TaskCategoryRepository,
   private val attachmentRepository: AttachmentRepository,
   private val attachmentManager: AttachmentManager,
+  private val sessionProvider: CurrentSessionProvider,
 ) : ViewModel() {
 
   private val taskId: String? = savedStateHandle[KEY_TASK_ID]
@@ -83,7 +85,7 @@ class TaskCreateEditViewModel(
         }
 
       combine(
-          projectRepository.observeBySpace(DEFAULT_SPACE_ID),
+          projectRepository.observeBySpace(sessionProvider.spaceId),
           taskCategoryRepository.observeAll(),
           attachmentsFlow,
         ) { projects, categories, attachments ->
@@ -273,8 +275,8 @@ class TaskCreateEditViewModel(
   ): Task =
     Task(
       taskId = UUID.randomUUID().toString(),
-      spaceId = DEFAULT_SPACE_ID,
-      tenantId = DEFAULT_TENANT_ID,
+      spaceId = sessionProvider.spaceId,
+      tenantId = sessionProvider.tenantId,
       title = trimmedTitle,
       description = state.description.trim().ifBlank { null },
       status = TaskStatus.TODO,
@@ -333,8 +335,6 @@ class TaskCreateEditViewModel(
   companion object {
     internal const val KEY_TASK_ID = "taskId"
     internal const val KEY_PROJECT_ID = "projectId"
-    internal const val DEFAULT_SPACE_ID = "default-space"
-    internal const val DEFAULT_TENANT_ID = "default-tenant"
     internal const val TITLE_EMPTY_ERROR = "Title cannot be empty"
     internal const val SAVE_FAILED_ERROR = "Save failed"
     /** Timeout for [StateFlow.stateIn] sharing, kept here for future use if the flow is shared. */

@@ -8,11 +8,14 @@ import com.jsamuelsen11.daykeeper.core.data.repository.AttachmentRepository
 import com.jsamuelsen11.daykeeper.core.data.repository.ContactMethodRepository
 import com.jsamuelsen11.daykeeper.core.data.repository.ImportantDateRepository
 import com.jsamuelsen11.daykeeper.core.data.repository.PersonRepository
+import com.jsamuelsen11.daykeeper.core.data.session.CurrentSessionProvider
 import com.jsamuelsen11.daykeeper.feature.people.MainDispatcherExtension
 import com.jsamuelsen11.daykeeper.feature.people.TEST_ADDRESS_ID
 import com.jsamuelsen11.daykeeper.feature.people.TEST_CONTACT_METHOD_ID
 import com.jsamuelsen11.daykeeper.feature.people.TEST_IMPORTANT_DATE_ID
 import com.jsamuelsen11.daykeeper.feature.people.TEST_PERSON_ID
+import com.jsamuelsen11.daykeeper.feature.people.TEST_SPACE_ID
+import com.jsamuelsen11.daykeeper.feature.people.TEST_TENANT_ID
 import com.jsamuelsen11.daykeeper.feature.people.makeAddress
 import com.jsamuelsen11.daykeeper.feature.people.makeContactMethod
 import com.jsamuelsen11.daykeeper.feature.people.makeImportantDate
@@ -43,9 +46,12 @@ class PersonCreateEditViewModelTest {
   private val importantDateRepository = mockk<ImportantDateRepository>()
   private val attachmentRepository: AttachmentRepository = mockk(relaxed = true)
   private val attachmentManager: AttachmentManager = mockk(relaxed = true)
+  private val sessionProvider = mockk<CurrentSessionProvider>()
 
   @BeforeEach
   fun setUp() {
+    every { sessionProvider.spaceId } returns TEST_SPACE_ID
+    every { sessionProvider.tenantId } returns TEST_TENANT_ID
     // Edit-mode load stubs — safe defaults so individual tests only override what they need
     coEvery { personRepository.getById(TEST_PERSON_ID) } returns makePerson()
     every { contactMethodRepository.observeByPerson(TEST_PERSON_ID) } returns flowOf(emptyList())
@@ -72,6 +78,7 @@ class PersonCreateEditViewModelTest {
       importantDateRepository = importantDateRepository,
       attachmentRepository = attachmentRepository,
       attachmentManager = attachmentManager,
+      sessionProvider = sessionProvider,
     )
 
   private fun editModeViewModel(personId: String = TEST_PERSON_ID): PersonCreateEditViewModel =
@@ -83,6 +90,7 @@ class PersonCreateEditViewModelTest {
       importantDateRepository = importantDateRepository,
       attachmentRepository = attachmentRepository,
       attachmentManager = attachmentManager,
+      sessionProvider = sessionProvider,
     )
 
   // --- Create mode ---

@@ -4,6 +4,7 @@ import app.cash.turbine.test
 import com.jsamuelsen11.daykeeper.core.data.preferences.ThemeMode
 import com.jsamuelsen11.daykeeper.core.data.preferences.UserPreferencesRepository
 import com.jsamuelsen11.daykeeper.core.data.repository.AccountRepository
+import com.jsamuelsen11.daykeeper.core.data.session.CurrentSessionProvider
 import com.jsamuelsen11.daykeeper.core.model.account.WeekStart
 import com.jsamuelsen11.daykeeper.feature.profile.MainDispatcherExtension
 import com.jsamuelsen11.daykeeper.feature.profile.TEST_TENANT_ID
@@ -30,9 +31,11 @@ class AccountSettingsViewModelTest {
 
   private val accountRepository = mockk<AccountRepository>()
   private val preferencesRepository = mockk<UserPreferencesRepository>()
+  private val sessionProvider = mockk<CurrentSessionProvider>()
 
   @BeforeEach
   fun setUp() {
+    every { sessionProvider.tenantId } returns TEST_TENANT_ID
     every { accountRepository.observeById(TEST_TENANT_ID) } returns flowOf(makeAccount())
     every { preferencesRepository.userPreferences } returns flowOf(makePreferences())
   }
@@ -41,6 +44,7 @@ class AccountSettingsViewModelTest {
     AccountSettingsViewModel(
       accountRepository = accountRepository,
       userPreferencesRepository = preferencesRepository,
+      sessionProvider = sessionProvider,
     )
 
   @Test

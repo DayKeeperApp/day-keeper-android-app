@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jsamuelsen11.daykeeper.core.data.repository.SpaceMemberRepository
 import com.jsamuelsen11.daykeeper.core.data.repository.SpaceRepository
+import com.jsamuelsen11.daykeeper.core.data.session.CurrentSessionProvider
 import com.jsamuelsen11.daykeeper.core.model.space.Space
 import com.jsamuelsen11.daykeeper.core.model.space.SpaceType
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -13,12 +14,11 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-private const val DEFAULT_TENANT_ID = "default-tenant"
-
 class SpaceCreateEditViewModel(
   savedStateHandle: SavedStateHandle,
   private val spaceRepository: SpaceRepository,
   private val spaceMemberRepository: SpaceMemberRepository,
+  private val sessionProvider: CurrentSessionProvider,
 ) : ViewModel() {
 
   private val spaceId: String? = savedStateHandle.get<String>("spaceId")
@@ -95,7 +95,7 @@ class SpaceCreateEditViewModel(
         } else {
           Space(
             spaceId = java.util.UUID.randomUUID().toString(),
-            tenantId = DEFAULT_TENANT_ID,
+            tenantId = sessionProvider.tenantId,
             name = state.name,
             normalizedName = state.name.lowercase().trim(),
             type = state.type,

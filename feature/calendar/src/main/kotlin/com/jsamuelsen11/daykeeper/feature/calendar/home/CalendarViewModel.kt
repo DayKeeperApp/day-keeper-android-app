@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.jsamuelsen11.daykeeper.core.data.repository.CalendarRepository
 import com.jsamuelsen11.daykeeper.core.data.repository.EventRepository
 import com.jsamuelsen11.daykeeper.core.data.repository.EventTypeRepository
+import com.jsamuelsen11.daykeeper.core.data.session.CurrentSessionProvider
 import com.jsamuelsen11.daykeeper.core.data.sync.SyncStatus
 import com.jsamuelsen11.daykeeper.core.data.sync.SyncStatusProvider
 import com.jsamuelsen11.daykeeper.core.model.calendar.Calendar
@@ -30,7 +31,6 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 
 private const val STOP_TIMEOUT_MILLIS = 5_000L
-private const val DEFAULT_SPACE_ID = "default-space"
 
 /**
  * ViewModel for the calendar home screen.
@@ -49,6 +49,7 @@ class CalendarViewModel(
   private val calendarRepository: CalendarRepository,
   private val eventTypeRepository: EventTypeRepository,
   private val syncStatusProvider: SyncStatusProvider,
+  private val sessionProvider: CurrentSessionProvider,
 ) : ViewModel() {
 
   private val currentMonth = MutableStateFlow(YearMonth.now())
@@ -59,7 +60,7 @@ class CalendarViewModel(
   /** The reactive UI state for the calendar home screen. Starts as [CalendarUiState.Loading]. */
   val uiState: StateFlow<CalendarUiState> =
     combine(
-        calendarRepository.observeBySpace(DEFAULT_SPACE_ID),
+        calendarRepository.observeBySpace(sessionProvider.spaceId),
         eventTypeRepository.observeAll(),
       ) { calendars, eventTypes ->
         Pair(calendars.filter { it.deletedAt == null }, eventTypes)

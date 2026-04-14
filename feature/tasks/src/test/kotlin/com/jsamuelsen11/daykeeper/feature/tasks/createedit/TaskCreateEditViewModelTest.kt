@@ -7,11 +7,13 @@ import com.jsamuelsen11.daykeeper.core.data.repository.AttachmentRepository
 import com.jsamuelsen11.daykeeper.core.data.repository.ProjectRepository
 import com.jsamuelsen11.daykeeper.core.data.repository.TaskCategoryRepository
 import com.jsamuelsen11.daykeeper.core.data.repository.TaskRepository
+import com.jsamuelsen11.daykeeper.core.data.session.CurrentSessionProvider
 import com.jsamuelsen11.daykeeper.core.model.task.Priority
 import com.jsamuelsen11.daykeeper.feature.tasks.MainDispatcherExtension
 import com.jsamuelsen11.daykeeper.feature.tasks.TEST_PROJECT_ID
 import com.jsamuelsen11.daykeeper.feature.tasks.TEST_SPACE_ID
 import com.jsamuelsen11.daykeeper.feature.tasks.TEST_TASK_ID
+import com.jsamuelsen11.daykeeper.feature.tasks.TEST_TENANT_ID
 import com.jsamuelsen11.daykeeper.feature.tasks.makeCategory
 import com.jsamuelsen11.daykeeper.feature.tasks.makeProject
 import com.jsamuelsen11.daykeeper.feature.tasks.makeTask
@@ -41,9 +43,12 @@ class TaskCreateEditViewModelTest {
   private val categoryRepository = mockk<TaskCategoryRepository>()
   private val attachmentRepository: AttachmentRepository = mockk(relaxed = true)
   private val attachmentManager: AttachmentManager = mockk(relaxed = true)
+  private val sessionProvider: CurrentSessionProvider = mockk()
 
   @BeforeEach
   fun setUp() {
+    every { sessionProvider.spaceId } returns TEST_SPACE_ID
+    every { sessionProvider.tenantId } returns TEST_TENANT_ID
     every { projectRepository.observeBySpace(TEST_SPACE_ID) } returns flowOf(emptyList())
     every { categoryRepository.observeAll() } returns flowOf(emptyList())
     every { attachmentRepository.observeByEntity(any(), any()) } returns flowOf(emptyList())
@@ -57,6 +62,7 @@ class TaskCreateEditViewModelTest {
       taskCategoryRepository = categoryRepository,
       attachmentRepository = attachmentRepository,
       attachmentManager = attachmentManager,
+      sessionProvider = sessionProvider,
     )
 
   private fun editModeViewModel(taskId: String = TEST_TASK_ID): TaskCreateEditViewModel =
@@ -67,6 +73,7 @@ class TaskCreateEditViewModelTest {
       taskCategoryRepository = categoryRepository,
       attachmentRepository = attachmentRepository,
       attachmentManager = attachmentManager,
+      sessionProvider = sessionProvider,
     )
 
   private fun createModeWithProject(projectId: String = TEST_PROJECT_ID): TaskCreateEditViewModel =
@@ -77,6 +84,7 @@ class TaskCreateEditViewModelTest {
       taskCategoryRepository = categoryRepository,
       attachmentRepository = attachmentRepository,
       attachmentManager = attachmentManager,
+      sessionProvider = sessionProvider,
     )
 
   // --- Create mode ---

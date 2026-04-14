@@ -2,6 +2,7 @@ package com.jsamuelsen11.daykeeper.feature.profile.device
 
 import app.cash.turbine.test
 import com.jsamuelsen11.daykeeper.core.data.repository.DeviceRepository
+import com.jsamuelsen11.daykeeper.core.data.session.CurrentSessionProvider
 import com.jsamuelsen11.daykeeper.feature.profile.MainDispatcherExtension
 import com.jsamuelsen11.daykeeper.feature.profile.TEST_DEVICE_ID
 import com.jsamuelsen11.daykeeper.feature.profile.TEST_DEVICE_ID_2
@@ -26,9 +27,14 @@ import org.junit.jupiter.api.extension.ExtendWith
 class DeviceManagementViewModelTest {
 
   private val deviceRepository = mockk<DeviceRepository>()
+  private val sessionProvider =
+    mockk<CurrentSessionProvider> { every { tenantId } returns TEST_TENANT_ID }
 
   private fun createViewModel(): DeviceManagementViewModel =
-    DeviceManagementViewModel(deviceRepository = deviceRepository)
+    DeviceManagementViewModel(
+      deviceRepository = deviceRepository,
+      sessionProvider = sessionProvider,
+    )
 
   @Test
   fun `empty devices emits Success with empty list`() = runTest {

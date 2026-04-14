@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import com.jsamuelsen11.daykeeper.core.data.repository.CalendarRepository
+import com.jsamuelsen11.daykeeper.core.data.session.CurrentSessionProvider
 import com.jsamuelsen11.daykeeper.core.model.calendar.Calendar
 import com.jsamuelsen11.daykeeper.feature.calendar.navigation.CalendarCreateEditRoute
 import java.util.UUID
@@ -29,6 +30,7 @@ import kotlinx.coroutines.launch
 class CalendarCreateEditViewModel(
   savedStateHandle: SavedStateHandle,
   private val calendarRepository: CalendarRepository,
+  private val sessionProvider: CurrentSessionProvider,
 ) : ViewModel() {
 
   private val calendarId: String? = savedStateHandle.toRoute<CalendarCreateEditRoute>().calendarId
@@ -129,8 +131,8 @@ class CalendarCreateEditViewModel(
         )
           ?: Calendar(
             calendarId = UUID.randomUUID().toString(),
-            spaceId = DEFAULT_SPACE_ID,
-            tenantId = DEFAULT_TENANT_ID,
+            spaceId = sessionProvider.spaceId,
+            tenantId = sessionProvider.tenantId,
             name = current.name.trim(),
             normalizedName = current.name.trim().lowercase(),
             color = current.color,
@@ -158,8 +160,6 @@ class CalendarCreateEditViewModel(
   }
 
   companion object {
-    internal const val DEFAULT_SPACE_ID = "default-space"
-    internal const val DEFAULT_TENANT_ID = "default-tenant"
     internal const val NAME_REQUIRED_ERROR = "Name is required"
     internal const val SAVE_FAILED_ERROR = "Save failed"
     internal const val STOP_TIMEOUT_MILLIS = 5_000L

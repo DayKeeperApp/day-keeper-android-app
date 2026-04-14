@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jsamuelsen11.daykeeper.core.data.repository.CalendarRepository
 import com.jsamuelsen11.daykeeper.core.data.repository.EventRepository
+import com.jsamuelsen11.daykeeper.core.data.session.CurrentSessionProvider
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -16,7 +17,6 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 private const val STOP_TIMEOUT_MILLIS = 5_000L
-private const val DEFAULT_SPACE_ID = "default-space"
 
 /**
  * ViewModel for the calendar management screen.
@@ -32,12 +32,13 @@ private const val DEFAULT_SPACE_ID = "default-space"
 class CalendarManagementViewModel(
   private val calendarRepository: CalendarRepository,
   private val eventRepository: EventRepository,
+  private val sessionProvider: CurrentSessionProvider,
 ) : ViewModel() {
 
   /** The reactive UI state for this screen. Starts as [CalendarManagementUiState.Loading]. */
   val uiState: StateFlow<CalendarManagementUiState> =
     calendarRepository
-      .observeBySpace(DEFAULT_SPACE_ID)
+      .observeBySpace(sessionProvider.spaceId)
       .flatMapLatest { calendars ->
         val activeCalendars = calendars.filter { it.deletedAt == null }
         if (activeCalendars.isEmpty()) {

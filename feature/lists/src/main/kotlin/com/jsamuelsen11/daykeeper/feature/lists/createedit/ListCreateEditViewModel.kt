@@ -4,6 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jsamuelsen11.daykeeper.core.data.repository.ShoppingListRepository
+import com.jsamuelsen11.daykeeper.core.data.session.CurrentSessionProvider
 import com.jsamuelsen11.daykeeper.core.model.list.ShoppingList
 import java.util.UUID
 import kotlinx.coroutines.channels.Channel
@@ -17,6 +18,7 @@ import kotlinx.coroutines.launch
 class ListCreateEditViewModel(
   savedStateHandle: SavedStateHandle,
   private val listRepository: ShoppingListRepository,
+  private val sessionProvider: CurrentSessionProvider,
 ) : ViewModel() {
 
   private val listId: String? = savedStateHandle["listId"]
@@ -72,8 +74,8 @@ class ListCreateEditViewModel(
         } else {
           ShoppingList(
             listId = UUID.randomUUID().toString(),
-            spaceId = DEFAULT_SPACE_ID,
-            tenantId = DEFAULT_TENANT_ID,
+            spaceId = sessionProvider.spaceId,
+            tenantId = sessionProvider.tenantId,
             name = trimmedName,
             normalizedName = trimmedName.lowercase().trim(),
             createdAt = now,
@@ -96,11 +98,6 @@ class ListCreateEditViewModel(
 
   private fun resetSaving() {
     _uiState.update { if (it is ListCreateEditUiState.Ready) it.copy(isSaving = false) else it }
-  }
-
-  companion object {
-    private const val DEFAULT_SPACE_ID = "default-space"
-    private const val DEFAULT_TENANT_ID = "default-tenant"
   }
 }
 
