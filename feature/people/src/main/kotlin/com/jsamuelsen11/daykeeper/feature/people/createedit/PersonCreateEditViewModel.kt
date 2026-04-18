@@ -11,6 +11,7 @@ import com.jsamuelsen11.daykeeper.core.data.repository.AttachmentRepository
 import com.jsamuelsen11.daykeeper.core.data.repository.ContactMethodRepository
 import com.jsamuelsen11.daykeeper.core.data.repository.ImportantDateRepository
 import com.jsamuelsen11.daykeeper.core.data.repository.PersonRepository
+import com.jsamuelsen11.daykeeper.core.data.session.CurrentSessionProvider
 import com.jsamuelsen11.daykeeper.core.model.attachment.AttachableEntityType
 import com.jsamuelsen11.daykeeper.core.model.attachment.AttachmentUiItem
 import com.jsamuelsen11.daykeeper.core.model.people.Address
@@ -41,6 +42,7 @@ class PersonCreateEditViewModel(
   private val importantDateRepository: ImportantDateRepository,
   private val attachmentRepository: AttachmentRepository,
   private val attachmentManager: AttachmentManager,
+  private val sessionProvider: CurrentSessionProvider,
 ) : ViewModel() {
 
   private val personId: String? = savedStateHandle["personId"]
@@ -267,8 +269,8 @@ class PersonCreateEditViewModel(
       personRepository.upsert(
         Person(
           personId = newId,
-          spaceId = DEFAULT_SPACE_ID,
-          tenantId = DEFAULT_TENANT_ID,
+          spaceId = sessionProvider.spaceId,
+          tenantId = sessionProvider.tenantId,
           firstName = trimmedFirst,
           lastName = trimmedLast,
           nickname = nick,
@@ -357,8 +359,8 @@ class PersonCreateEditViewModel(
           attachmentManager.upload(
             entityType = AttachableEntityType.PERSON,
             entityId = pid,
-            tenantId = DEFAULT_TENANT_ID,
-            spaceId = DEFAULT_SPACE_ID,
+            tenantId = sessionProvider.tenantId,
+            spaceId = sessionProvider.spaceId,
             fileName = fileName,
             mimeType = mimeType,
             fileBytes = fileBytes,
@@ -395,8 +397,6 @@ class PersonCreateEditViewModel(
   }
 
   companion object {
-    private const val DEFAULT_SPACE_ID = "default-space"
-    private const val DEFAULT_TENANT_ID = "default-tenant"
     private const val FALLBACK_MIME_TYPE = "application/octet-stream"
     private const val FALLBACK_FILE_NAME = "attachment"
     private const val UPLOAD_FAILED_ERROR = "Upload failed"

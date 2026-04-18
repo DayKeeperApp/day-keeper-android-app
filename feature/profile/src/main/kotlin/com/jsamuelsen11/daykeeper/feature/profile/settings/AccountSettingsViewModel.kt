@@ -11,6 +11,7 @@ import com.jsamuelsen11.daykeeper.core.data.preferences.ThemeMode
 import com.jsamuelsen11.daykeeper.core.data.preferences.TimeFormat
 import com.jsamuelsen11.daykeeper.core.data.preferences.UserPreferencesRepository
 import com.jsamuelsen11.daykeeper.core.data.repository.AccountRepository
+import com.jsamuelsen11.daykeeper.core.data.session.CurrentSessionProvider
 import com.jsamuelsen11.daykeeper.core.model.account.Account
 import com.jsamuelsen11.daykeeper.core.model.account.WeekStart
 import kotlinx.coroutines.flow.SharingStarted
@@ -21,16 +22,16 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 private const val STOP_TIMEOUT_MILLIS = 5_000L
-private const val DEFAULT_TENANT_ID = "default-tenant"
 
 class AccountSettingsViewModel(
   private val accountRepository: AccountRepository,
   private val userPreferencesRepository: UserPreferencesRepository,
+  private val sessionProvider: CurrentSessionProvider,
 ) : ViewModel() {
 
   val uiState: StateFlow<AccountSettingsUiState> =
     combine(
-        accountRepository.observeById(DEFAULT_TENANT_ID),
+        accountRepository.observeById(sessionProvider.tenantId),
         userPreferencesRepository.userPreferences,
       ) { account, preferences ->
         if (account != null) {
@@ -120,7 +121,7 @@ class AccountSettingsViewModel(
 
   private fun updateAccount(transform: (Account) -> Account) {
     viewModelScope.launch {
-      val current = accountRepository.getById(DEFAULT_TENANT_ID) ?: return@launch
+      val current = accountRepository.getById(sessionProvider.tenantId) ?: return@launch
       accountRepository.upsert(transform(current))
     }
   }

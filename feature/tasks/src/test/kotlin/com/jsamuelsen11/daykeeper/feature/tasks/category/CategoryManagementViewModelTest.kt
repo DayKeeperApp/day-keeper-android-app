@@ -3,6 +3,7 @@ package com.jsamuelsen11.daykeeper.feature.tasks.category
 import app.cash.turbine.test
 import com.jsamuelsen11.daykeeper.core.data.repository.TaskCategoryRepository
 import com.jsamuelsen11.daykeeper.core.data.repository.TaskRepository
+import com.jsamuelsen11.daykeeper.core.data.session.CurrentSessionProvider
 import com.jsamuelsen11.daykeeper.feature.tasks.MainDispatcherExtension
 import com.jsamuelsen11.daykeeper.feature.tasks.TEST_CATEGORY_ID
 import com.jsamuelsen11.daykeeper.feature.tasks.TEST_CATEGORY_ID_2
@@ -32,9 +33,11 @@ class CategoryManagementViewModelTest {
 
   private val categoryRepository = mockk<TaskCategoryRepository>()
   private val taskRepository = mockk<TaskRepository>()
+  private val sessionProvider: CurrentSessionProvider = mockk()
 
   @BeforeEach
   fun setUp() {
+    every { sessionProvider.spaceId } returns TEST_SPACE_ID
     every { categoryRepository.observeAll() } returns flowOf(emptyList())
     every { taskRepository.observeBySpace(TEST_SPACE_ID) } returns flowOf(emptyList())
   }
@@ -43,6 +46,7 @@ class CategoryManagementViewModelTest {
     CategoryManagementViewModel(
       taskCategoryRepository = categoryRepository,
       taskRepository = taskRepository,
+      sessionProvider = sessionProvider,
     )
 
   @Test

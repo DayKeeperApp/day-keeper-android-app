@@ -9,6 +9,7 @@ import com.jsamuelsen11.daykeeper.core.data.repository.CalendarRepository
 import com.jsamuelsen11.daykeeper.core.data.repository.EventReminderRepository
 import com.jsamuelsen11.daykeeper.core.data.repository.EventRepository
 import com.jsamuelsen11.daykeeper.core.data.repository.EventTypeRepository
+import com.jsamuelsen11.daykeeper.core.data.session.CurrentSessionProvider
 import com.jsamuelsen11.daykeeper.core.model.attachment.AttachableEntityType
 import com.jsamuelsen11.daykeeper.core.model.attachment.Attachment
 import com.jsamuelsen11.daykeeper.core.model.attachment.AttachmentUiItem
@@ -58,6 +59,7 @@ class EventCreateEditViewModel(
   private val eventReminderRepository: EventReminderRepository,
   private val attachmentRepository: AttachmentRepository,
   private val attachmentManager: AttachmentManager,
+  private val sessionProvider: CurrentSessionProvider,
 ) : ViewModel() {
 
   private val eventId: String? = savedStateHandle[KEY_EVENT_ID]
@@ -85,7 +87,7 @@ class EventCreateEditViewModel(
         }
 
       combine(
-          calendarRepository.observeBySpace(DEFAULT_SPACE_ID),
+          calendarRepository.observeBySpace(sessionProvider.spaceId),
           eventTypeRepository.observeAll(),
         ) { calendars, eventTypes ->
           val activeCalendars = calendars.filter { it.deletedAt == null }
@@ -381,8 +383,8 @@ class EventCreateEditViewModel(
       Event(
         eventId = UUID.randomUUID().toString(),
         calendarId = requireNotNull(form.calendarId),
-        spaceId = DEFAULT_SPACE_ID,
-        tenantId = DEFAULT_TENANT_ID,
+        spaceId = sessionProvider.spaceId,
+        tenantId = sessionProvider.tenantId,
         title = trimmedTitle,
         description = form.description.trim().ifBlank { null },
         isAllDay = form.isAllDay,
@@ -470,8 +472,6 @@ class EventCreateEditViewModel(
     internal const val KEY_EVENT_ID = "eventId"
     internal const val KEY_CALENDAR_ID = "calendarId"
     internal const val KEY_INITIAL_DATE_MILLIS = "initialDateMillis"
-    internal const val DEFAULT_SPACE_ID = "default-space"
-    internal const val DEFAULT_TENANT_ID = "default-tenant"
     internal const val TITLE_EMPTY_ERROR = "Title cannot be empty"
     internal const val CALENDAR_REQUIRED_ERROR = "A calendar must be selected"
     internal const val DATE_RANGE_ERROR = "End date must be on or after start date"

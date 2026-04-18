@@ -4,6 +4,7 @@ import app.cash.turbine.test
 import com.jsamuelsen11.daykeeper.core.data.repository.CalendarRepository
 import com.jsamuelsen11.daykeeper.core.data.repository.EventRepository
 import com.jsamuelsen11.daykeeper.core.data.repository.EventTypeRepository
+import com.jsamuelsen11.daykeeper.core.data.session.CurrentSessionProvider
 import com.jsamuelsen11.daykeeper.core.data.sync.SyncStatus
 import com.jsamuelsen11.daykeeper.core.data.sync.SyncStatusProvider
 import com.jsamuelsen11.daykeeper.feature.calendar.MainDispatcherExtension
@@ -36,6 +37,8 @@ class CalendarViewModelTest {
     mockk<SyncStatusProvider> {
       every { syncStatus } returns kotlinx.coroutines.flow.MutableStateFlow(SyncStatus.Idle)
     }
+  private val sessionProvider =
+    mockk<CurrentSessionProvider> { every { spaceId } returns TEST_SPACE_ID }
 
   @BeforeEach
   fun setUp() {
@@ -49,6 +52,7 @@ class CalendarViewModelTest {
       calendarRepository = calendarRepository,
       eventTypeRepository = eventTypeRepository,
       syncStatusProvider = syncStatusProvider,
+      sessionProvider = sessionProvider,
     )
 
   @Test

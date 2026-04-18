@@ -3,6 +3,7 @@ package com.jsamuelsen11.daykeeper.feature.profile.space
 import app.cash.turbine.test
 import com.jsamuelsen11.daykeeper.core.data.repository.SpaceMemberRepository
 import com.jsamuelsen11.daykeeper.core.data.repository.SpaceRepository
+import com.jsamuelsen11.daykeeper.core.data.session.CurrentSessionProvider
 import com.jsamuelsen11.daykeeper.core.model.space.SpaceType
 import com.jsamuelsen11.daykeeper.feature.profile.MainDispatcherExtension
 import com.jsamuelsen11.daykeeper.feature.profile.TEST_SPACE_ID
@@ -31,9 +32,11 @@ class SpaceManagementViewModelTest {
 
   private val spaceRepository = mockk<SpaceRepository>()
   private val spaceMemberRepository = mockk<SpaceMemberRepository>()
+  private val sessionProvider = mockk<CurrentSessionProvider>()
 
   @BeforeEach
   fun setUp() {
+    every { sessionProvider.tenantId } returns TEST_TENANT_ID
     every { spaceRepository.observeByTenant(TEST_TENANT_ID) } returns flowOf(emptyList())
   }
 
@@ -41,6 +44,7 @@ class SpaceManagementViewModelTest {
     SpaceManagementViewModel(
       spaceRepository = spaceRepository,
       spaceMemberRepository = spaceMemberRepository,
+      sessionProvider = sessionProvider,
     )
 
   @Test

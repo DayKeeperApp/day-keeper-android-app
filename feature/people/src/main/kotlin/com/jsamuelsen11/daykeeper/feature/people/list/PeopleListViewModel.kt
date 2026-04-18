@@ -6,6 +6,7 @@ import com.jsamuelsen11.daykeeper.core.data.repository.AddressRepository
 import com.jsamuelsen11.daykeeper.core.data.repository.ContactMethodRepository
 import com.jsamuelsen11.daykeeper.core.data.repository.ImportantDateRepository
 import com.jsamuelsen11.daykeeper.core.data.repository.PersonRepository
+import com.jsamuelsen11.daykeeper.core.data.session.CurrentSessionProvider
 import com.jsamuelsen11.daykeeper.core.data.sync.SyncStatus
 import com.jsamuelsen11.daykeeper.core.data.sync.SyncStatusProvider
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -21,7 +22,6 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 private const val STOP_TIMEOUT_MILLIS = 5_000L
-private const val DEFAULT_SPACE_ID = "default-space"
 
 class PeopleListViewModel(
   private val personRepository: PersonRepository,
@@ -29,6 +29,7 @@ class PeopleListViewModel(
   private val addressRepository: AddressRepository,
   private val importantDateRepository: ImportantDateRepository,
   private val syncStatusProvider: SyncStatusProvider,
+  private val sessionProvider: CurrentSessionProvider,
 ) : ViewModel() {
 
   private val searchQuery = MutableStateFlow("")
@@ -36,7 +37,7 @@ class PeopleListViewModel(
 
   @OptIn(ExperimentalCoroutinesApi::class)
   val uiState: StateFlow<PeopleListUiState> =
-    combine(personRepository.observeBySpace(DEFAULT_SPACE_ID), searchQuery, sortOrder) {
+    combine(personRepository.observeBySpace(sessionProvider.spaceId), searchQuery, sortOrder) {
         people,
         query,
         sort ->

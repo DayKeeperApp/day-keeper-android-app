@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import com.jsamuelsen11.daykeeper.core.data.repository.ProjectRepository
+import com.jsamuelsen11.daykeeper.core.data.session.CurrentSessionProvider
 import com.jsamuelsen11.daykeeper.core.model.task.Project
 import com.jsamuelsen11.daykeeper.core.model.task.ProjectStatus
 import com.jsamuelsen11.daykeeper.feature.tasks.navigation.ProjectCreateEditRoute
@@ -27,6 +28,7 @@ import kotlinx.coroutines.launch
 public class ProjectCreateEditViewModel(
   savedStateHandle: SavedStateHandle,
   private val projectRepository: ProjectRepository,
+  private val sessionProvider: CurrentSessionProvider,
 ) : ViewModel() {
 
   private val projectId: String? = savedStateHandle.toRoute<ProjectCreateEditRoute>().projectId
@@ -115,8 +117,8 @@ public class ProjectCreateEditViewModel(
         )
           ?: Project(
             projectId = UUID.randomUUID().toString(),
-            spaceId = DEFAULT_SPACE_ID,
-            tenantId = DEFAULT_TENANT_ID,
+            spaceId = sessionProvider.spaceId,
+            tenantId = sessionProvider.tenantId,
             name = current.name.trim(),
             normalizedName = current.name.trim().lowercase(),
             description = current.description.trim().ifBlank { null },
@@ -134,11 +136,5 @@ public class ProjectCreateEditViewModel(
   public companion object {
     /** Timeout before the upstream flow is stopped after the last subscriber disappears. */
     public const val STOP_TIMEOUT_MILLIS: Long = 5_000L
-
-    /** Fallback space ID used when no explicit space context is available. */
-    public const val DEFAULT_SPACE_ID: String = "default-space"
-
-    /** Fallback tenant ID used when no explicit tenant context is available. */
-    public const val DEFAULT_TENANT_ID: String = "default-tenant"
   }
 }

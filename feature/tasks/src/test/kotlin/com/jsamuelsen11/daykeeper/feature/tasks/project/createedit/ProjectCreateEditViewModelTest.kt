@@ -4,8 +4,11 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.navigation.toRoute
 import app.cash.turbine.test
 import com.jsamuelsen11.daykeeper.core.data.repository.ProjectRepository
+import com.jsamuelsen11.daykeeper.core.data.session.CurrentSessionProvider
 import com.jsamuelsen11.daykeeper.feature.tasks.MainDispatcherExtension
 import com.jsamuelsen11.daykeeper.feature.tasks.TEST_PROJECT_ID
+import com.jsamuelsen11.daykeeper.feature.tasks.TEST_SPACE_ID
+import com.jsamuelsen11.daykeeper.feature.tasks.TEST_TENANT_ID
 import com.jsamuelsen11.daykeeper.feature.tasks.makeProject
 import com.jsamuelsen11.daykeeper.feature.tasks.navigation.ProjectCreateEditRoute
 import io.kotest.matchers.shouldBe
@@ -32,10 +35,13 @@ class ProjectCreateEditViewModelTest {
 
   private val projectRepository = mockk<ProjectRepository>()
   private val savedStateHandle = mockk<SavedStateHandle>()
+  private val sessionProvider: CurrentSessionProvider = mockk()
 
   @BeforeEach
   fun setUp() {
     mockkStatic("androidx.navigation.SavedStateHandleKt")
+    every { sessionProvider.spaceId } returns TEST_SPACE_ID
+    every { sessionProvider.tenantId } returns TEST_TENANT_ID
   }
 
   @AfterEach
@@ -49,6 +55,7 @@ class ProjectCreateEditViewModelTest {
     return ProjectCreateEditViewModel(
       savedStateHandle = savedStateHandle,
       projectRepository = projectRepository,
+      sessionProvider = sessionProvider,
     )
   }
 
@@ -58,6 +65,7 @@ class ProjectCreateEditViewModelTest {
     return ProjectCreateEditViewModel(
       savedStateHandle = savedStateHandle,
       projectRepository = projectRepository,
+      sessionProvider = sessionProvider,
     )
   }
 

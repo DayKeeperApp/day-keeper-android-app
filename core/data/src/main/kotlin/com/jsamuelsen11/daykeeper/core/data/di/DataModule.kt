@@ -53,6 +53,8 @@ import com.jsamuelsen11.daykeeper.core.data.repository.TaskCategoryRepository
 import com.jsamuelsen11.daykeeper.core.data.repository.TaskCategoryRepositoryImpl
 import com.jsamuelsen11.daykeeper.core.data.repository.TaskRepository
 import com.jsamuelsen11.daykeeper.core.data.repository.TaskRepositoryImpl
+import com.jsamuelsen11.daykeeper.core.data.session.CurrentSessionProvider
+import com.jsamuelsen11.daykeeper.core.data.session.DefaultSessionProvider
 import com.jsamuelsen11.daykeeper.core.data.sync.SyncManager
 import com.jsamuelsen11.daykeeper.core.data.sync.SyncStatusProvider
 import java.io.File
@@ -95,6 +97,7 @@ public val dataModule = module {
   single { AttachmentManagerImpl(get(), get(), get()) } bind AttachmentManager::class
 
   single { CoroutineScope(SupervisorJob() + Dispatchers.IO) }
+  single { DefaultSessionProvider() } bind CurrentSessionProvider::class
   single { SyncManager(get(), get(), get(), get()) } bind SyncStatusProvider::class
 
   single { NotificationChannelManager(androidContext()) }

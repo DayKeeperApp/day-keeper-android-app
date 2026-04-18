@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jsamuelsen11.daykeeper.core.data.repository.TaskCategoryRepository
 import com.jsamuelsen11.daykeeper.core.data.repository.TaskRepository
+import com.jsamuelsen11.daykeeper.core.data.session.CurrentSessionProvider
 import com.jsamuelsen11.daykeeper.core.model.task.TaskCategory
 import java.util.UUID
 import kotlinx.coroutines.flow.SharingStarted
@@ -14,17 +15,18 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 private const val STOP_TIMEOUT_MILLIS = 5_000L
-private const val DEFAULT_SPACE_ID = "default-space"
 
 class CategoryManagementViewModel(
   private val taskCategoryRepository: TaskCategoryRepository,
   private val taskRepository: TaskRepository,
+  private val sessionProvider: CurrentSessionProvider,
 ) : ViewModel() {
 
   val uiState: StateFlow<CategoryManagementUiState> =
-    combine(taskCategoryRepository.observeAll(), taskRepository.observeBySpace(DEFAULT_SPACE_ID)) {
-        categories,
-        tasks ->
+    combine(
+        taskCategoryRepository.observeAll(),
+        taskRepository.observeBySpace(sessionProvider.spaceId),
+      ) { categories, tasks ->
         val countsByCategory =
           tasks.filter { it.deletedAt == null }.groupingBy { it.categoryId }.eachCount()
         val items =

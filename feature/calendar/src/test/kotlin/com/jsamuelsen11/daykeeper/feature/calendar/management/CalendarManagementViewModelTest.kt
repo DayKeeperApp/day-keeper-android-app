@@ -3,6 +3,7 @@ package com.jsamuelsen11.daykeeper.feature.calendar.management
 import app.cash.turbine.test
 import com.jsamuelsen11.daykeeper.core.data.repository.CalendarRepository
 import com.jsamuelsen11.daykeeper.core.data.repository.EventRepository
+import com.jsamuelsen11.daykeeper.core.data.session.CurrentSessionProvider
 import com.jsamuelsen11.daykeeper.feature.calendar.MainDispatcherExtension
 import com.jsamuelsen11.daykeeper.feature.calendar.TEST_CALENDAR_ID
 import com.jsamuelsen11.daykeeper.feature.calendar.TEST_CALENDAR_ID_2
@@ -30,6 +31,8 @@ class CalendarManagementViewModelTest {
 
   private val calendarRepository = mockk<CalendarRepository>()
   private val eventRepository = mockk<EventRepository>()
+  private val sessionProvider =
+    mockk<CurrentSessionProvider> { every { spaceId } returns TEST_SPACE_ID }
 
   @BeforeEach
   fun setUp() {
@@ -42,6 +45,7 @@ class CalendarManagementViewModelTest {
     CalendarManagementViewModel(
       calendarRepository = calendarRepository,
       eventRepository = eventRepository,
+      sessionProvider = sessionProvider,
     )
 
   @Test

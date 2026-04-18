@@ -2,6 +2,7 @@ package com.jsamuelsen11.daykeeper.feature.profile.overview
 
 import app.cash.turbine.test
 import com.jsamuelsen11.daykeeper.core.data.repository.AccountRepository
+import com.jsamuelsen11.daykeeper.core.data.session.CurrentSessionProvider
 import com.jsamuelsen11.daykeeper.feature.profile.MainDispatcherExtension
 import com.jsamuelsen11.daykeeper.feature.profile.TEST_TENANT_ID
 import com.jsamuelsen11.daykeeper.feature.profile.makeAccount
@@ -20,9 +21,14 @@ import org.junit.jupiter.api.extension.ExtendWith
 class ProfileOverviewViewModelTest {
 
   private val accountRepository = mockk<AccountRepository>()
+  private val sessionProvider =
+    mockk<CurrentSessionProvider> { every { tenantId } returns TEST_TENANT_ID }
 
   private fun createViewModel(): ProfileOverviewViewModel =
-    ProfileOverviewViewModel(accountRepository = accountRepository)
+    ProfileOverviewViewModel(
+      accountRepository = accountRepository,
+      sessionProvider = sessionProvider,
+    )
 
   @Test
   fun `emits Success with account data when account exists`() = runTest {

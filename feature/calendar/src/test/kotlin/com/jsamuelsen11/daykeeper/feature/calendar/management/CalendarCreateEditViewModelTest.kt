@@ -4,8 +4,11 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.navigation.toRoute
 import app.cash.turbine.test
 import com.jsamuelsen11.daykeeper.core.data.repository.CalendarRepository
+import com.jsamuelsen11.daykeeper.core.data.session.CurrentSessionProvider
 import com.jsamuelsen11.daykeeper.feature.calendar.MainDispatcherExtension
 import com.jsamuelsen11.daykeeper.feature.calendar.TEST_CALENDAR_ID
+import com.jsamuelsen11.daykeeper.feature.calendar.TEST_SPACE_ID
+import com.jsamuelsen11.daykeeper.feature.calendar.TEST_TENANT_ID
 import com.jsamuelsen11.daykeeper.feature.calendar.makeCalendar
 import com.jsamuelsen11.daykeeper.feature.calendar.navigation.CalendarCreateEditRoute
 import io.kotest.matchers.shouldBe
@@ -31,6 +34,11 @@ class CalendarCreateEditViewModelTest {
 
   private val calendarRepository = mockk<CalendarRepository>()
   private val savedStateHandle = mockk<SavedStateHandle>()
+  private val sessionProvider =
+    mockk<CurrentSessionProvider> {
+      every { spaceId } returns TEST_SPACE_ID
+      every { tenantId } returns TEST_TENANT_ID
+    }
 
   @BeforeEach
   fun setUp() {
@@ -48,6 +56,7 @@ class CalendarCreateEditViewModelTest {
     return CalendarCreateEditViewModel(
       savedStateHandle = savedStateHandle,
       calendarRepository = calendarRepository,
+      sessionProvider = sessionProvider,
     )
   }
 
@@ -59,6 +68,7 @@ class CalendarCreateEditViewModelTest {
     return CalendarCreateEditViewModel(
       savedStateHandle = savedStateHandle,
       calendarRepository = calendarRepository,
+      sessionProvider = sessionProvider,
     )
   }
 
